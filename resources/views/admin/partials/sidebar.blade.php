@@ -80,155 +80,16 @@
 
                     <li class="sidebar-list">
                         <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="users"></i>
-                            <span>Venders</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="vendor-list.html">Vendor List</a>
-                            </li>
-
-                            <li>
-                                <a href="create-vendor.html">Create Vendor</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="users"></i>
-                            <span>Localization</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="translation.html">Translation</a>
-                            </li>
-
-                            <li>
-                                <a href="currency-rates.html">Currency Rates</a>
-                            </li>
-
-                            <li>
-                                <a href="taxes.html">Taxes</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="box"></i>
-                            <span>Product</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="products.html">Prodcts</a>
-                            </li>
-
-                            <li>
-                                <a href="add-new-product.html">Add New Products</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="align-left"></i>
-                            <span>Menus</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="menu-lists.html">Menu Lists</a>
-                            </li>
-
-                            <li>
-                                <a href="create-menu.html">Create Menu</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="tag"></i>
-                            <span>Coupons</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="coupon-list.html">Coupon List</a>
-                            </li>
-
-                            <li>
-                                <a href="create-coupon.html">Create Coupon</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="product-review.html">
-                            <i data-feather="star"></i>
-                            <span>Product Review</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="invoice.html">
-                            <i data-feather="archive"></i>
-                            <span>Invoice</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="support-ticket.html">
-                            <i data-feather="phone"></i>
-                            <span>Support Ticket</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="settings"></i>
                             <span>Settings</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="profile-setting.html">Profile Setting</a>
+                                <a href="{{ route('admin.profile.edit') }}">Profile Setting</a>
                             </li>
                         </ul>
                     </li>
 
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="reports.html">
-                            <i data-feather="file-text"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="list-page.html">
-                            <i data-feather="list"></i>
-                            <span>List Page</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="login.html">
-                            <i data-feather="log-in"></i>
-                            <span>Log In</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="forgot-password.html">
-                            <i data-feather="key"></i>
-                            <span>Forgot Password</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="sign-up.html">
-                            <i data-feather="plus-circle"></i>
-                            <span>Register</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow">

@@ -12,6 +12,8 @@
 
     <title>Voxo - Dashboard</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Google font-->
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200&amp;family=Nunito:wght@300;400;600;700;800&amp;display=swap"
