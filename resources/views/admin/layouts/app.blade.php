@@ -6,12 +6,32 @@
 </head>
 
 <body>
+
     <!-- tap on top start -->
     <div class="tap-top">
         <span class="lnr lnr-chevron-up"></span>
     </div>
     <!-- tap on tap end -->
 
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: "Thành công",
+                text: "{{ session('success') }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                title: "Lỗi",
+                text: "{{ session('error') }}",
+                icon: "error"
+            });
+        </script>
+    @endif
     <!-- page-wrapper Start-->
     <div class="page-wrapper compact-wrapper dark-sidebar" id="pageWrapper">
         <!-- Page Header Start-->
@@ -27,18 +47,14 @@
             <!-- Page Sidebar Ends-->
 
             <!-- index body start -->
-            <div class="page-body">
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
-                <!-- Container-fluid Ends-->
+            @yield('content')
 
-                <!-- footer start-->
-                <div class="container-fluid">
-                    @include('admin.partials.footer')
-                </div>
-                <!-- footer End-->
+            <!-- footer start-->
+            <div class="container-fluid">
+                @include('admin.partials.footer')
             </div>
+            <!-- footer End-->
+
             <!-- index body end -->
         </div>
         <!-- Page Body End -->
