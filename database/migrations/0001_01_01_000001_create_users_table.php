@@ -21,7 +21,6 @@ return new class extends Migration {
             // Thêm các trường bổ sung
             $table->string('avatar')->nullable();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
 
             // Liên kết với bảng roles
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');

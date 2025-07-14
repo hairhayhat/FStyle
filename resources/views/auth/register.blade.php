@@ -14,7 +14,7 @@
                     @csrf
 
                     <div class="input">
-                        <label for="emailname">Email Address</label>
+                        <label for="emailname">Email</label>
                         <input type="email" name="email" id="emailname" autocomplete="off" value="{{ old('email') }}">
                         <span class="spin"></span>
                     </div>
@@ -48,29 +48,6 @@
                         </button>
                     </div>
                 </form>
-
-                <p class="sign-category">
-                    <span>Hoặc đăng ký với</span>
-                </p>
-
-                <div class="row gx-md-3 gy-3">
-                    <div class="col-md-6">
-                        <a href="#">
-                            <div class="social-media fb-media">
-                                <img src="{{ asset('admin/assets/images/facebook.png') }}" class="img-fluid" alt="">
-                                <h6>Facebook</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="#">
-                            <div class="social-media google-media">
-                                <img src="{{ asset('admin/assets/images/google.png') }}" class="img-fluid" alt="">
-                                <h6>Google</h6>
-                            </div>
-                        </a>
-                    </div>
-                </div>
 
                 <p class="mt-4">
                     <a href="{{ route('login') }}" class="theme-color">Đã có một tài khoản</a>

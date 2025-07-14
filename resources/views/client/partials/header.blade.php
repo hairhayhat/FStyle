@@ -777,12 +777,7 @@
                                             @auth
 
                                                 <li>
-                                                    <form method="POST" action="{{ route('logout') }}">
-                                                        @csrf
-                                                        <a href="{{ route('logout') }}"
-                                                            onclick="event.preventDefault(); this.closest('form').submit();"
-                                                            class="d-block">Đăng xuất</a>
-                                                    </form>
+                                                    <a href="{{ route('client.dashboard') }}" class="d-block">Cài đặt</a>
                                                 </li>
                                             @else
                                                 <li>
