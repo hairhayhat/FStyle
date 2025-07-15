@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,13 +14,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     })->name('admin.dashboard');
 
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
-    Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
-
-    Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
-    Route::post('/category', [CategoryController::class, 'store'])->name('admin.category.store');
-    Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('admin.category.edit');
-    Route::put('/category/{category}', [CategoryController::class, 'update'])->name('admin.category.update');
-    Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
 
 });
 

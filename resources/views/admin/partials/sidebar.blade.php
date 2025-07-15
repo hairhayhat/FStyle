@@ -77,24 +77,6 @@
                             </li>
                         </ul>
                     </li>
-                    <li
-                        class="sidebar-list {{ request()->is('admin/category') || request()->is('admin/category/*') ? 'active' : '' }}">
-                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="grid"></i>
-                            <span>Danh mục</span>
-                        </a>
-                        <ul class="sidebar-submenu"
-                            style="{{ request()->is('admin/category') || request()->is('admin/category/*') ? 'display: block;' : '' }}">
-                            <li class="{{ request()->routeIs('admin.category.index') ? 'active' : '' }}">
-                                <a href="{{ route('admin.category.index') }}">Danh sách danh mục</a>
-                            </li>
-                            <li>
-                                <a :active="request()->routeIs('admin.category.create')"
-                                    href="{{ route('admin.category.create') }}">Thêm danh mục</a>
-                            </li>
-                        </ul>
-                    </li>
-
 
                     <li class="sidebar-list">
                         <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
