@@ -82,6 +82,7 @@
 
     <!-- latest js -->
     @include('admin.partials.scripts')
+    @yield('scripts')
 </body>
 
 
