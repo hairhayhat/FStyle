@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'provider_id',
         'avatar',
         'phone',
+        'email_verified_at',
         'role_id'
     ];
 
@@ -58,6 +59,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function getDefaultAddress()
+    {
+        return $this->addresses()->where('is_default', true)->first();
     }
 
     public function sendEmailVerificationNotification()

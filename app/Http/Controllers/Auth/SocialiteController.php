@@ -17,59 +17,64 @@ class SocialiteController extends Controller
                 ->redirect();
         } catch (Exception $e) {
             return redirect()->route('login')
-                ->with('error', 'Không thể kết nối với Google. Vui lòng thử lại' . $e->getMessage());
+                ->with('error', 'Không thể kết nối với Google. Vui lòng thử lại. Lỗi: ' . $e->getMessage());
         }
     }
 
     public function handleGoogleCallback()
     {
         try {
-            $google_user = Socialite::driver('google')->user();
-            dd($google_user);
+            $googleUser = Socialite::driver('google')->user();
 
-            $user = User::where('google_id', $google_user->getId())->first();
-
-            if (!$user) {
-                $user = new User();
-                $user->name = $google_user->name ?? $google_user->nickname;
-                $user->email = $google_user->email;
-                $user->provider_id = $google_user->id;
-                $user->avatar = $this->_getAvatarUrl($google_user);
-                $user->role_id = 2;
-                $user->email_verified_at = now();
-                $user->save();
-            }
+            // Tìm hoặc tạo user
+            $user = User::updateOrCreate(
+                ['email' => $googleUser->email],
+                [
+                    'name' => $googleUser->name ?? $googleUser->nickname,
+                    'google_id' => $googleUser->id,
+                    'avatar' => $this->getAvatarUrl($googleUser),
+                    'role_id' => 2,
+                    'email_verified_at' => now(),
+                ]
+            );
 
             Auth::login($user, true);
 
-            $user = Auth::user();
+            return $this->redirectAfterLogin($user);
 
-            if ($user->role_id === 2) {
-                return redirect()->intended(route('client.welcome', absolute: false));
-            } else {
-                return redirect()->intended(route('admin.dashboard', absolute: false));
-            }
         } catch (Exception $e) {
             return redirect()->route('login')
-                ->with('error', 'Đăng nhập bằng Google thất bại. Vui lòng thử lại.' . $e->getMessage());
+                ->with('error', 'Đăng nhập bằng Google thất bại. Lỗi: ' . $e->getMessage());
         }
     }
 
     /**
-     * Lấy URL avatar từ dữ liệu nhà cung cấp
+     * Xác định URL avatar
      */
-    protected function _getAvatarUrl($data)
+    protected function getAvatarUrl($providerUser)
     {
-        if (isset($data->avatar)) {
-            return $data->avatar;
+        if (isset($providerUser->avatar)) {
+            return $providerUser->avatar;
         }
 
-        if (isset($data->picture)) {
-            return is_object($data->picture)
-                ? $data->picture->data->url ?? null
-                : $data->picture;
+        if (isset($providerUser->picture)) {
+            return is_object($providerUser->picture)
+                ? $providerUser->picture->data->url ?? null
+                : $providerUser->picture;
         }
 
         return null;
+    }
+
+    /**
+     * Redirect sau khi login thành công
+     */
+    protected function redirectAfterLogin(User $user)
+    {
+        if ($user->role_id === 1) { // Giả sử 1 là admin
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('client.welcome'));
     }
 }

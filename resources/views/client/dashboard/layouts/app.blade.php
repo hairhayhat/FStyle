@@ -7,6 +7,25 @@
 
     <!-- header start -->
     @include('client.partials.header')
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: "Thành công",
+                text: "{{ session('success') }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                title: "Lỗi",
+                text: "{{ session('error') }}",
+                icon: "error"
+            });
+        </script>
+    @endif
     <!-- header end -->
 
     <!-- mobile fix menu start -->
@@ -89,123 +108,6 @@
     @include('client.partials.footer')
     <!-- footer end -->
 
-    <!-- Reset Password Modal Start -->
-    <div class="modal fade reset-email-modal" id="resetEmail">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLabel">Comfirm Email</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-3">
-                    <form>
-                        <div class="mb-3">
-                            <label for="email" class="form-label font-light">Email address</label>
-                            <input type="email" class="form-control" id="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="comfirmEmail" class="form-label font-light">Comfirm Email address</label>
-                            <input type="email" class="form-control" id="comfirmEmail">
-                        </div>
-                        <div>
-                            <label for="exampleInputPassword1" class="form-label font-light">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer pt-0">
-                    <button class="btn bg-secondary rounded-1 modal-close-button" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-solid-default rounded-1" data-bs-dismiss="modal">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Reset Password Modal End -->
-
-    <!-- Add Payment Modal Start -->
-    <div class="modal fade payment-modal" id="addPayment">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <label for="name" class="form-label">Card Type</label>
-                        <select class="form-select form-select-lg mb-4">
-                            <option selected disabled>Choose Your Card</option>
-                            <option value="1">Creadit Card</option>
-                            <option value="2">Debit Card</option>
-                            <option value="3">Debit Card and ATM</option>
-                        </select>
-
-                        <div class="mb-4">
-                            <label for="card" class="form-label">Name On Card</label>
-                            <input type="text" class="form-control" id="card" placeholder="Name card">
-                        </div>
-                        <div class="mb-4">
-                            <label for="cAddress" class="form-label">Card Number</label>
-                            <input type="number" class="form-control" id="cAddress"
-                                placeholder="XXXX-XXXX-XXXX-XXXX">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8 mb-4">
-                                <label for="expiry" class="form-label">Expiry Date</label>
-                                <input type="date" class="form-control font-light" id="expiry">
-                            </div>
-                            <div class="col-md-4 mb-4">
-                                <label for="cvv" class="form-label">CVV</label>
-                                <input type="number" class="form-control" id="cvv" placeholder="XX9">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer pt-0 text-end d-block">
-                    <button type="button" class="btn bg-secondary text-white rounded-1 modal-close-button"
-                        data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-solid-default rounded-1" data-bs-dismiss="modal">Save Card
-                        Details</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Add Payment Modal End -->
-
-    <!-- Comfirm Delete Modal Start -->
-    <div class="modal delete-account-modal fade" id="deleteModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pb-3 text-center mt-4">
-                    <h4>Are you sure you want to delete your account?</h4>
-                </div>
-                <div class="modal-footer d-block text-center mb-4">
-                    <button class="btn btn-solid-default btn-sm fw-bold rounded" data-bs-target="#doneModal"
-                        data-bs-toggle="modal" data-bs-dismiss="modal">Yes Delete account</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal delete-account-modal fade" id="doneModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pb-3 text-center mt-4">
-                    <h4>Done!!! Delete Your Account</h4>
-                </div>
-                <div class="modal-footer d-block text-center mb-4">
-                    <button class="btn btn-solid-default btn-sm fw-bold rounded" data-bs-target="#exampleModalToggle"
-                        data-bs-toggle="modal" data-bs-dismiss="modal">Okay</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Comfirm Delete Modal End -->
-
     <!-- tap to top Section Start -->
     <div class="tap-to-top">
         <a href="#home">
@@ -217,6 +119,8 @@
     <div class="bg-overlay"></div>
 
     @include('client.partials.scripts')
+
+    @yield('scripts')
 
 </body>
 

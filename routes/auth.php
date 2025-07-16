@@ -36,10 +36,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 
     Route::get('login/google', [SocialiteController::class, 'redirectToGoogle'])->name('login.google');
-    Route::get('login/google/call-back', [SocialiteController::class, 'handleGoogleCallback']);
-
-    Route::get('login/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('login.facebook');
-    Route::get('login/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
+    Route::get('login/google/call-back', [SocialiteController::class, 'handleGoogleCallback'])->name('login.google.callback');
 });
 
 Route::middleware('auth')->group(function () {

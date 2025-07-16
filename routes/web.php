@@ -30,10 +30,12 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
 
     Route::get('/profile', [ClientProfileController::class, 'renderProfile'])->name('client.profile');
     Route::post('/profile', [ClientProfileController::class, 'updateProfile'])->name('client.profile.update');
+    Route::post('/profile/change-password', [ClientProfileController::class, 'changePassword'])->name('client.change.passowrd');
 
     Route::get('/address', [AddressController::class, 'create'])->name('client.address');
     Route::post('/address', [AddressController::class, 'store'])->name('client.address.create');
-    Route::put('/address', [AddressController::class, 'update'])->name('client.address.update');
+    Route::put('/address/{id}', [AddressController::class, 'update'])->name('client.address.update');
+    Route::get('/api/address/{id}/edit', [AddressController::class, 'edit'])->name('api.address.edit');
 
 
 });
