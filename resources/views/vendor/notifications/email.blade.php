@@ -1,58 +1,46 @@
-<x-mail::message>
-{{-- Greeting --}}
-@if (! empty($greeting))
-# {{ $greeting }}
-@else
-@if ($level === 'error')
-# @lang('Whoops!')
-@else
-# @lang('Hello!')
-@endif
-@endif
+@component('mail::layout')
+    @slot('header')
+        @component('mail::header', ['url' => config('app.url')])
+            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" style="height: 50px;">
+        @endcomponent
+    @endslot
 
-{{-- Intro Lines --}}
-@foreach ($introLines as $line)
-{{ $line }}
+    # 🎉 Chào mừng đến với {{ config('app.name') }}!
 
-@endforeach
+    Xin chào **{{ $user->name }}**,
 
-{{-- Action Button --}}
-@isset($actionText)
-<?php
-    $color = match ($level) {
-        'success', 'error' => $level,
-        default => 'primary',
-    };
-?>
-<x-mail::button :url="$actionUrl" :color="$color">
-{{ $actionText }}
-</x-mail::button>
-@endisset
+    Cảm ơn bạn đã đăng ký tài khoản tại {{ config('app.name') }} - Nơi cung cấp các sản phẩm thời trang nam đẳng cấp!
 
-{{-- Outro Lines --}}
-@foreach ($outroLines as $line)
-{{ $line }}
+    @component('mail::panel', ['color' => '#f8f9fa'])
+        Để hoàn tất đăng ký, vui lòng xác thực email của bạn bằng cách nhấn nút bên dưới:
+    @endcomponent
 
-@endforeach
+    @component('mail::button', ['url' => $url, 'color' => 'primary'])
+        🔐 XÁC THỰC NGAY
+    @endcomponent
 
-{{-- Salutation --}}
-@if (! empty($salutation))
-{{ $salutation }}
-@else
-@lang('Regards,')<br>
-{{ config('app.name') }}
-@endif
+    @component('mail::panel', ['color' => '#fff3cd'])
+        ⏳ Liên kết xác thực sẽ hết hạn sau 24 giờ
+    @endcomponent
 
-{{-- Subcopy --}}
-@isset($actionText)
-<x-slot:subcopy>
-@lang(
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
-    [
-        'actionText' => $actionText,
-    ]
-) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-</x-slot:subcopy>
-@endisset
-</x-mail::message>
+    Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email hoặc <a href="{{ config('app.url') }}/contact">liên hệ hỗ
+        trợ</a>.
+
+    Trân trọng,<br>
+    **Đội ngũ {{ config('app.name') }}**
+
+    @slot('footer')
+        @component('mail::footer')
+            © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.<br>
+            <small style="color: #6c757d;">
+                Địa chỉ: 123 Đường Thời Trang, Quận 1, TP.HCM<br>
+                Hotline: 1900 1234 | Email: support@thoitrangnam.vn
+            </small>
+            <div style="margin-top: 10px;">
+                <a href="{{ config('app.url') }}" style="margin-right: 10px;">Trang chủ</a>
+                <a href="{{ config('app.url') }}/collections" style="margin-right: 10px;">Bộ sưu tập</a>
+                <a href="{{ config('app.url') }}/blog" style="margin-right: 10px;">Tạp chí phong cách</a>
+            </div>
+        @endcomponent
+    @endslot
+@endcomponent

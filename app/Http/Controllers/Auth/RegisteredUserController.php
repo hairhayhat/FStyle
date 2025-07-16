@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return $user->role_id === 2
-            ? redirect()->route('user.welcome')
+            ? redirect()->route('client.welcome')
             : redirect()->route('admin.dashboard');
     }
 }

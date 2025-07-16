@@ -770,12 +770,20 @@
 
                                 <li class="onhover-dropdown">
                                     <div class="cart-media">
-                                        <i data-feather="user"></i>
+                                        @auth
+                                            <img src="{{ asset('storage/avatars/' . Auth::user()->avatar) }}"
+                                                alt="avatar" class="rounded-circle"
+                                                style="width:32px;height:32px;object-fit:cover;">
+                                        @else
+                                            <i data-feather="user"></i>
+                                        @endauth
                                     </div>
                                     <div class="onhover-div profile-dropdown">
                                         <ul>
                                             @auth
-
+                                                <li>
+                                                    <a href="{{ route('client.dashboard') }}" class="d-block">Cài đặt</a>
+                                                </li>
                                                 <li>
                                                     <form method="POST" action="{{ route('logout') }}">
                                                         @csrf

@@ -15,12 +15,12 @@ return new class extends Migration {
             $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('provider_id')->nullable();
+            $table->string('password')->nullable();
 
             // Thêm các trường bổ sung
             $table->string('avatar')->nullable();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
 
             // Liên kết với bảng roles
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');

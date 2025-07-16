@@ -14,11 +14,17 @@ class EmailVerificationNotificationController extends Controller
     public function store(Request $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false));
+            if ($request->user()->role_id === 1) {
+                return redirect('admin.dashboard');
+            } else {
+                return redirect('client.welcome');
+            }
         }
 
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('status', 'verification-link-sent');
+        return back()->with([
+            'success' => 'Chúng tôi đã gửi lại email cho bạn. Vui lòng kiểm tra lại',
+        ]);
     }
 }
