@@ -31,7 +31,7 @@ class SocialiteController extends Controller
                 ['email' => $googleUser->email],
                 [
                     'name' => $googleUser->name ?? $googleUser->nickname,
-                    'google_id' => $googleUser->id,
+                    'provider_id' => $googleUser->id,
                     'avatar' => $this->getAvatarUrl($googleUser),
                     'role_id' => 2,
                     'email_verified_at' => now(),
