@@ -45,10 +45,10 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li class="{{ request()->is('admin/users') ? 'active' : '' }}">
-                                <a href="{{ route('admin.users.index') }}">All users</a>
+                                {{-- <a href="{{ route('admin.users.index') }}">All users</a> --}}
                             </li>
                             <li class="{{ request()->is('admin/users/create') ? 'active' : '' }}">
-                                <a href="{{ route('admin.users.create') }}">Add new user</a>
+                                {{-- <a href="{{ route('admin.users.create') }}">Add new user</a> --}}
                             </li>
                         </ul>
                     </li>

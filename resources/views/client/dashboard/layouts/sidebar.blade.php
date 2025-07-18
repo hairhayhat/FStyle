@@ -20,7 +20,7 @@
 
         <li class="nav-item mb-2">
             <a href="{{ route('client.address') }}" class="nav-link font-light" id="3-tab">
-                <i class="fas fa-angle-right"></i>Saved Address
+                <i class="fas fa-angle-right"></i>Địa chỉ đã lưu
             </a>
         </li>
 
@@ -32,7 +32,7 @@
 
         <li class="nav-item mb-2">
             <a href="{{ route('client.profile') }}" class="nav-link font-light" id="5-tab">
-                <i class="fas fa-angle-right"></i>Profile
+                <i class="fas fa-angle-right"></i>Thông tin cá nhân
             </a>
         </li>
 
