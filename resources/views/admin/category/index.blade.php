@@ -11,9 +11,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-header-2">
-                                <h5>Danh sách danh mục</h5>
-                            </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
@@ -31,7 +28,6 @@
                                                 <td>{{ $category->id }}</td>
                                                 <td>{{ $category->name }}</td>
                                                 <td>{{ $category->slug }}</td>
-
                                                 <td>
                                                     @if ($category->image)
                                                         <img src="{{ asset('storage/' . $category->image) }}"
@@ -62,32 +58,33 @@
                 </div>
             </div>
         </div>
-    @endsection
-    @section('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const deleteForms = document.querySelectorAll('.delete-form');
+    </div>
+@endsection
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteForms = document.querySelectorAll('.delete-form');
 
-                deleteForms.forEach(form => {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault(); // chặn gửi form ngay
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // chặn gửi form ngay
 
-                        Swal.fire({
-                            title: 'Bạn có chắc muốn xoá?',
-                            text: "Hành động này không thể hoàn tác!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Xoá',
-                            cancelButtonText: 'Huỷ'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit(); // chỉ gửi nếu confirm
-                            }
-                        });
+                    Swal.fire({
+                        title: 'Bạn có chắc muốn xoá?',
+                        text: "Hành động này không thể hoàn tác!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Xoá',
+                        cancelButtonText: 'Huỷ'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // chỉ gửi nếu confirm
+                        }
                     });
                 });
             });
-        </script>
-    @endsection
+        });
+    </script>
+@endsection

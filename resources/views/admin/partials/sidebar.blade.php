@@ -94,7 +94,23 @@
                             </li>
                         </ul>
                     </li>
-
+                    <li
+                        class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
+                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                            <i data-feather="box"></i>
+                            <span>Sản Phẩm</span>
+                        </a>
+                        <ul class="sidebar-submenu"
+                            style="{{ request()->is('admin/product') || request()->is('admin/product/*') ? 'display: block;' : '' }}">
+                            <li class="{{ request()->routeIs('admin.product.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.product.index') }}">Danh sách sản phẩm</a>
+                            </li>
+                            <li>
+                                <a :active="request()->routeIs('admin.product.create')"
+                                    href="{{ route('admin.product.create') }}">Thêm sản phẩm</a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li class="sidebar-list">
                         <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
@@ -104,6 +120,12 @@
                         <ul class="sidebar-submenu">
                             <li>
                                 <a href="{{ route('admin.profile.edit') }}">Profile Setting</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.color.index') }}">Màu sắc</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.size.index') }}">Kích thước</a>
                             </li>
                         </ul>
                     </li>

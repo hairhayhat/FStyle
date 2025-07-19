@@ -36,16 +36,25 @@
                                             </div>
 
                                             <!-- Ảnh -->
+                                            <!-- Hình ảnh Drag & Drop -->
                                             <div class="mb-4 row align-items-center">
                                                 <label class="form-label-title col-sm-2 mb-0">Hình ảnh</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control @error('image') is-invalid @enderror"
-                                                        type="file" name="image" accept="image/*">
+                                                    <div id="drop-area"
+                                                        class="border border-2 border-dashed rounded p-4 text-center">
+                                                        <p>Kéo thả ảnh vào đây hoặc bấm để chọn</p>
+                                                        <input type="file" id="imageInput" name="image"
+                                                            accept="image/*"
+                                                            class="d-none @error('image') is-invalid @enderror">
+                                                        <img id="preview" src="#" alt="Preview"
+                                                            class="img-fluid mt-3 d-none" style="max-height: 200px;">
+                                                    </div>
                                                     @error('image')
                                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
+
                                             <!-- Submit -->
                                             <div class="mb-4 row">
                                                 <div class="offset-sm-2 col-sm-10">

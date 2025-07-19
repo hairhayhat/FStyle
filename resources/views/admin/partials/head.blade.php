@@ -9,6 +9,8 @@
     <!-- Favicon (sửa đường dẫn) -->
     <link rel="icon" href="{{ asset('admin/assets/images/favicon.png') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.png') }}" type="image/x-icon">
+    <!-- Thêm vào trong thẻ <head> hoặc trước </body> -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
 
     <title>Voxo - Dashboard</title>
 
