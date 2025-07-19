@@ -31,5 +31,4 @@
 <script src="{{ asset('client/assets/js/bootstrap/bootstrap-notify.min.js') }}"></script>
 
 <!-- theme and main script -->
-<script src="{{ asset('client/assets/js/theme-setting.js') }}"></script>
 <script src="{{ asset('client/assets/js/script.js') }}"></script>

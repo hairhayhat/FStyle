@@ -1,5 +1,4 @@
 <head>
-    <link rel="manifest" href="{{ asset('manifest.json') }}" />
     <link rel="icon" href="{{ asset($favicon ?? 'client/assets/images/favicon/2.png') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ asset($favicon ?? 'client/assets/images/favicon/2.png') }}" />
     <meta name="theme-color" content="{{ $themeColor ?? '#e22454' }}" />

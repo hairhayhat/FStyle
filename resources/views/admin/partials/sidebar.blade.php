@@ -38,17 +38,17 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-list">
+                    <li class="sidebar-list {{ request()->is('admin/users*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="users"></i>
                             <span>Users</span>
                         </a>
                         <ul class="sidebar-submenu">
-                            <li>
-                                <a href="all-users.html">All users</a>
+                            <li class="{{ request()->is('admin/users') ? 'active' : '' }}">
+                                {{-- <a href="{{ route('admin.users.index') }}">All users</a> --}}
                             </li>
-                            <li>
-                                <a href="add-new-user.html">Add new user</a>
+                            <li class="{{ request()->is('admin/users/create') ? 'active' : '' }}">
+                                {{-- <a href="{{ route('admin.users.create') }}">Add new user</a> --}}
                             </li>
                         </ul>
                     </li>

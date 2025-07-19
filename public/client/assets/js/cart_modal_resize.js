@@ -1,5 +1,5 @@
-var myModal = document.getElementById("addtocart");
+// var myModal = document.getElementById("addtocart");
 
-myModal.addEventListener("shown.bs.modal", function () {
-  $(window).trigger("resize");
-});
+// myModal.addEventListener("shown.bs.modal", function () {
+//   $(window).trigger("resize");
+// });
