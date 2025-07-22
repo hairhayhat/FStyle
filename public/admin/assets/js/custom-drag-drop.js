@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     const dropArea = document.getElementById("drop-area");
     const input = document.getElementById("imageInput");
-    const preview = document.getElementById("preview");
+    const previewContainer = document.getElementById("preview-container");
 
-    // Click để mở chọn ảnh
     dropArea.addEventListener("click", () => input.click());
 
-    // Dragover hiệu ứng
     dropArea.addEventListener("dragover", (e) => {
         e.preventDefault();
         dropArea.classList.add("dragover");
@@ -16,30 +14,36 @@ document.addEventListener("DOMContentLoaded", function () {
         dropArea.classList.remove("dragover");
     });
 
-    // Drop file
     dropArea.addEventListener("drop", (e) => {
         e.preventDefault();
         dropArea.classList.remove("dragover");
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            input.files = e.dataTransfer.files;
-            showPreview(file);
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            input.files = files;
+            showPreview(files);
         }
     });
 
-    // Hiển thị ảnh xem trước
     input.addEventListener("change", function () {
-        if (this.files && this.files[0]) {
-            showPreview(this.files[0]);
+        if (this.files.length > 0) {
+            showPreview(this.files);
         }
     });
 
-    function showPreview(file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.classList.remove("d-none");
-        };
-        reader.readAsDataURL(file);
+    function showPreview(files) {
+        previewContainer.innerHTML = "";
+
+        Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.classList.add("img-thumbnail", "m-1");
+                img.style.maxHeight = "150px";
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
     }
 });

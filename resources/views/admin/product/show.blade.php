@@ -81,6 +81,26 @@
                     </table>
                 </div>
             </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Thư viện ảnh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @forelse ($product->galleries as $gallery)
+                            <div class="col-md-3 mb-3">
+                                <img src="{{ asset('storage/' . $gallery->image) }}" class="img-fluid rounded"
+                                    style="max-height: 150px" alt="Gallery Image">
+                            </div>
+                        @empty
+                            <div class="col-12 text-center">
+                                <p>Chưa có ảnh trong thư viện</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

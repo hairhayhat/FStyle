@@ -18,4 +18,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+
+    public function galleries()
+    {
+        return $this->hasMany(ProductGallery::class);
+    }
+
 }
