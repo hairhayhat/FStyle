@@ -54,6 +54,8 @@
 
     @include('client.partials.scripts')
 
+    @yield('scripts')
+
 </body>
 
 

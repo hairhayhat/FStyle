@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(10);
+        $products = Product::with('category')->latest()->paginate(perPage: 10);
         return view('admin.product.index', compact('products'));
     }
 
@@ -49,6 +49,8 @@ class ProductController extends Controller
             'variants.*.size_id' => 'required|exists:sizes,id',
             'variants.*.price' => 'required|numeric|min:0',
             'variants.*.quantity' => 'required|integer|min:0',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             // Tuỳ chỉnh thông báo lỗi (có thể dùng tiếng Việt)
             'name.required' => 'Tên sản phẩm là bắt buộc',
@@ -59,6 +61,9 @@ class ProductController extends Controller
             'variants.*.size_id.required' => 'Bạn phải chọn kích cỡ cho mỗi biến thể',
             'variants.*.price.required' => 'Giá không được để trống',
             'variants.*.quantity.required' => 'Số lượng không được để trống',
+            'gallery.*.image' => 'Tập tin phải là hình ảnh.',
+            'gallery.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
+            'gallery.*.max' => 'Ảnh không được vượt quá 2MB.',
         ]);
 
         if ($validator->fails()) {
@@ -82,6 +87,16 @@ class ProductController extends Controller
                 'price' => $variant['price'],
                 'quantity' => $variant['quantity'],
             ]);
+        }
+
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $image) {
+                $path = $image->store('product_gallery', 'public');
+
+                $product->galleries()->create([
+                    'image' => $path,
+                ]);
+            }
         }
 
         return redirect()->route('admin.product.index')->with('success', 'Thêm sản phẩm thành công!');

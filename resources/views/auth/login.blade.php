@@ -15,7 +15,7 @@
                 <input type="password" name="fake_password" style="position: absolute; top: -1000px; left: -1000px;"
                     autocomplete="new-password">
 
-                <form method="POST" action="{{ route('login') }}" autocomplete="off">
+                <form method="POST" action="{{ route('login') }}" autocomplete="off" novalidate>
                     @csrf
 
                     <div class="input">

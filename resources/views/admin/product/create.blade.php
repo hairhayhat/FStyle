@@ -159,22 +159,47 @@
                         </div>
                     </div>
 
+                    {{-- CARD 3 : Thu vien anh --}}
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-body text-end">
-                                <button class="btn btn-primary btn-lg px-4 py-2 fw-bold" type="submit">
-                                    <i class="bi bi-plus-circle me-1"></i> Thêm sản phẩm
-                                </button>
-                                <a href="{{ route('admin.product.index') }}"
-                                    class="btn btn-outline-dark btn-lg px-4 py-2 fw-bold me-2">
-                                    <i class="bi bi-arrow-left me-1"></i> Quay lại
-                                </a>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="card-header-2">
+                                    <h5>Thư viện ảnh sản phẩm</h5>
+                                </div>
+                                <div id="variant-container">
+                                    <div class="row mb-3 variant-row">
+                                        <div class="mb-4 row align-items-center">
+                                            <div id="drop-area"
+                                                class="border border-2 border-dashed rounded p-4 text-center">
+                                                <p>Kéo thả ảnh vào đây hoặc bấm để chọn</p>
+                                                <input type="file" id="imageInput" name="gallery[]" accept="image/*"
+                                                    class="d-none @error('image') is-invalid @enderror" multiple>
+                                                <div id="preview-container" class="d-flex flex-wrap gap-2 mt-3"
+                                                    style="max-height: 200px;"></div>
+                                            </div>
+                                            @error('image')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body text-end">
+                            <button class="btn btn-primary px-4 py-2 fw-bold" type="submit">
+                                <i class="bi bi-plus-circle me-1"></i> Thêm sản phẩm
+                            </button>
+                        </div>
+                    </div>
+                </div>
         </div>
+        </form>
+    </div>
     </div>
 @endsection
 @section('scripts')
@@ -208,7 +233,6 @@
                 index++;
             });
 
-            // Xoá biến thể
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-variant')) {
                     const rows = document.querySelectorAll('.variant-row');
