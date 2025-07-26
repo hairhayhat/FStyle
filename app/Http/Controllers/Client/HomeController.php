@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Size;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -14,7 +17,12 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-        return view('client.welcome', compact('newProducts'));
+        $favoriteProductIds = [];
+
+        if (Auth::check()) {
+            $favoriteProductIds = Auth::user()->favorites->pluck('id')->toArray();
+        }
+        return view('client.welcome', compact('newProducts', 'favoriteProductIds'));
     }
 
     public function show($slug)
@@ -57,6 +65,31 @@ class HomeController extends Controller
                 return asset('storage/' . $gallery->image);
             }),
         ];
+    }
+
+    public function detailProduct($slug)
+    {
+        try {
+            $product = Product::with(['category', 'variants', 'galleries'])
+                ->where('slug', $slug)
+                ->firstOrFail();
+
+            $product->increment('views');
+            $sizes = Size::all();
+            $sameCateProducts = Product::with(['category', 'variants', 'galleries'])
+                ->where('category_id', $product->category_id)
+                ->take(5)
+                ->get();
+
+            $favoriteProductIds = [];
+            if (Auth::check()) {
+                $favoriteProductIds = Auth::user()->favorites->pluck('product_id')->toArray();
+            }
+
+            return view('client.product.detail', compact('product', 'sizes', 'sameCateProducts', 'favoriteProductIds'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Sản phẩm không tồn tại');
+        }
     }
 }
 
