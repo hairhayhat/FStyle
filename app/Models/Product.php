@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'slug', 'image', 'description', 'category_id', 'views'];
 
     public function category()
@@ -24,4 +26,25 @@ class Product extends Model
         return $this->hasMany(ProductGallery::class);
     }
 
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    public function isFavoritedByUser($userId = null)
+    {
+        if (!$userId && auth()->check()) {
+            $userId = auth()->id();
+        }
+
+        return $userId
+            ? $this->favoritedBy()->where('user_id', $userId)->exists()
+            : false;
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

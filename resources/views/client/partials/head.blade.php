@@ -10,6 +10,7 @@
     <meta name="description" content="{{ $description ?? 'Voxo' }}">
     <meta name="keywords" content="{{ $keywords ?? 'Voxo' }}">
     <meta name="author" content="{{ $author ?? 'Voxo' }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Index' }}</title>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -37,4 +38,7 @@
 
     <!-- Theme css -->
     <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('client/assets/css/demo2.css') }}">
+    <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('client/assets/css/custom.css') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('client/assets/css/vendors/ion.rangeSlider.min.css') }}" />
 </head>
