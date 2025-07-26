@@ -20,7 +20,6 @@
                                             <th>Tên sản phẩm</th>
                                             <th>Danh mục</th>
                                             <th>Lượt xem</th>
-                                            <th>Trạng thái</th>
                                             <th>Tuỳ chọn</th>
                                         </tr>
                                     </thead>
@@ -51,17 +50,6 @@
 
                                                 {{-- Lượt xem --}}
                                                 <td>{{ $product->views ?? 0 }}</td>
-
-                                                {{-- Trạng thái: nếu có ảnh & tên thì active --}}
-                                                <td
-                                                    class="{{ $product->image && $product->name ? 'td-check' : 'td-cross' }}">
-                                                    @if ($product->image && $product->name)
-                                                        <span class="lnr lnr-checkmark-circle"></span>
-                                                    @else
-                                                        <span class="lnr lnr-cross-circle"></span>
-                                                    @endif
-                                                </td>
-
                                                 {{-- Tuỳ chọn --}}
                                                 <td>
                                                     <ul class="d-flex gap-2">
@@ -113,21 +101,20 @@
         </div>
     </div>
 @endsection
-@push('scripts')
+@section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // SweetAlert confirm before delete
             const deleteForms = document.querySelectorAll('.delete-form');
 
             deleteForms.forEach(form => {
                 form.addEventListener('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Ngăn form submit ngay
 
                     const productName = this.getAttribute('data-name') || 'sản phẩm';
 
                     Swal.fire({
                         title: 'Bạn có chắc chắn?',
-                        text: `Bạn muốn xoá ${productName}?`,
+                        text: `Bạn muốn xoá "${productName}"?`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
@@ -136,11 +123,11 @@
                         cancelButtonText: 'Huỷ'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            form.submit();
+                            this.submit(); // Nếu người dùng đồng ý -> submit
                         }
                     });
                 });
             });
         });
     </script>
-@endpush
+@endsection

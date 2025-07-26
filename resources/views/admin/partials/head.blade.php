@@ -11,11 +11,9 @@
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.png') }}" type="image/x-icon">
     <!-- Thêm vào trong thẻ <head> hoặc trước </body> -->
     <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
-
-    <title>Voxo - Dashboard</title>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <title>Voxo - Dashboard</title>
     <!-- Google font-->
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200&amp;family=Nunito:wght@300;400;600;700;800&amp;display=swap"
@@ -35,4 +33,6 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/slick-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/responsive.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 </head>
