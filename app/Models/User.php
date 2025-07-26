@@ -8,16 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\CustomVerifyEmail;
 use App\Notifications\CustomResetPassword;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -29,21 +24,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'role_id'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -51,6 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    // Các relationships cần thay đổi
     public function role()
     {
         return $this->belongsTo(Role::class);
@@ -59,6 +46,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    public function hasFavorited($productId)
+    {
+        return $this->favorites()->where('product_id', $productId)->exists();
     }
 
     public function getDefaultAddress()
@@ -75,4 +73,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new CustomResetPassword($token));
     }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
 }

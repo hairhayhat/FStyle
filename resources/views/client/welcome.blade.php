@@ -484,13 +484,13 @@
                                 <div class="product-box">
                                     <div class="img-wrapper">
                                         <div class="front">
-                                            <a href="product-left-sidebar.html">
+                                            <a href="{{ route('product.detail', ['slug' => $item->slug]) }}">
                                                 <img src="{{ asset('storage/' . $item->image) }}"
                                                     class="bg-img blur-up lazyload" alt="">
                                             </a>
                                         </div>
                                         <div class="back">
-                                            <a href="product-left-sidebar.html">
+                                            <a href="{{ route('product.detail', ['slug' => $item->slug]) }}">
                                                 <img src="{{ asset('storage/' . $item->image) }}"
                                                     class="bg-img blur-up lazyload" alt="">
                                             </a>
@@ -514,11 +514,18 @@
                                                         <i data-feather="refresh-cw"></i>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="wishlist.html" class="wishlist">
-                                                        <i data-feather="heart"></i>
-                                                    </a>
-                                                </li>
+                                                @auth
+                                                    <li>
+                                                        <button type="button" class="favorite-toggle"
+                                                            data-slug="{{ $item->slug }}"
+                                                            data-product-id="{{ $item->id }}"
+                                                            data-is-favorited="{{ in_array($item->id, $favoriteProductIds ?? []) ? 'true' : 'false' }}">
+                                                            <i
+                                                                class="heart-icon {{ in_array($item->id, $favoriteProductIds ?? []) ? 'fas fa-heart text-danger' : 'far fa-heart' }}"></i>
+                                                        </button>
+                                                    </li>
+                                                @endauth
+
                                             </ul>
                                         </div>
                                     </div>
@@ -527,7 +534,8 @@
                                             <span class="font-light grid-content">{{ $item->Category->name }}</span>
                                         </div>
                                         <div class="main-price d-flex justify-content-between align-items-center">
-                                            <a href="product-left-sidebar.html" class="font-default text-decoration-none">
+                                            <a href="{{ route('product.detail', ['slug' => $item->slug]) }}"
+                                                class="font-default text-decoration-none">
                                                 <h6 class="fw-bold mb-0">{{ $item->name }}</h6>
                                             </a>
                                             <div>
@@ -1806,5 +1814,11 @@
                 });
             });
         });
+
+        $(document).on('click', '.favorite-toggle', function(e) {
+            e.preventDefault();
+            console.log('Favorite button clicked');
+            handleFavoriteAction($(this));
+        })
     </script>
 @endsection

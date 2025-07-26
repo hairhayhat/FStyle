@@ -2,17 +2,27 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Client\AddressController;
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
+Route::get('/product/{slug}', [HomeController::class, 'detailProduct'])->name('product.detail');
+Route::get('/search/ajax', [SearchController::class, 'ajaxSearchProducts'])->name('search.ajax.products');
+Route::get('/category/{slug}', [SearchController::class, 'searchCategory'])->name('search.category');
+Route::get('/filter-products', [SearchController::class, 'filter'])->name('products.filter');
+
+
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
@@ -80,6 +90,14 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/address', [AddressController::class, 'store'])->name('client.address.create');
     Route::put('/address/{id}', [AddressController::class, 'update'])->name('client.address.update');
     Route::get('/api/address/{id}/edit', [AddressController::class, 'edit'])->name('api.address.edit');
+
+    Route::post('/products/{product}/favorite', [FavoriteController::class, 'favorite'])->name('products.favorite');
+    Route::post('/products/{product}/unfavorite', [FavoriteController::class, 'unfavorite'])->name('products.unfavorite');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('client.cart');
+    Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('client.cart.add');
+    Route::get('/cart-dropdown', [CartController::class, 'getDropdownHTML']);
+    Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
 
 
 });

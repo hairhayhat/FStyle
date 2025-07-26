@@ -6,7 +6,7 @@
                     <div class="main-menu">
                         <div class="menu-left">
                             <div class="brand-logo">
-                                <a href="index.html">
+                                <a href="{{ route('client.welcome') }}">
                                     <svg class="svg-icon">
                                         <use class="fill-color" xlink:href="client/assets/assets/svg/icons.svg#logo">
                                         </use>
@@ -823,145 +823,27 @@
                                 </li>
                                 <li class="onhover-dropdown cart-dropdown">
                                     <button type="button" class="btn btn-solid-default btn-spacing">
-                                        <i data-feather="shopping-cart" class="pe-2"></i>
-                                        <span>$5686.25</span>
+                                        <i data-feather="shopping-cart"></i>
                                     </button>
-                                    <div class="onhover-div">
-                                        <div class="cart-menu">
-                                            <div class="cart-title">
-                                                <h6>
-                                                    <i data-feather="shopping-bag"></i>
-                                                    <span class="label label-theme rounded-pill">5</span>
-                                                </h6>
-                                                <span class="d-md-none d-block">
-                                                    <i class="fas fa-arrow-right back-cart"></i>
-                                                </span>
-                                            </div>
-                                            <ul class="custom-scroll">
-                                                <li>
-                                                    <div class="media">
-                                                        <img src="client/assets/assets/images/fashion/product/front/1.jpg"
-                                                            class="img-fluid blur-up lazyload" alt="">
-                                                        <div class="media-body">
-                                                            <h6>Slim Fit Plastic Coat</h6>
-                                                            <div class="qty-with-price">
-                                                                <span>$78.00</span>
-                                                                <span>
-                                                                    <input type="number" class="form-control"
-                                                                        value="1">
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <button type="button" class="btn-close d-block d-md-none"
-                                                            aria-label="Close">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="media">
-                                                        <img src="client/assets/assets/images/fashion/product/front/7.jpg"
-                                                            class="img-fluid blur-up lazyload" alt="">
-                                                        <div class="media-body">
-                                                            <h6>Womens Stylish Jacket</h6>
-                                                            <div class="qty-with-price">
-                                                                <span>$24.00</span>
-                                                                <span>
-                                                                    <input type="number" class="form-control"
-                                                                        value="1">
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <button type="button" class="btn-close d-block d-md-none"
-                                                            aria-label="Close">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="cart-btn">
-                                            <h6 class="cart-total"><span class="font-light">Total:</span> $
-                                                542.00</h6>
-                                            <button onclick="location.href = 'cart.html';" type="button"
-                                                class="btn btn-solid-default btn-block">
-                                                Proceed to payment
-                                            </button>
-                                        </div>
-                                    </div>
                                 </li>
                             </ul>
                         </div>
+
                         <div class="search-full">
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i data-feather="search" class="font-light"></i>
                                 </span>
-                                <input type="text" class="form-control search-type" placeholder="Search here..">
+                                <input type="text" id="global-search"
+                                    data-search-url="{{ route('search.ajax.products') }}"
+                                    class="form-control search-type" placeholder="Tìm kiếm ở đây..">
                                 <span class="input-group-text close-search">
                                     <i data-feather="x" class="font-light"></i>
                                 </span>
                             </div>
                             <div class="search-suggestion">
-                                <ul class="custom-scroll">
-                                    <li>
-                                        <div class="product-cart media">
-                                            <img src="client/assets/assets/images/electronics/product/1.jpg"
-                                                class="img-fluid blur-up lazyload" alt="">
-                                            <div class="media-body">
-                                                <a href="javascript:void(0)">
-                                                    <h6 class="mb-1">New Smart Watch 4 ERT2</h6>
-                                                </a>
-                                                <ul class="rating p-0">
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star"></i>
-                                                    </li>
-                                                </ul>
-                                                <p class="mb-0 mt-1">$28.00</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="product-cart media">
-                                            <img src="client/assets/assets/images/electronics/product/5.jpg"
-                                                class="img-fluid blur-up lazyload" alt="">
-                                            <div class="media-body">
-                                                <a href="javascript:void(0)">
-                                                    <h6 class="mb-1">Powermatic 900 W Juicer</h6>
-                                                </a>
-                                                <ul class="rating m-0 p-0">
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                    <li>
-                                                        <i class="fas fa-star theme-color"></i>
-                                                    </li>
-                                                </ul>
-                                                <p class="mb-0 mt-1">$35.00</p>
-                                            </div>
-                                        </div>
-                                    </li>
+                                <ul class="custom-scroll" id="search-results">
+
                                 </ul>
                             </div>
                         </div>
