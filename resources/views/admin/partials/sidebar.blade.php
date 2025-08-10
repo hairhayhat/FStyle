@@ -95,6 +95,23 @@
                         </ul>
                     </li>
                     <li
+                        class="sidebar-list {{ request()->is('admin/category') || request()->is('admin/category/*') ? 'active' : '' }}">
+                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                            <i data-feather="grid"></i>
+                            <span>Người dùng</span>
+                        </a>
+                        <ul class="sidebar-submenu"
+                            style="{{ request()->is('admin/category') || request()->is('admin/category/*') ? 'display: block;' : '' }}">
+                            <li class="{{ request()->routeIs('admin.category.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.index') }}">Danh sách người dùng</a>
+                            </li>
+                            <li>
+                                <a :active="request()->routeIs('admin.category.create')"
+                                    href="{{ route('admin.category.create') }}">Thêm người dùng</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li
                         class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="box"></i>
