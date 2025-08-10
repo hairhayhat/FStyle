@@ -94,12 +94,21 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
+        // Kiểm tra danh mục có sản phẩm
+        if ($category->products()->count() > 0) {
+            return redirect()->route('admin.category.index')
+                ->with('error', 'Không thể xoá danh mục vì đang có sản phẩm.');
+        }
+
+        // Xoá ảnh nếu có
         if ($category->image) {
             Storage::disk('public')->delete($category->image);
         }
 
+        // Xoá danh mục
         $category->delete();
 
-        return redirect()->route('admin.category.index')->with('success', 'Xoá danh mục thành công');
+        return redirect()->route('admin.category.index')
+            ->with('success', 'Xoá danh mục thành công.');
     }
 }

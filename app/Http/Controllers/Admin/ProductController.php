@@ -2,31 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Color;
+use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Size;
-use DB;
 use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(perPage: 10);
+        $products = Product::with('category')->latest()->paginate(10);
         return view('admin.product.index', compact('products'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $categories = Category::all();
@@ -35,86 +29,75 @@ class ProductController extends Controller
         return view('admin.product.create', compact('categories', 'colors', 'sizes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        // Validate sản phẩm
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'variants' => 'required|array|min:1',
+            'description' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+
+            // Validate variants
+            'variants' => 'required|array',
             'variants.*.color_id' => 'required|exists:colors,id',
             'variants.*.size_id' => 'required|exists:sizes,id',
-            'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.import_price' => 'required|numeric|min:0',
+            'variants.*.sale_price' => 'required|numeric|min:0',
             'variants.*.quantity' => 'required|integer|min:0',
-            'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            // Tuỳ chỉnh thông báo lỗi (có thể dùng tiếng Việt)
-            'name.required' => 'Tên sản phẩm là bắt buộc',
-            'image.required' => 'Hình ảnh sản phẩm là bắt buộc',
-            'category_id.required' => 'Bạn phải chọn danh mục',
-            'variants.required' => 'Cần ít nhất 1 biến thể',
-            'variants.*.color_id.required' => 'Bạn phải chọn màu sắc cho mỗi biến thể',
-            'variants.*.size_id.required' => 'Bạn phải chọn kích cỡ cho mỗi biến thể',
-            'variants.*.price.required' => 'Giá không được để trống',
-            'variants.*.quantity.required' => 'Số lượng không được để trống',
-            'gallery.*.image' => 'Tập tin phải là hình ảnh.',
-            'gallery.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
-            'gallery.*.max' => 'Ảnh không được vượt quá 2MB.',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return back()->withErrors($validator)->withInput();
         }
 
-        // Xử lý lưu sản phẩm
+        // Lưu ảnh chính
+        $mainImagePath = $request->file('image')->store('products', 'public');
+
+        // Tạo slug từ name
+        $slug = Str::slug($request->name);
+
+        // Tạo sản phẩm
         $product = Product::create([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => $slug,
             'category_id' => $request->category_id,
             'description' => $request->description,
-            'views' => 0,
-            'image' => $request->file('image')->store('products', 'public'),
+            'image' => $mainImagePath,
         ]);
 
+        // Lưu thư viện ảnh
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $img) {
+                $path = $img->store('products/gallery', 'public');
+                $product->galleries()->create(['image' => $path]);
+            }
+        }
+
+        // Lưu các biến thể
         foreach ($request->variants as $variant) {
-            $product->variants()->create([
+            ProductVariant::create([
+                'product_id' => $product->id,
                 'color_id' => $variant['color_id'],
                 'size_id' => $variant['size_id'],
-                'price' => $variant['price'],
+                'import_price' => $variant['import_price'],
+                'sale_price' => $variant['sale_price'],
                 'quantity' => $variant['quantity'],
             ]);
         }
 
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $image) {
-                $path = $image->store('product_gallery', 'public');
-
-                $product->galleries()->create([
-                    'image' => $path,
-                ]);
-            }
-        }
-
-        return redirect()->route('admin.product.index')->with('success', 'Thêm sản phẩm thành công!');
+        return redirect()->route('admin.product.edit', $product->id)
+            ->with('success', 'Thêm sản phẩm thành công!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product)
     {
-        $product->load(['category', 'variants.color', 'variants.size']); // eager load
+        $product->load(['category', 'variants.color', 'variants.size']);
         return view('admin.product.show', compact('product'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Product $product)
     {
         $categories = Category::all();
@@ -124,36 +107,91 @@ class ProductController extends Controller
         return view('admin.product.edit', compact('product', 'categories', 'colors', 'sizes', 'variants'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        $request->validate([
+        $product = Product::findOrFail($id);
+
+        // Validate
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|max:2048',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'keep_gallery' => 'nullable|array',
+            'keep_gallery.*' => 'integer|exists:product_galleries,id',
+
+            // Validate variants
+            'variants' => 'required|array',
             'variants.*.color_id' => 'required|exists:colors,id',
             'variants.*.size_id' => 'required|exists:sizes,id',
-            'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.import_price' => 'required|numeric|min:0',
+            'variants.*.sale_price' => 'required|numeric|min:0',
             'variants.*.quantity' => 'required|integer|min:0',
         ]);
-        // Cập nhật sản phẩm
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Tạo slug từ name
+        $slug = Str::slug($request->name);
+
+        // Cập nhật thông tin cơ bản
         $product->update([
             'name' => $request->name,
+            'slug' => $slug,
             'category_id' => $request->category_id,
-            'image' => $request->hasFile('image')
-                ? $request->file('image')->store('products', 'public')
-                : $product->image
+            'description' => $request->description,
         ]);
-        // Xoá các biến thể cũ (hoặc có thể dùng cập nhật nếu muốn nâng cao)
-        $product->variants()->delete();
-        // Lưu các biến thể mới
-        foreach ($request->variants as $variant) {
-            $product->variants()->create($variant);
+
+        // Cập nhật ảnh chính
+        if ($request->hasFile('image')) {
+            if (!empty($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $product->image = $request->file('image')->store('products', 'public');
+            $product->save();
         }
-        return redirect()->route('admin.product.index')->with('success', 'Cập nhật sản phẩm thành công!');
+
+        // Xử lý thư viện ảnh
+        $keepIds = $request->input('keep_gallery', []);
+        $product->galleries()->whereNotIn('id', $keepIds)->get()->each(function ($img) {
+            if (!empty($img->image)) {
+                Storage::disk('public')->delete($img->image);
+            }
+            $img->delete();
+        });
+
+        // Thêm ảnh mới
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $img) {
+                $path = $img->store('products/gallery', 'public');
+                $product->galleries()->create(['image' => $path]);
+            }
+        }
+
+        // Cập nhật biến thể
+        $product->variants()->delete(); // Xoá hết biến thể cũ, rồi tạo mới
+        foreach ($request->variants as $variant) {
+            ProductVariant::create([
+                'product_id' => $product->id,
+                'color_id' => $variant['color_id'],
+                'size_id' => $variant['size_id'],
+                'import_price' => $variant['import_price'],
+                'sale_price' => $variant['sale_price'],
+                'quantity' => $variant['quantity'],
+            ]);
+        }
+
+        return redirect()->route('admin.product.edit', $product->id)
+            ->with('success', 'Cập nhật sản phẩm thành công!');
     }
+
     public function destroy(Product $product)
     {
         $product->delete();
-        return back()->with('success', 'Xóa sản phẩm thành công!');
+        return back()->with('success', 'Xoá sản phẩm thành công!');
     }
 }

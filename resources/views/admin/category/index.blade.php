@@ -85,6 +85,27 @@
                     });
                 });
             });
+
+            // Hiển thị thông báo session
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: "{{ session('success') }}",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: "{{ session('error') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
         });
     </script>
 @endsection
