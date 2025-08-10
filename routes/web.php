@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
         'edit' => 'admin.product.edit',
         'update' => 'admin.product.update',
         'destroy' => 'admin.product.destroy',
+        'deleteGallery' => 'admin.product.gallery.delete',
     ]);
     // Product Variant Routes (AJAX)
     Route::prefix('product/variant')->group(function () {

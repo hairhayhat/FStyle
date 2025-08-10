@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Color;
@@ -56,11 +56,29 @@ class ProductController extends Controller
             'gallery.*.max' => 'Ảnh không được vượt quá 2MB.',
         ]);
 
+        // kiểm tra trùng biến thể color+size nội bộ
+        if ($request->has('variants') && is_array($request->variants)) {
+            $combos = [];
+            foreach ($request->variants as $idx => $variant) {
+                $color = $variant['color_id'] ?? null;
+                $size = $variant['size_id'] ?? null;
+                if ($color && $size) {
+                    $key = "{$color}-{$size}";
+                    if (in_array($key, $combos)) {
+                        $validator->errors()->add("variants.{$idx}.color_id", 'Biến thể trùng màu và size.'); // thêm lỗi cụ thể
+                        $validator->errors()->add("variants.{$idx}.size_id", 'Biến thể trùng màu và size.');
+                    } else {
+                        $combos[] = $key;
+                    }
+                }
+            }
+        }
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Lưu sản phẩm
+        // phần lưu giống như trước
         $product = Product::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name . '-' . time()),
@@ -70,7 +88,6 @@ class ProductController extends Controller
             'image' => $request->file('image')->store('products', 'public'),
         ]);
 
-        // Lưu biến thể
         foreach ($request->variants as $variant) {
             $product->variants()->create([
                 'color_id' => $variant['color_id'],
@@ -80,7 +97,6 @@ class ProductController extends Controller
             ]);
         }
 
-        // Lưu gallery nếu có
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
                 $path = $image->store('product_gallery', 'public');
@@ -90,6 +106,7 @@ class ProductController extends Controller
 
         return redirect()->route('admin.product.index')->with('success', 'Thêm sản phẩm thành công!');
     }
+
 
     public function show(Product $product)
     {
@@ -108,71 +125,66 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Lấy product theo id
         $product = Product::findOrFail($id);
 
-        // Validate dữ liệu
-        $request->validate([
+        // Validate dữ liệu đầu vào
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'gallery_new.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'gallery_old' => 'array',
-            'gallery_old.*' => 'string',
-            // Các validation khác tùy yêu cầu
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'keep_gallery' => 'nullable|array',
+            'keep_gallery.*' => 'integer|exists:product_galleries,id',
         ], [
             'name.required' => 'Tên sản phẩm là bắt buộc',
             'category_id.required' => 'Danh mục là bắt buộc',
-            'gallery_new.*.image' => 'Ảnh thư viện phải là file ảnh hợp lệ',
-            // Thông báo tùy chỉnh khác nếu cần
+            'image.image' => 'Ảnh chính phải là file hình ảnh',
+            'gallery.*.image' => 'Tập tin trong thư viện ảnh phải là hình ảnh',
         ]);
 
-        // Cập nhật các trường cơ bản sản phẩm
-        $product->name = $request->input('name');
-        $product->category_id = $request->input('category_id');
-        $product->description = $request->input('description');
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
-        // Xử lý ảnh chính (nếu upload mới)
+        // Cập nhật thông tin cơ bản
+        $product->update([
+            'name' => $request->input('name'),
+            'category_id' => $request->input('category_id'),
+            'description' => $request->input('description'),
+        ]);
+
+        // Ảnh chính
         if ($request->hasFile('image')) {
-            // Xóa ảnh cũ nếu có
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            // Lưu ảnh mới
-            $path = $request->file('image')->store('products/main', 'public');
-            $product->image = $path;
+            $product->image = $request->file('image')->store('products', 'public');
+            $product->save();
         }
 
-        // Xử lý thư viện ảnh
+        // Thư viện ảnh
+        $keepIds = $request->input('keep_gallery', []);
 
-        // 1. Lấy ảnh cũ người dùng giữ lại
-        $galleryOld = $request->input('gallery_old', []); // Mảng các đường dẫn ảnh cũ
+        // Xoá ảnh cũ không còn được giữ lại
+        $product->gallery()->whereNotIn('id', $keepIds)->get()->each(function ($img) {
+            Storage::disk('public')->delete($img->path);
+            $img->delete();
+        });
 
-        // 2. Tìm ảnh cũ cần xóa (ảnh trong DB nhưng không nằm trong gallery_old)
-        $imagesToDelete = array_diff($product->gallery ?? [], $galleryOld);
-
-        foreach ($imagesToDelete as $imgPath) {
-            Storage::disk('public')->delete($imgPath);
-        }
-
-        // 3. Khởi tạo mảng gallery mới bắt đầu từ ảnh cũ giữ lại
-        $gallery = $galleryOld;
-
-        // 4. Xử lý upload ảnh mới
-        if ($request->hasFile('gallery_new')) {
-            foreach ($request->file('gallery_new') as $file) {
-                $path = $file->store('products/gallery', 'public');
-                $product->galleries()->create(['image' => $path]);
+        // Thêm ảnh mới nếu có
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $image) {
+                $path = $image->store('products/gallery', 'public');
+                $product->gallery()->create(['path' => $path]);
             }
         }
-
-        // Lưu sản phẩm
-        $product->save();
 
         return redirect()->route('admin.product.edit', $product->id)
             ->with('success', 'Cập nhật sản phẩm thành công!');
     }
+
 
 
     public function destroy(Product $product)
