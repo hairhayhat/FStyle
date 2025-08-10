@@ -161,7 +161,7 @@
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Giá nhập</label>
                                                 <input type="text" name="variants[{{ $i }}][import_price]"
-                                                    class="form-control price-input" placeholder="Giá nhập"
+                                                    class="form-control import-price-input" placeholder="Giá nhập"
                                                     value="{{ $variantOld['import_price'] ?? '' }}">
                                                 @error("variants.{$i}.import_price")
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -171,10 +171,10 @@
                                             {{-- Giá bán --}}
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Giá bán</label>
-                                                <input type="text" name="variants[{{ $i }}][price]"
-                                                    class="form-control price-input" placeholder="Giá bán"
-                                                    value="{{ $variantOld['price'] ?? '' }}">
-                                                @error("variants.{$i}.price")
+                                                <input type="text" name="variants[{{ $i }}][sale_price]"
+                                                    class="form-control sale-price-input" placeholder="Giá bán"
+                                                    value="{{ $variantOld['sale_price'] ?? '' }}">
+                                                @error("variants.{$i}.sale_price")
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -191,8 +191,9 @@
                                             </div>
 
                                             {{-- Xoá --}}
-                                            <div class="col-md-2 d-flex align-items-end">
-                                                <button type="button" class="btn btn-danger remove-variant">Xoá</button>
+                                            <div class="col-md-1 d-flex align-items-end">
+                                                <button type="button"
+                                                    class="btn btn-danger remove-variant w-100">X</button>
                                             </div>
 
                                             {{-- Lỗi trùng chung --}}

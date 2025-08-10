@@ -21,7 +21,7 @@ class CartController extends Controller
             return ($item->productVariant->price ?? 0) * $item->quantity;
         });
 
-        return view('client.dashboard.cart', compact('cartItems', 'total'));
+        return view('client.cart', compact('cartItems', 'total'));
     }
 
     public function addToCart(Request $request): JsonResponse
@@ -104,4 +104,38 @@ class CartController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm trong giỏ']);
     }
+
+    public function updateQuantity(Request $request, $id)
+    {
+        $cartItem = CartDetail::where('id', $id)
+            ->whereHas('cart', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->with('productVariant')
+            ->firstOrFail();
+
+        // Kiểm tra số lượng tồn kho
+        if ($cartItem->productVariant->quantity < $request->quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chỉ còn ' . $cartItem->productVariant->quantity . ' sản phẩm trong kho'
+            ], 200);
+        }
+
+        // Cập nhật số lượng
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        // Tính tổng giỏ hàng
+        $total = $cartItem->cart->details->sum(function ($item) {
+            return $item->quantity * $item->price;
+        });
+
+        return response()->json([
+            'success' => true,
+            'itemTotal' => number_format($cartItem->quantity * $cartItem->price, 0, ',', '.') . '₫',
+            'cartTotal' => number_format($total, 0, ',', '.') . '₫'
+        ]);
+    }
+
 }

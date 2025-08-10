@@ -97,7 +97,8 @@
                                     <th>Màu</th>
                                     <th>Hiển thị</th>
                                     <th>Size</th>
-                                    <th>Giá</th>
+                                    <th>Giá nhập</th>
+                                    <th>Giá bán</th>
                                     <th>Số lượng</th>
                                 </tr>
                             </thead>
@@ -111,18 +112,20 @@
                                             </div>
                                         </td>
                                         <td>{{ $variant->size->name ?? 'N/A' }}</td>
-                                        <td>{{ number_format($variant->price) }}₫</td>
+                                        <td>{{ number_format($variant->import_price ?? 0) }}₫</td>
+                                        <td>{{ number_format($variant->sale_price ?? 0) }}₫</td>
                                         <td>{{ $variant->quantity }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Chưa có biến thể</td>
+                                        <td colspan="6" class="text-center">Chưa có biến thể</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

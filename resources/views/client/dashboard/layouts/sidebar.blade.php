@@ -7,14 +7,8 @@
         </li>
 
         <li class="nav-item mb-2">
-            <a href="#" class="nav-link font-light">
-                <i class="fas fa-angle-right"></i>Orders
-            </a>
-        </li>
-
-        <li class="nav-item mb-2">
-            <a href="{{ route('client.cart') }}" class="nav-link font-light">
-                <i class="fas fa-angle-right"></i>Giỏ hàng
+            <a href="{{ route('client.checkout.index') }}" class="nav-link font-light">
+                <i class="fas fa-angle-right"></i>Đơn hàng
             </a>
         </li>
 

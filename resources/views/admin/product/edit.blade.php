@@ -108,8 +108,25 @@
                                     @php
                                         $oldVariants =
                                             old('variants') ??
-                                            ($product->variants?->toArray() ?? [
-                                                ['color_id' => '', 'size_id' => '', 'price' => '', 'quantity' => ''],
+                                            ($product->variants
+                                                ?->map(function ($v) {
+                                                    return [
+                                                        'id' => $v->id,
+                                                        'color_id' => $v->color_id,
+                                                        'size_id' => $v->size_id,
+                                                        'import_price' => $v->import_price,
+                                                        'sale_price' => $v->sale_price,
+                                                        'quantity' => $v->quantity,
+                                                    ];
+                                                })
+                                                ->toArray() ?? [
+                                                [
+                                                    'color_id' => '',
+                                                    'size_id' => '',
+                                                    'import_price' => '',
+                                                    'sale_price' => '',
+                                                    'quantity' => '',
+                                                ],
                                             ]);
                                     @endphp
 
@@ -165,13 +182,24 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Giá --}}
-                                            <div class="col-md-3 d-flex flex-column">
-                                                <label class="form-label">Giá</label>
-                                                <input type="text" name="variants[{{ $i }}][price]"
-                                                    class="form-control price-input" placeholder="Giá"
-                                                    value="{{ $variantOld['price'] ?? '' }}">
-                                                @error("variants.{$i}.price")
+                                            {{-- Giá nhập --}}
+                                            <div class="col-md-2 d-flex flex-column">
+                                                <label class="form-label">Giá nhập</label>
+                                                <input type="text" name="variants[{{ $i }}][import_price]"
+                                                    class="form-control import-price-input" placeholder="Giá nhập"
+                                                    value="{{ $variantOld['import_price'] ?? '' }}">
+                                                @error("variants.{$i}.import_price")
+                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            {{-- Giá bán --}}
+                                            <div class="col-md-2 d-flex flex-column">
+                                                <label class="form-label">Giá bán</label>
+                                                <input type="text" name="variants[{{ $i }}][sale_price]"
+                                                    class="form-control sale-price-input" placeholder="Giá bán"
+                                                    value="{{ $variantOld['sale_price'] ?? '' }}">
+                                                @error("variants.{$i}.sale_price")
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -188,8 +216,16 @@
                                             </div>
 
                                             {{-- Xoá --}}
-                                            <div class="col-md-2 d-flex align-items-end">
-                                                <button type="button" class="btn btn-danger remove-variant">Xoá</button>
+                                            <div class="col-md-1 d-flex align-items-end">
+                                                <button type="button"
+                                                    class="btn btn-danger remove-variant w-100">X</button>
+                                            </div>
+
+                                            {{-- Lỗi trùng chung --}}
+                                            <div class="col-12 mt-1">
+                                                @if ($errors->has("variants.{$i}.color_id") && str_contains($errors->first("variants.{$i}.color_id"), 'trùng'))
+                                                    <div class="text-danger small">Biến thể trùng màu + size.</div>
+                                                @endif
                                             </div>
                                         </div>
                                     @endforeach
@@ -205,6 +241,7 @@
                         </div>
                     </div>
 
+
                     {{-- THƯ VIỆN ẢNH --}}
                     <div class="col-12">
                         <div class="card mb-4">
@@ -219,7 +256,7 @@
                                     <div id="preview-container" class="preview-grid mt-3">
                                         @if ($product->gallery)
                                             @foreach ($product->gallery as $img)
-                                                <img src="{{ asset('storage/' . $img->path) }}" style="max-height:100px"
+                                                <img src="{{ asset('storage/' . $img->image) }}" style="max-height:100px"
                                                     class="me-2 mb-2">
                                             @endforeach
                                         @endif
