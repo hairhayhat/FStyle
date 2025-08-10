@@ -49,17 +49,14 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
         'edit' => 'admin.product.edit',
         'update' => 'admin.product.update',
         'destroy' => 'admin.product.destroy',
+        'deleteGallery' => 'admin.product.gallery.delete',
     ]);
-    // Product Variant Routes
-    Route::resource('product-variants', ProductVariantController::class)->only([
-        'store',
-        'update',
-        'destroy'
-    ])->names([
-                'store' => 'admin.product-variant.store',
-                'update' => 'admin.product-variant.update',
-                'destroy' => 'admin.product-variant.destroy',
-            ]);
+    // Product Variant Routes (AJAX)
+    Route::prefix('product/variant')->group(function () {
+        Route::post('/store', [ProductVariantController::class, 'store'])->name('admin.product.variant.store');
+        Route::put('/{variant}/update', [ProductVariantController::class, 'update'])->name('admin.product.variant.update');
+        Route::delete('/{variant}/delete', [ProductVariantController::class, 'destroy'])->name('admin.product.variant.destroy');
+    });
     // Color Routes
     Route::resource('color', ColorController::class)->names([
         'index' => 'admin.color.index',
@@ -81,6 +78,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     ]);
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
