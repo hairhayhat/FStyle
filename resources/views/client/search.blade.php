@@ -193,7 +193,7 @@
                                                         Old</a>
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div>  
                                     </div>
                                     <div class="dropdown select-featured">
                                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -218,34 +218,6 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </div>
-                                <div class="grid-options d-sm-inline-block d-none">
-                                    <ul class="d-flex">
-                                        <li class="two-grid">
-                                            <a href="javascript:void(0)">
-                                                <img src="assets/svg/grid-2.svg" class="img-fluid blur-up lazyload"
-                                                    alt="">
-                                            </a>
-                                        </li>
-                                        <li class="three-grid d-md-inline-block d-none">
-                                            <a href="javascript:void(0)">
-                                                <img src="assets/svg/grid-3.svg" class="img-fluid blur-up lazyload"
-                                                    alt="">
-                                            </a>
-                                        </li>
-                                        <li class="grid-btn active d-lg-inline-block d-none">
-                                            <a href="javascript:void(0)">
-                                                <img src="assets/svg/grid.svg" class="img-fluid blur-up lazyload"
-                                                    alt="">
-                                            </a>
-                                        </li>
-                                        <li class="list-btn">
-                                            <a href="javascript:void(0)">
-                                                <img src="assets/svg/list.svg" class="img-fluid blur-up lazyload"
-                                                    alt="">
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </div>
                             </div>
                         </div>

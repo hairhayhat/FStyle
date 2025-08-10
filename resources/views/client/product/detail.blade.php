@@ -481,5 +481,6 @@
 @section('scripts')
     <script>
         const variants = @json($product->variants);
+        const productName = @json($product->name);
     </script>
 @endsection

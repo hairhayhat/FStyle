@@ -13,9 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
             v.size_id == selectedSizeId
         );
 
+        console.log(matchedVariant);
+
         if (matchedVariant && matchedVariant.quantity > 0) {
             priceDisplay.textContent = Number(matchedVariant.price).toLocaleString('vi-VN') + '₫';
-            quantityDisplay.textContent = 'Còn hàng';
+            quantityDisplay.textContent = matchedVariant.color.name + ' Còn hàng';
             document.getElementById('productVariantId').value = matchedVariant.id;
         } else {
             priceDisplay.textContent = 'Không tìm thấy giá';
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!variant || variant.quantity === 0) {
                 option.classList.add('is-disabled');
-                option.style.pointerEvents = 'auto'; // Vẫn cho click để xử lý
+                option.style.pointerEvents = 'auto';
                 option.style.opacity = '0.5';
             }
         });

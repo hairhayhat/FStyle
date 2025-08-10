@@ -34,6 +34,8 @@
     <script src="{{ asset('client/assets/js/favorite.js') }}"></script>
     <script src="{{ asset('client/assets/js/ajax_search_product.js') }}"></script>
     <script src="{{ asset('client/assets/js/filter-products.js') }}"></script>
+    <script src="{{ asset('client/assets/js/update_itemCart.js') }}"></script>
+    <script src="{{ asset('client/assets/js/add_address_realtime.js') }}"></script>
     <script src="{{ asset('client/assets/js/price-filter.js') }}"></script>
     <script src="{{ asset('client/assets/js/detail_product.js') }}"></script>
     <script src="{{ asset('client/assets/js/add_to_cart.js') }}"></script>

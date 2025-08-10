@@ -25,7 +25,6 @@ class AddressController extends Controller
         ]);
 
         $address = new Address();
-
         $user_id = Auth::user()->id;
 
         $address->user_id = $user_id;
@@ -36,13 +35,25 @@ class AddressController extends Controller
         $address->is_default = $request->has('is_default') ? 1 : 0;
 
         if ($request->has('is_default')) {
-            Address::where('user_id', Auth::user()->id)->update(['is_default' => 0]);
+            Address::where('user_id', $user_id)->update(['is_default' => 0]);
         }
 
         $address->save();
 
-        return back()->with('success', 'Tạo địa chỉ mới thành công');
-
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $address->id,
+                    'nickname' => $address->nickname,
+                    'full_name' => $address->full_name,
+                    'phone' => $address->phone,
+                    'address' => $address->address,
+                    'is_default' => $address->is_default
+                ]
+            ]);
+        }
+        return redirect()->back()->with('success', 'Đã thêm địa chỉ');
     }
 
     public function edit($id)

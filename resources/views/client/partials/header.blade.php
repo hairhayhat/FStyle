@@ -822,9 +822,9 @@
                                     </div>
                                 </li>
                                 <li class="onhover-dropdown cart-dropdown">
-                                    <button type="button" class="btn btn-solid-default btn-spacing">
+                                    <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">
                                         <i data-feather="shopping-cart"></i>
-                                    </button>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
