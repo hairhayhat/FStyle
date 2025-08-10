@@ -45,6 +45,14 @@
                     </ul>
                 </div>
             </div>
+            <div class="product-buttons text-center mt-3">
+                <a href="{{ route('client.checkout') }}" id="addToCartBtn"
+                    class="btn btn-solid hover-solid w-100 d-flex align-items-center justify-content-center gap-2 py-2 rounded-3 shadow-sm">
+                    <i class="fa fa-credit-card"></i>
+                    <span class="fw-semibold">Thanh toán ngay</span>
+                </a>
+            </div>
+
         </div>
     </div>
 </div>

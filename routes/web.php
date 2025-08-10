@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -102,6 +103,12 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('client.cart.add');
     Route::get('/cart-dropdown', [CartController::class, 'getDropdownHTML']);
     Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
+    Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+
+
+    Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');
+    Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('client.checkout');
+    Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('client.checkout.store');
 
 
 });

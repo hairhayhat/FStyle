@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,13 +17,14 @@ class HomeController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
-
         $favoriteProductIds = [];
+
+        $categories = Category::all();
 
         if (Auth::check()) {
             $favoriteProductIds = Auth::user()->favorites->pluck('id')->toArray();
         }
-        return view('client.welcome', compact('newProducts', 'favoriteProductIds'));
+        return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories'));
     }
 
     public function show($slug)
