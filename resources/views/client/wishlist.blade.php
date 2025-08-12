@@ -190,12 +190,7 @@ $(document).ready(function() {
         console.log('Modal not found');
     }
     
-    // Kiểm tra nút add to cart có tồn tại không
-    if ($('#addToCartBtn').length > 0) {
-        console.log('Add to cart button found');
-    } else {
-        console.log('Add to cart button not found');
-    }
+   
 });
 </script>
 <style>

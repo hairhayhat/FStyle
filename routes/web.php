@@ -110,8 +110,8 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/cart', [CartController::class, 'index'])->name('client.cart');
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('client.cart.add');
     Route::get('/cart-dropdown', [CartController::class, 'getDropdownHTML']);
-    Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('client.cart.remove');
-    Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('client.cart.updateQuantity');
+    Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
+    Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
 
 
     Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');

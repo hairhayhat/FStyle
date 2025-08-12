@@ -1,97 +1,4 @@
-function handleFavoriteAction(button) {
-    const productId = button.data('product-id');
-    const rawState = button.data('is-favorited');
-    const isFavorited = (rawState === true || rawState === 'true');
- 
 
-    const { url, successMessage } = getFavoriteUrls(productId, isFavorited);
-   
-
-    $.ajax({
-        url: url,
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        dataType: 'json',
-        beforeSend: () => {
-            button.prop('disabled', true).addClass('processing');
-        },
-        success: (response) => {
-           
-            // Ưu tiên dùng trạng thái từ server nếu có
-            const serverState = typeof response.is_favorited === 'boolean' ? response.is_favorited : !isFavorited;
-            handleSuccessWithState(response, button, serverState, successMessage);
-        },
-        error: (xhr) => {
-           
-            handleError(xhr, button);
-        },
-        complete: () => {
-            button.prop('disabled', false).removeClass('processing');
-        }
-    })
-}
-
-function getFavoriteUrls(productId, isFavorited) {
-    return isFavorited
-        ? {
-            url: `/client/products/${productId}/unfavorite`,
-            successMessage: 'Đã xóa khỏi danh sách yêu thích'
-        }
-        : {
-            url: `/client/products/${productId}/favorite`,
-            successMessage: 'Đã thêm vào danh sách yêu thích'
-        };
-}
-
-/**
- * Xử lý khi request thành công
- */
-function handleSuccessWithState(response, button, isFavoritedState, successMessage) {
-    // Cập nhật trạng thái nút theo state từ server
-    updateButtonState(button, isFavoritedState);
-
-    // Cập nhật biểu tượng trái tim
-    updateHeartIcon(button.find('.heart-icon'), isFavoritedState);
-
-    // Cập nhật số lượng yêu thích
-    updateFavoritesCount(button.find('.favorites-count'), response.favorites_count);
-
-    // Thông báo
-    showSuccessToast(successMessage || response.message || 'Thành công');
-
-
-}
-
-/**
- * Cập nhật trạng thái nút
- */
-function updateButtonState(button, newState) {
-    const str = newState ? 'true' : 'false';
-    button.attr('data-is-favorited', str);
-    button.data('is-favorited', str);
-}
-
-/**
- * Cập nhật biểu tượng trái tim
- */
-function updateHeartIcon(icon, isFavorited) {
-    if (isFavorited) {
-        // Nếu đã yêu thích -> hiển thị trái tim đặc (fas fa-heart text-danger)
-        icon.removeClass('far').addClass('fas text-danger');
-    } else {
-        // Nếu chưa yêu thích -> hiển thị trái tim rỗng (far fa-heart)
-        icon.removeClass('fas text-danger').addClass('far');
-    }
-}
-
-/**
- * Cập nhật số lượng yêu thích
- */
-function updateFavoritesCount(element, count) {
-    element.text(count);
-}
 
 /**
  * Hiển thị thông báo thành công
@@ -163,43 +70,56 @@ function handleError(xhr, button) {
 function handleRemoveFromWishlist(button) {
     const productId = button.data('product-id');
     
-    if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi danh sách yêu thích?')) {
-        $.ajax({
-            url: `/client/products/${productId}/unfavorite`,
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'Content-Type': 'application/json',
-            },
-            dataType: 'json',
-            beforeSend: () => {
-                button.prop('disabled', true).addClass('processing');
-            },
-            success: (response) => {
-                if (response.status === 'success') {
-                    // Xóa row khỏi bảng
-                    button.closest('tr').remove();
-                    
-                    // Kiểm tra nếu không còn sản phẩm nào
-                    if ($('tbody tr').length === 0) {
-                        location.reload(); // Reload để hiển thị thông báo danh sách trống
+    // Sử dụng SweetAlert2 thay vì confirm dialog cũ
+    Swal.fire({
+        title: 'Xác nhận xóa',
+        text: 'Bạn có chắc muốn xóa sản phẩm này khỏi danh sách yêu thích?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Người dùng xác nhận xóa - thực hiện AJAX request
+            $.ajax({
+                url: `/client/products/${productId}/unfavorite`,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Content-Type': 'application/json',
+                },
+                dataType: 'json',
+                beforeSend: () => {
+                    button.prop('disabled', true).addClass('processing');
+                },
+                success: (response) => {
+                    if (response.status === 'success') {
+                        // Xóa row khỏi bảng
+                        button.closest('tr').remove();
+                        
+                        // Kiểm tra nếu không còn sản phẩm nào
+                        if ($('tbody tr').length === 0) {
+                            location.reload(); // Reload để hiển thị thông báo danh sách trống
+                        } else {
+                            // Cập nhật số lượng yêu thích trong header nếu có
+                            updateWishlistCount(response.favorites_count);
+                            showSuccessToast('Đã xóa sản phẩm khỏi danh sách yêu thích');
+                        }
                     } else {
-                        // Cập nhật số lượng yêu thích trong header nếu có
-                        updateWishlistCount(response.favorites_count);
-                        showSuccessToast('Đã xóa sản phẩm khỏi danh sách yêu thích');
+                        showErrorToast('Có lỗi xảy ra: ' + response.message);
                     }
-                } else {
-                    showErrorToast('Có lỗi xảy ra: ' + response.message);
+                },
+                error: (xhr) => {
+                    handleError(xhr, button);
+                },
+                complete: () => {
+                    button.prop('disabled', false).removeClass('processing');
                 }
-            },
-            error: (xhr) => {
-                handleError(xhr, button);
-            },
-            complete: () => {
-                button.prop('disabled', false).removeClass('processing');
-            }
-        });
-    }
+            });
+        }
+    });
 }
 
 /**
@@ -246,6 +166,189 @@ function initializeWishlist() {
     // Xử lý nút thêm vào giỏ hàng trong modal
     $(document).on('click', '#addToCartBtn', function() {
         addToCartFromWishlist();
+    });
+
+    // Xử lý nút heart (favorite) - thêm vào/xóa khỏi danh sách yêu thích
+    $(document).on('click', '.heart-wishlist', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const button = $(this);
+        const productId = button.data('product-id');
+        const isFavorited = button.data('is-favorited') === 'true';
+        
+        if (!productId) {
+            console.error('Product ID not found for heart button');
+            return;
+        }
+        
+        console.log('Heart button clicked for product:', productId, 'Current state:', isFavorited);
+        
+        // Cập nhật trạng thái ngay lập tức để UX tốt hơn
+        button.prop('disabled', true);
+        
+        // Nếu sản phẩm đã ở trong danh sách yêu thích -> xóa khỏi danh sách
+        // Nếu sản phẩm chưa ở trong danh sách yêu thích -> thêm vào danh sách
+        const url = isFavorited ? `/client/products/${productId}/unfavorite` : `/client/products/${productId}/favorite`;
+        const expectedMessage = isFavorited ? 'Đã xóa sản phẩm khỏi trang yêu thích' : 'Đã thêm sản phẩm vào trang yêu thích';
+        
+        // Gọi API để thay đổi trạng thái
+        $.ajax({
+            url: url,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log('Heart response:', response);
+                
+                if (response.status === 'success') {
+                    // Cập nhật trạng thái nút
+                    const newState = !isFavorited;
+                    button.data('is-favorited', newState ? 'true' : 'false');
+                    
+                    // Cập nhật icon
+                    const heartIcon = button.find('i');
+                    if (newState) {
+                        // Đã thêm vào danh sách yêu thích -> hiển thị trái tim đặc
+                        heartIcon.removeClass('far').addClass('fas text-danger');
+                    } else {
+                        // Đã xóa khỏi danh sách yêu thích -> hiển thị trái tim rỗng
+                        heartIcon.removeClass('fas text-danger').addClass('far');
+                    }
+                    
+                    // Cập nhật số lượng yêu thích trong header nếu có
+                    if (response.favorites_count !== undefined) {
+                        updateWishlistCount(response.favorites_count);
+                    }
+                    
+                    // Hiển thị thông báo tương ứng với hành động
+                    const message = response.message || expectedMessage;
+                    showSuccessToast(message);
+                } else {
+                    showErrorToast(response.message || 'Có lỗi xảy ra');
+                }
+            },
+            error: function(xhr) {
+                console.error('Heart error:', xhr);
+                
+                let errorMessage = 'Có lỗi xảy ra khi thay đổi trạng thái yêu thích';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                showErrorToast(errorMessage);
+            },
+            complete: function() {
+                button.prop('disabled', false);
+            }
+        });
+    });
+}
+
+/**
+ * Khởi tạo event listeners cho tất cả các nút heart trên website
+ */
+function initializeFavoriteButtons() {
+    // Xử lý nút heart (favorite) - thêm vào/xóa khỏi danh sách yêu thích
+    $(document).on('click', '.heart-wishlist', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const button = $(this);
+        const productId = button.data('product-id');
+        
+        if (!productId) {
+            console.error('Product ID not found for heart button');
+            return;
+        }
+        
+        console.log('Heart button clicked for product:', productId);
+        handleFavoriteAction(button);
+    });
+
+    // Xử lý nút favorite-toggle trong sản phẩm
+    $(document).on('click', '.favorite-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const button = $(this);
+        const productId = button.data('product-id');
+        const isFavorited = button.data('is-favorited') === 'true';
+        
+        if (!productId) {
+            console.error('Product ID not found for favorite button');
+            return;
+        }
+        
+        console.log('Favorite button clicked for product:', productId, 'Current state:', isFavorited);
+        
+        // Cập nhật trạng thái ngay lập tức để UX tốt hơn
+        button.prop('disabled', true);
+        
+        // Nếu sản phẩm đã ở trong danh sách yêu thích -> xóa khỏi danh sách
+        // Nếu sản phẩm chưa ở trong danh sách yêu thích -> thêm vào danh sách
+        const url = isFavorited ? `/client/products/${productId}/unfavorite` : `/client/products/${productId}/favorite`;
+        const expectedMessage = isFavorited ? 'Đã xóa sản phẩm khỏi trang yêu thích' : 'Đã thêm sản phẩm vào trang yêu thích';
+        
+        // Gọi API để thay đổi trạng thái
+        $.ajax({
+            url: url,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log('Favorite response:', response);
+                
+                if (response.status === 'success') {
+                    // Cập nhật trạng thái nút
+                    const newState = !isFavorited;
+                    button.data('is-favorited', newState ? 'true' : 'false');
+                    
+                    // Cập nhật icon
+                    const heartIcon = button.find('.heart-icon');
+                    if (newState) {
+                        // Đã thêm vào danh sách yêu thích -> hiển thị trái tim đặc
+                        heartIcon.removeClass('far').addClass('fas text-danger');
+                    } else {
+                        // Đã xóa khỏi danh sách yêu thích -> hiển thị trái tim rỗng
+                        heartIcon.removeClass('fas text-danger').addClass('far');
+                    }
+                    
+                    // Cập nhật số lượng yêu thích trong header nếu có
+                    if (response.favorites_count !== undefined) {
+                        updateWishlistCount(response.favorites_count);
+                    }
+                    
+                    // Hiển thị thông báo tương ứng với hành động
+                    const message = response.message || expectedMessage;
+                    showSuccessToast(message);
+                } else {
+                    showErrorToast(response.message || 'Có lỗi xảy ra');
+                }
+            },
+            error: function(xhr) {
+                console.error('Favorite error:', xhr);
+                
+                let errorMessage = 'Có lỗi xảy ra khi thay đổi trạng thái yêu thích';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                showErrorToast(errorMessage);
+            },
+            complete: function() {
+                button.prop('disabled', false);
+            }
+        });
+    });
+
+    // Xử lý nút remove favorite trong wishlist
+    $(document).on('click', '.remove-favorite', function() {
+        handleRemoveFromWishlist($(this));
     });
 }
 
@@ -308,9 +411,11 @@ function loadProductVariants(productId) {
             }
             showErrorToast(errorMessage);
         },
-        complete: function() {
-            // Ẩn loading
-            $('#modalProductName').text(response.data.product.name);
+        complete: function(xhr, status) {
+            // Ẩn loading và hiển thị tên sản phẩm
+            if (xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.product) {
+                $('#modalProductName').text(xhr.responseJSON.data.product.name);
+            }
         }
     });
 }
@@ -575,5 +680,6 @@ function updateCartCount(count) {
 // Khởi tạo khi document ready
 $(document).ready(function() {
     initializeWishlist();
+    initializeFavoriteButtons(); // Khởi tạo các event listeners cho tất cả các nút heart trên website
 });
 
