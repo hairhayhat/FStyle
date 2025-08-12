@@ -59,11 +59,11 @@
                         </a>
                         <div>
                             <span class="theme-color">
-                                @if ($item->variants->min('price') == $item->variants->max('price'))
-                                    {{ number_format($item->variants->min('price')) }} Vnđ
+                                @if ($item->variants->min('sale_price') == $item->variants->max('sale_price'))
+                                    {{ number_format($item->variants->min('sale_price')) }} Vnđ
                                 @else
-                                    {{ number_format($item->variants->min('price')) }} -
-                                    {{ number_format($item->variants->max('price')) }} Vnđ
+                                    {{ number_format($item->variants->min('sale_price')) }} -
+                                    {{ number_format($item->variants->max('sale_price')) }} Vnđ
                                 @endif
                             </span>
                         </div>
