@@ -18,13 +18,15 @@ class HomeController extends Controller
             ->take(5)
             ->get();
         $favoriteProductIds = [];
-
+        $products= Product::with(['category', 'variants', 'galleries'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         $categories = Category::all();
 
         if (Auth::check()) {
             $favoriteProductIds = Auth::user()->favorites->pluck('id')->toArray();
         }
-        return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories'));
+        return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories','products'));
     }
 
     public function show($slug)

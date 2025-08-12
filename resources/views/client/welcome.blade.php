@@ -10,7 +10,7 @@
                             <div class="col-xxl-3 col-lg-4 p-0 d-lg-block d-none">
                                 <div class="home-left-wrapper">
                                     <div>
-                                        <h2>Raw Ham Colorblock T-shirt</h2>
+                                        <h2>Áo thun Raw Ham Colorblock</h2>
 
                                         <div class="d-flex">
                                             <ul class="rating p-0 me-2">
@@ -30,80 +30,10 @@
                                                     <i class="fas fa-star theme-color"></i>
                                                 </li>
                                             </ul>
-                                            <h6 class="text-light">( 5040 Review )</h6>
                                         </div>
 
-                                        <p>The international hoodies with excellent durable fabric, not to heavy but
-                                            simply PERFECT for Indian summer.</p>
-                                        <h3>$49.55 <span class="theme-color">$49.55</span></h3>
-                                        <ul class="selection-wrap">
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Size</option>
-                                                        <option value="1">S</option>
-                                                        <option value="2">M</option>
-                                                        <option value="3">L</option>
-                                                        <option value="4">XL</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Color</option>
-                                                        <option value="1">Black</option>
-                                                        <option value="2">White</option>
-                                                        <option value="3">Blue</option>
-                                                        <option value="4">Gray</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Qty</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="add-btn">
-                                            <a href="cart.html" class="btn btn-white">Add to cart</a>
-                                            <a href="javascript:void:(0)" class="btn btn-solid-default ms-2">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share-icons">
-                                            <span>share with</span>
-                                            <ul class="share-icons p-0">
-                                                <li>
-                                                    <a target="_blank"
-                                                        href="https://www.facebook.com/sharer/sharer.php?u=#url">
-                                                        <img src="client/assets/images/social-icon/4.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://www.google.co.in/">
-                                                        <img src="client/assets/images/social-icon/5.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="http://www.twitter.com/share">
-                                                        <img src="client/assets/images/social-icon/6.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <p>Áo hoodie quốc tế với chất vải bền đẹp, không quá nặng nhưng
+hoàn hảo cho mùa hè Ấn Độ.</p>
                                     </div>
                                 </div>
                             </div>
@@ -159,80 +89,10 @@
                                                     <i class="fas fa-star theme-color"></i>
                                                 </li>
                                             </ul>
-                                            <h6 class="text-light">( 5040 Review )</h6>
                                         </div>
-                                        <p>The international hoodies with excellent durable fabric, not to heavy but
-                                            simply PERFECT for Indian summer.
+                                        <p>Áo hoodie quốc tế với chất vải bền đẹp, không quá nặng nhưng
+hoàn hảo cho mùa hè Ấn Độ.
                                         </p>
-                                        <h3>$49.55 <span class="theme-color">$49.55</span></h3>
-                                        <ul class="selection-wrap">
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Size</option>
-                                                        <option value="1">S</option>
-                                                        <option value="2">M</option>
-                                                        <option value="3">L</option>
-                                                        <option value="4">XL</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Color</option>
-                                                        <option value="1">Black</option>
-                                                        <option value="2">White</option>
-                                                        <option value="3">Blue</option>
-                                                        <option value="4">Gray</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Qty</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="add-btn">
-                                            <a href="cart.html" class="btn btn-white">Add to cart</a>
-                                            <a href="javascript:void:(0)" class="btn btn-solid-default ms-2">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share-icons">
-                                            <span>share with</span>
-                                            <ul class="share-icons p-0">
-                                                <li>
-                                                    <a target="_blank"
-                                                        href="https://www.facebook.com/sharer/sharer.php?u=#url">
-                                                        <img src="client/assets/images/social-icon/4.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://www.google.co.in/">
-                                                        <img src="client/assets/images/social-icon/5.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="http://www.twitter.com/share">
-                                                        <img src="client/assets/images/social-icon/6.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -289,81 +149,11 @@
                                                     <i class="fas fa-star theme-color"></i>
                                                 </li>
                                             </ul>
-                                            <h6 class="text-light">( 5040 Review )</h6>
                                         </div>
 
-                                        <p>The international hoodies with excellent durable fabric, not to heavy but
-                                            simply PERFECT for Indian summer.
+                                        <p>Áo hoodie quốc tế với chất vải bền đẹp, không quá nặng nhưng
+hoàn hảo cho mùa hè Ấn Độ.
                                         </p>
-                                        <h3>$49.55 <span class="theme-color">$49.55</span></h3>
-                                        <ul class="selection-wrap">
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Size</option>
-                                                        <option value="1">S</option>
-                                                        <option value="2">M</option>
-                                                        <option value="3">L</option>
-                                                        <option value="4">XL</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Color</option>
-                                                        <option value="1">Black</option>
-                                                        <option value="2">White</option>
-                                                        <option value="3">Blue</option>
-                                                        <option value="4">Gray</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dark-select">
-                                                    <select class="form-select">
-                                                        <option selected>Qty</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                    </select>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="add-btn">
-                                            <a href="cart.html" class="btn btn-white">Add to cart</a>
-                                            <a href="javascript:void:(0)" class="btn btn-solid-default ms-2">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share-icons">
-                                            <span>share with</span>
-                                            <ul class="share-icons p-0">
-                                                <li>
-                                                    <a target="_blank"
-                                                        href="https://www.facebook.com/sharer/sharer.php?u=#url">
-                                                        <img src="client/assets/images/social-icon/4.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="https://www.google.co.in/">
-                                                        <img src="client/assets/images/social-icon/5.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="http://www.twitter.com/share">
-                                                        <img src="client/assets/images/social-icon/6.png"
-                                                            class="img-fluid blur-up lazyload" alt="social icon">
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -693,689 +483,89 @@
             <div class="row m-0">
                 <div class="col-sm-12 p-0">
                     <div class="title title-2 text-center">
-                        <h2>New Arrival</h2>
-                        <h5 class="text-color">Our collection</h5>
+                        <h2>Danh sách sản phẩm</h2>
+                        <h5 class="text-color">Bộ sưu tập của chúng tôi </h5>
                     </div>
                     <div class="product-wrapper product-style-2 row g-sm-4 g-3">
+                        @foreach ( $products as $item )
                         <div class="col-xl-3 col-lg-4 col-6">
                             <div class="product-box">
                                 <div class="img-wrapper">
                                     <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/5.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
+                                        <a href="{{ route('product.detail', ['slug' => $item->slug]) }}">
+                                                <img src="{{ asset('storage/' . $item->image) }}"
+                                                    class="bg-img blur-up lazyload" alt="">
+                                            </a>
                                     </div>
                                     <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/5.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
+                                        <a href="{{ route('product.detail', ['slug' => $item->slug]) }}">
+                                                <img src="{{ asset('storage/' . $item->image) }}"
+                                                    class="bg-img blur-up lazyload" alt="">
+                                            </a>
                                     </div>
                                     <div class="label-block">
                                         <span class="label label-black">New</span>
                                         <span class="label label-theme">50% Off</span>
                                     </div>
                                     <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Jacket</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Full Jacket Ladies</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Jacket</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$40.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                            <ul>
+                                                <li>
+                                                    <a href="javascript:void(0)" class="addtocart-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#addtocart">
+                                                        <i data-feather="shopping-bag"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="quick-view-btn"
+                                                        data-url={{ route('product.detail.api', ['slug' => $item->slug]) }}>
+                                                        <i data-feather="eye"></i>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <a href="compare.html">
+                                                        <i data-feather="refresh-cw"></i>
+                                                    </a>
+                                                </li>
+                                                @auth
+                                                    <li>
+                                                        <button type="button" class="favorite-toggle"
+                                                            data-slug="{{ $item->slug }}"
+                                                            data-product-id="{{ $item->id }}"
+                                                            data-is-favorited="{{ in_array($item->id, $favoriteProductIds ?? []) ? 'true' : 'false' }}">
+                                                            <i
+                                                                class="heart-icon {{ in_array($item->id, $favoriteProductIds ?? []) ? 'fas fa-heart text-danger' : 'far fa-heart' }}"></i>
+                                                        </button>
+                                                    </li>
+                                                @endauth
 
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/6.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/6.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                            </ul>
+                                        </div>
                                 </div>
                                 <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">T-Shirt</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Full Slive Black T-Shirt</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">T-Shirt</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
+                                        <div class="rating-details">
+                                            <span class="font-light grid-content">{{ $item->Category->name }}</span>
                                         </div>
-                                        <h3 class="theme-color">$69.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
+                                        <div class="main-price d-flex justify-content-between align-items-center">
+                                            <a href="{{ route('product.detail', ['slug' => $item->slug]) }}"
+                                                class="font-default text-decoration-none">
+                                                <h6 class="fw-bold mb-0">{{ $item->name }}</h6>
+                                            </a>
+                                            <div>
+                                                <span class="theme-color">
+                                                    @if ($item->variants->min('price') == $item->variants->max('price'))
+                                                        {{ number_format($item->variants->min('price')) }} Vnđ
+                                                    @else
+                                                        {{ number_format($item->variants->min('price')) }} -
+                                                        {{ number_format($item->variants->max('price')) }} Vnđ
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/7.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/7.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="label-block">
-                                        <span class="label label-black">New</span>
-                                        <span class="label label-theme">50% Off</span>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Fashion</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Latest Fashion Cloth</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Fashion</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$54.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/8.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/8.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Jacket</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Full Black Slive Jacket</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Jacket</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$99.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/1.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/1.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="label-block">
-                                        <span class="label label-black">New</span>
-                                        <span class="label label-theme">50% Off</span>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">B&Y Jacket</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Slim Fit Plastic Coat</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Regular Fit</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$78.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/2.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/2.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="label-block">
-                                        <span class="label label-black">New</span>
-                                        <span class="label label-theme">50% Off</span>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Jacket</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Blue Leather Jacket</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Regular Fit</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$60.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/3.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/3.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Dress</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Military Ball Night Dress</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Regular Fit</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$85.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-lg-4 col-6">
-                            <div class="product-box">
-                                <div class="img-wrapper">
-                                    <div class="front">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/front/4.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="back">
-                                        <a href="product-left-sidebar.html">
-                                            <img src="client/assets/images/fashion/product/back/4.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="cart-wrap">
-                                        <ul>
-                                            <li>
-                                                <a href="javascript:void(0)" class="addtocart-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#addtocart">
-                                                    <i data-feather="shopping-bag"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                    data-bs-target="#quick-view">
-                                                    <i data-feather="eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="compare.html">
-                                                    <i data-feather="refresh-cw"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="wishlist.html" class="wishlist">
-                                                    <i data-feather="heart"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="rating-details">
-                                        <span class="font-light grid-content">Jacket</span>
-                                        <ul class="rating mt-0">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="main-price">
-                                        <a href="product-left-sidebar.html" class="font-default">
-                                            <h5>Full Slive Yellow Jacket</h5>
-                                        </a>
-                                        <div class="listing-content">
-                                            <span class="font-light">Regular Fit</span>
-                                            <p class="font-light">Lorem ipsum, dolor sit amet consectetur adipisicing
-                                                elit. Sit, deserunt? Asperiores aliquam voluptatum culpa aliquid ab
-                                                ducimus eaque illum, quibusdam reiciendis id ad consectetur quis, animi
-                                                qui, minus quidem eveniet! Dolorum magnam numquam, asperiores
-                                                accusantium architecto placeat quam officia, tempore repellendus.</p>
-                                        </div>
-                                        <h3 class="theme-color">$69.00</h3>
-                                        <button onclick="location.href = 'cart.html';" class="btn listing-content">Add
-                                            To Cart</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+                        
                     </div>
                 </div>
             </div>
@@ -1451,166 +641,7 @@
     <!-- Banner section 3 end -->
 
     <!-- instagram shop section start -->
-    <section class="ratio_square">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="title title-2 text-center">
-                        <h2>Instagram Shop</h2>
-                        <h5 class="text-color">New Collection</h5>
-                    </div>
-                    <div class="product-style-1 instagram-2 product-wrapper">
-                        <div class="insta-slider instagram-wrap">
-                            <div>
-                                <div class="product-box">
-                                    <div class="img-wrapper">
-                                        <div class="top-wishlist product-color">
-                                            <a href="wishlist.html" class="heart-wishlist heart-color ms-auto">
-                                                <i class="far fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share share-box share-opacity">
-                                            <span class="share-plus share-plus-color">+</span>
-                                            <span>Share</span>
-                                        </div>
-                                        <a href="javascript:void(0)" class="text-center">
-                                            <img src="client/assets/images/fashion/instagram/1.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="insta-hover insta-spacing text-center">
-                                        <div>
-                                            <h5>New Offer -56% Discount</h5>
-                                            <h3 class="text-hide">Women T-shirt From $35</h3>
-                                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                                class="btn btn-light-white">Shop now <i
-                                                    class="fas fa-chevron-right ms-2"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="product-box">
-                                    <div class="img-wrapper">
-                                        <div class="top-wishlist product-color">
-                                            <a href="wishlist.html" class="heart-wishlist heart-color ms-auto">
-                                                <i class="far fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share share-box share-opacity">
-                                            <span class="share-plus share-plus-color">+</span>
-                                            <span>Share</span>
-                                        </div>
-                                        <a href="javascript:void(0)" class="text-center">
-                                            <img src="client/assets/images/fashion/instagram/2.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="insta-hover insta-spacing text-center">
-                                        <div>
-                                            <h5>New Offer -56% Discount</h5>
-                                            <h3 class="text-hide">Women T-shirt From $35</h3>
-                                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                                class="btn btn-light-white">Shop now <i
-                                                    class="fas fa-chevron-right ms-2"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="product-box">
-                                    <div class="img-wrapper">
-                                        <div class="top-wishlist product-color">
-                                            <a href="wishlist.html" class="heart-wishlist heart-color ms-auto">
-                                                <i class="far fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share share-box share-opacity">
-                                            <span class="share-plus share-plus-color">+</span>
-                                            <span>Share</span>
-                                        </div>
-                                        <a href="javascript:void(0)" class="text-center">
-                                            <img src="client/assets/images/fashion/instagram/3.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="insta-hover insta-spacing text-center">
-                                        <div>
-                                            <h5>New Offer -56% Discount</h5>
-                                            <h3 class="text-hide">Women T-shirt From $35</h3>
-                                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                                class="btn btn-light-white">Shop now <i
-                                                    class="fas fa-chevron-right ms-2"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="product-box">
-                                    <div class="img-wrapper">
-                                        <div class="top-wishlist product-color">
-                                            <a href="wishlist.html" class="heart-wishlist heart-color ms-auto">
-                                                <i class="far fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share share-box share-opacity">
-                                            <span class="share-plus share-plus-color">+</span>
-                                            <span>Share</span>
-                                        </div>
-                                        <a href="javascript:void(0)" class="text-center">
-                                            <img src="client/assets/images/fashion/instagram/4.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="insta-hover insta-spacing text-center">
-                                        <div>
-                                            <h5>New Offer -56% Discount</h5>
-                                            <h3 class="text-hide">Women T-shirt From $35</h3>
-                                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                                class="btn btn-light-white">Shop now <i
-                                                    class="fas fa-chevron-right ms-2"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="product-box">
-                                    <div class="img-wrapper">
-                                        <div class="top-wishlist product-color">
-                                            <a href="wishlist.html" class="heart-wishlist heart-color ms-auto">
-                                                <i class="far fa-heart"></i>
-                                            </a>
-                                        </div>
-                                        <div class="share share-box share-opacity">
-                                            <span class="share-plus share-plus-color">+</span>
-                                            <span>Share</span>
-                                        </div>
-                                        <a href="javascript:void(0)" class="text-center">
-                                            <img src="client/assets/images/fashion/instagram/5.jpg"
-                                                class="bg-img blur-up lazyload" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="insta-hover insta-spacing text-center">
-                                        <div>
-                                            <h5>New Offer -56% Discount</h5>
-                                            <h3 class="text-hide">Women T-shirt From $35</h3>
-                                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                                class="btn btn-light-white">Shop now <i
-                                                    class="fas fa-chevron-right ms-2"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <div class="modal fade quick-view-modal" id="quick-view">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -1687,7 +718,6 @@
             </div>
         </div>
     </div>
-    <!-- instagram shop section end -->
 @endsection
 
 @section('scripts')

@@ -15,22 +15,21 @@
                         <ul class="contact-lists">
                             <li>
                                 <span>
-                                    <b>phone:</b>
-                                    <span class="font-light"> + 185659635</span>
+                                    <b>Số điện thoại:</b>
+                                    <span class="font-light"> +84962932158</span>
                                 </span>
 
                             </li>
                             <li>
                                 <span>
-                                    <b>Address:</b>
-                                    <span class="font-light"> 1418 Riverwood Drive, Suite 3245
-                                        Cottonwood, CA 96052, United States</span>
+                                    <b>Địa chỉ:</b>
+                                    <span class="font-light"> Fpoly Trịnh Văn Bô, Nam Từ Liêm, Hà Nội</span>
                                 </span>
                             </li>
                             <li>
                                 <span>
                                     <b>Email:</b>
-                                    <span class="font-light"> Voxo123@gmail.com</span>
+                                    <span class="font-light"> FStyle25@gmail.com</span>
                                 </span>
 
                             </li>
@@ -40,24 +39,21 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="footer-links">
                         <div class="footer-title">
-                            <h3>About us</h3>
+                            <h3>Giới thiệu</h3>
                         </div>
                         <div class="footer-content">
                             <ul>
                                 <li>
-                                    <a href="index.html" class="font-dark">Home</a>
+                                    <a href="index.html" class="font-dark">Trang chủ</a>
                                 </li>
                                 <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">Shop</a>
-                                </li>
-                                <li>
-                                    <a href="about-us.html" class="font-dark">About Us</a>
+                                    <a href="shop-left-sidebar.html" class="font-dark">Danh mục</a>
                                 </li>
                                 <li>
                                     <a href="blog-details.html" class="font-dark">Blog</a>
                                 </li>
                                 <li>
-                                    <a href="contact-us.html" class="font-dark">Contact</a>
+                                    <a href="contact-us.html" class="font-dark">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -66,50 +62,18 @@
                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                     <div class="footer-links">
                         <div class="footer-title">
-                            <h3>New Categories</h3>
+                            <h3>Nhận trợ giúp</h3>
                         </div>
                         <div class="footer-content">
                             <ul>
                                 <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">Latest Shoes</a>
+                                    <a href="user-dashboard.html" class="font-dark">Đơn hàng của bạn</a>
                                 </li>
                                 <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">Branded Jeans</a>
+                                    <a href="user-dashboard.html" class="font-dark">Tài khoản của bạn</a>
                                 </li>
                                 <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">New Jackets</a>
-                                </li>
-                                <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">Colorfull Hoodies</a>
-                                </li>
-                                <li>
-                                    <a href="shop-left-sidebar.html" class="font-dark">Shiner Goggles</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                    <div class="footer-links">
-                        <div class="footer-title">
-                            <h3>Get Help</h3>
-                        </div>
-                        <div class="footer-content">
-                            <ul>
-                                <li>
-                                    <a href="user-dashboard.html" class="font-dark">Your Orders</a>
-                                </li>
-                                <li>
-                                    <a href="user-dashboard.html" class="font-dark">Your Account</a>
-                                </li>
-                                <li>
-                                    <a href="order-tracking.html" class="font-dark">Track Orders</a>
-                                </li>
-                                <li>
-                                    <a href="wishlist.html" class="font-dark">Your Wishlist</a>
-                                </li>
-                                <li>
-                                    <a href="faq.html" class="font-dark">Shopping FAQs</a>
+                                    <a href="order-tracking.html" class="font-dark">Theo dõi đơn hàng</a>
                                 </li>
                             </ul>
                         </div>
@@ -117,17 +81,17 @@
                 </div>
                 <div class="col-xl-3 col-lg-4 col-sm-6 d-none d-sm-block">
                     <div class="footer-newsletter">
-                        <h3>Let’s stay in touch</h3>
+                        <h3>Liên hệ với chúng tôi</h3>
                         <form
                             action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda"
                             class="form-newsletter  needs-validation" method="post" id="mc-embedded-subscribe-form"
                             name="mc-embedded-subscribe-form" target="_blank">
                             <div class="input-group mb-4">
-                                <input type="text" class="form-control" placeholder="Your Email Address">
+                                <input type="text" class="form-control" placeholder="Nhập Email của bạn">
                                 <span class="input-group-text" id="basic-addon4"><i
                                         class="fas fa-arrow-right"></i></span>
                             </div>
-                            <p class="font-dark mb-0">Keep up to date with our latest news and special offers.
+                            <p class="font-dark mb-0">Cập nhật tin tức mới nhất và các ưu đãi đặc biệt của chúng tôi.
                             </p>
                         </form>
                     </div>
@@ -164,7 +128,7 @@
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <p class="mb-0 font-dark">© 2022, Voxo Theme. Made with heart by Pixelstrap</p>
+                    <p class="mb-0 font-dark">© 2025, FStyle Theme. Made with heart by Pixelstrap</p>
                 </div>
             </div>
         </div>
