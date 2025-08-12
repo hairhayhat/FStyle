@@ -145,4 +145,74 @@ class FavoriteController extends Controller
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Lấy danh sách biến thể của sản phẩm để thêm vào giỏ hàng
+     */
+    public function getProductVariants(Product $product)
+    {
+        try {
+            // Kiểm tra sản phẩm tồn tại
+            if (!$product->exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sản phẩm không tồn tại'
+                ], 404);
+            }
+
+            // Lấy biến thể với thông tin color và size
+            $variants = $product->variants()
+                ->with(['color', 'size'])
+                ->where('quantity', '>', 0) // Chỉ lấy những biến thể còn hàng
+                ->get()
+                ->map(function ($variant) {
+                    return [
+                        'id' => $variant->id,
+                        'color_id' => $variant->color_id,
+                        'size_id' => $variant->size_id,
+                        'color_name' => $variant->color->name,
+                        'size_name' => $variant->size->name,
+                        'price' => $variant->price,
+                        'quantity' => $variant->quantity,
+                        'formatted_price' => '$' . number_format($variant->price, 2)
+                    ];
+                });
+
+            // Lấy danh sách colors và sizes unique
+            $colors = $product->variants()
+                ->with('color')
+                ->get()
+                ->pluck('color')
+                ->unique('id')
+                ->values();
+
+            $sizes = $product->variants()
+                ->with('size')
+                ->get()
+                ->pluck('size')
+                ->unique('id')
+                ->values();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'product' => [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'slug' => $product->slug,
+                        'image' => $product->galleries->first()->image_path ?? null
+                    ],
+                    'variants' => $variants,
+                    'colors' => $colors,
+                    'sizes' => $sizes
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lỗi khi lấy thông tin biến thể: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

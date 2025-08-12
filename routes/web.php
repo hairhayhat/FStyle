@@ -100,6 +100,7 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
 
     Route::post('/products/{product}/favorite', [FavoriteController::class, 'favorite'])->name('client.products.favorite');
     Route::get('/wishlist', [FavoriteController::class, 'wishlist'])->name('client.wishlist');
+    Route::get('/products/{product}/variants', [FavoriteController::class, 'getProductVariants'])->name('client.products.variants');
     Route::post('/products/{product}/unfavorite', [FavoriteController::class, 'unfavorite'])->name('client.products.unfavorite');
 
     Route::get('/cart', [CartController::class, 'index'])->name('client.cart');
