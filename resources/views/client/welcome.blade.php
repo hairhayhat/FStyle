@@ -1710,7 +1710,7 @@
                 $.get(url, function(res) {
                     if (res.success && res.data) {
                         const data = res.data;
-                        console.log(data);
+                   
                         // Cập nhật tên và ảnh chính
                         modal.find('.product-name').text(data.name);
                         modal.find('.main-product-image').attr('src', data.main_image);
@@ -1780,7 +1780,7 @@
 
         $(document).on('click', '.favorite-toggle', function(e) {
             e.preventDefault();
-            console.log('Favorite button clicked');
+         
             handleFavoriteAction($(this));
         })
     </script>

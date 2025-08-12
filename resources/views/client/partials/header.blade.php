@@ -806,20 +806,12 @@
 
                                 <li class="onhover-dropdown wislist-dropdown">
                                     <div class="cart-media">
-                                        <a href="wishlist.html">
+                                        <a href="{{ route('client.wishlist') }}">
                                             <i data-feather="heart"></i>
                                             <span class="label label-theme rounded-pill">5</span>
                                         </a>
                                     </div>
-                                    <div class="onhover-div">
-                                        <a href="wishlist.html">
-                                            <div class="wislist-empty">
-                                                <i class="fab fa-gratipay"></i>
-                                                <h6 class="mb-1">Your wislist empty !!</h6>
-                                                <p class="font-light mb-0">explore more and shortlist items.</p>
-                                            </div>
-                                        </a>
-                                    </div>
+                                   
                                 </li>
                                 <li class="onhover-dropdown cart-dropdown">
                                     <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">

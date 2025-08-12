@@ -1,10 +1,11 @@
 function handleFavoriteAction(button) {
     const productId = button.data('product-id');
-    const isFavorited = button.data('is-favorited') === 'true';
-    console.log('Product ID:', productId, 'Is Favorited:', isFavorited);
+    const rawState = button.data('is-favorited');
+    const isFavorited = (rawState === true || rawState === 'true');
+ 
 
     const { url, successMessage } = getFavoriteUrls(productId, isFavorited);
-    console.log('AJAX URL:', url);
+   
 
     $.ajax({
         url: url,
@@ -17,11 +18,13 @@ function handleFavoriteAction(button) {
             button.prop('disabled', true).addClass('processing');
         },
         success: (response) => {
-            console.log('Success response:', response);
-            handleSuccess(response, button, isFavorited, successMessage);
+           
+            // Ưu tiên dùng trạng thái từ server nếu có
+            const serverState = typeof response.is_favorited === 'boolean' ? response.is_favorited : !isFavorited;
+            handleSuccessWithState(response, button, serverState, successMessage);
         },
         error: (xhr) => {
-            console.error('Error:', xhr.responseText);
+           
             handleError(xhr, button);
         },
         complete: () => {
@@ -45,35 +48,42 @@ function getFavoriteUrls(productId, isFavorited) {
 /**
  * Xử lý khi request thành công
  */
-function handleSuccess(response, button, isFavorited, successMessage) {
-    // Cập nhật trạng thái nút
-    updateButtonState(button, !isFavorited);
+function handleSuccessWithState(response, button, isFavoritedState, successMessage) {
+    // Cập nhật trạng thái nút theo state từ server
+    updateButtonState(button, isFavoritedState);
 
     // Cập nhật biểu tượng trái tim
-    updateHeartIcon(button.find('.heart-icon'), isFavorited);
+    updateHeartIcon(button.find('.heart-icon'), isFavoritedState);
 
     // Cập nhật số lượng yêu thích
     updateFavoritesCount(button.find('.favorites-count'), response.favorites_count);
 
-    // Hiển thị thông báo
-    showSuccessToast(successMessage);
+    // Thông báo
+    showSuccessToast(successMessage || response.message || 'Thành công');
 
-    // Log kết quả
-    console.log('Thành công:', response);
+
 }
 
 /**
  * Cập nhật trạng thái nút
  */
 function updateButtonState(button, newState) {
-    button.data('is-favorited', newState);
+    const str = newState ? 'true' : 'false';
+    button.attr('data-is-favorited', str);
+    button.data('is-favorited', str);
 }
 
 /**
  * Cập nhật biểu tượng trái tim
  */
 function updateHeartIcon(icon, isFavorited) {
-    icon.toggleClass('fas text-danger far', !isFavorited);
+    if (isFavorited) {
+        // Nếu đã yêu thích -> hiển thị trái tim đặc (fas fa-heart text-danger)
+        icon.removeClass('far').addClass('fas text-danger');
+    } else {
+        // Nếu chưa yêu thích -> hiển thị trái tim rỗng (far fa-heart)
+        icon.removeClass('fas text-danger').addClass('far');
+    }
 }
 
 /**
@@ -144,10 +154,6 @@ function handleError(xhr, button) {
     Swal.fire(swalConfig);
 
     // Log lỗi chi tiết
-    console.error('Lỗi AJAX:', {
-        status: xhr.status,
-        response: xhr.responseJSON || xhr.responseText,
-        button: button
-    });
+   
 }
 

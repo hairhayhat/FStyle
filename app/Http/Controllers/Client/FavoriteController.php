@@ -24,6 +24,7 @@ class FavoriteController extends Controller
                 return response()->json([
                     'status' => 'info',
                     'message' => 'Sản phẩm đã có trong danh sách yêu thích',
+                    'is_favorited' => true,
                     'favorites_count' => $product->favoritedBy()->count()
                 ], 200);
             }
@@ -34,6 +35,7 @@ class FavoriteController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Đã thêm sản phẩm vào yêu thích',
+                'is_favorited' => true,
                 'favorites_count' => $product->favoritedBy()->count()
             ], 201);
 
@@ -64,6 +66,7 @@ class FavoriteController extends Controller
                 return response()->json([
                     'status' => 'info',
                     'message' => 'Sản phẩm không có trong danh sách yêu thích',
+                    'is_favorited' => false,
                     'favorites_count' => $product->favoritedBy()->count()
                 ], 200);
             }
@@ -74,6 +77,7 @@ class FavoriteController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Đã xóa sản phẩm khỏi yêu thích',
+                'is_favorited' => false,
                 'favorites_count' => $product->favoritedBy()->count()
             ], 200);
 
@@ -110,6 +114,35 @@ class FavoriteController extends Controller
                 'status' => 'error',
                 'message' => 'Lỗi khi kiểm tra trạng thái yêu thích'
             ], 500);
+        }
+    }
+    public function wishlist()
+    {
+        try {
+            // Kiểm tra user đã đăng nhập
+            if (!Auth::check()) {
+                return redirect()->route('login');
+            }
+
+            // Lấy danh sách sản phẩm yêu thích với thông tin variants
+            $products = Auth::user()->favorites()
+                ->with(['galleries', 'variants.color', 'variants.size'])
+                ->get()
+                ->map(function ($product) {
+                    // Lấy giá thấp nhất và tổng số lượng
+                    $minPrice = $product->variants->min('price') ?? 0;
+                    $totalStock = $product->variants->sum('quantity') ?? 0;
+                    
+                    $product->min_price = $minPrice;
+                    $product->total_stock = $totalStock;
+                    
+                    return $product;
+                });
+            
+            return view('client.wishlist', compact('products'));
+            
+        } catch (Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 }
