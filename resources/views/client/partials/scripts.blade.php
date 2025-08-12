@@ -40,5 +40,7 @@
     <script src="{{ asset('client/assets/js/detail_product.js') }}"></script>
     <script src="{{ asset('client/assets/js/add_to_cart.js') }}"></script>
     <script src="{{ asset('client/assets/js/ion.rangeSlider.min.js') }}"></script>
+    <script src="{{ asset('client/assets/js/update_status.js') }}"></script>
+
 
     <script src="{{ asset('client/assets/js/sticky-cart-bottom.js') }}"></script>

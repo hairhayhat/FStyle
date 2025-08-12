@@ -61,7 +61,7 @@ class HomeController extends Controller
                 return [
                     'color' => $variant->color->name,
                     'size' => $variant->size->name,
-                    'price' => number_format($variant->price),
+                    'sale_price' => number_format($variant->sale_price),
                     'quantity' => $variant->quantity
                 ];
             }),
