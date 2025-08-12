@@ -20,7 +20,7 @@ class HomeController extends Controller
         $favoriteProductIds = [];
         $products= Product::with(['category', 'variants', 'galleries'])
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(8);
         $categories = Category::all();
 
         if (Auth::check()) {

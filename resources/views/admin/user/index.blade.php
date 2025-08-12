@@ -9,11 +9,7 @@
         <div class="page-body">
             <div class="title-header title-header-1">
                 <h5>All Users</h5>
-                <form class="d-inline-flex">
-                    <a href="add-new-user.html" class="align-items-center btn btn-theme">
-                        <i data-feather="plus-square"></i>Add New
-                    </a>
-                </form>
+                
             </div>
             <!-- All User Table Start -->
             <div class="container-fluid">
@@ -30,6 +26,7 @@
                                                     <th>Tên</th>
                                                     <th>Email</th>
                                                     <th>Số điện thoại</th>
+                                                    <th>Trạng thái</th>
                                                     <th>Vai trò</th>
                                                     <th>Hành động</th>
                                                 </tr>
@@ -51,6 +48,14 @@
                                                         <td> {{$item->email}}</td>
 
                                                         <td>{{$item->phone}}</td>
+
+                                                        <td>
+                                                            @if ($item->email_verified_at == null)
+                                                                <span class="text-danger">Chưa xác minh</span>
+                                                            @else
+                                                                <span class="text-success">Đã xác minh</span>
+                                                            @endif
+                                                        </td>
 
                                                         <td>
                                                             @if ($item->role_id == 1)
@@ -87,6 +92,7 @@
                             <div class="pagination-box">
                                 {{ $users->links('pagination::bootstrap-4') }}
                             </div>
+                            
 
                         </div>
                     </div>

@@ -503,10 +503,10 @@ hoàn hảo cho mùa hè Ấn Độ.
                                                     class="bg-img blur-up lazyload" alt="">
                                             </a>
                                     </div>
-                                    <div class="label-block">
+                                    {{-- <div class="label-block">
                                         <span class="label label-black">New</span>
                                         <span class="label label-theme">50% Off</span>
-                                    </div>
+                                    </div> --}}
                                     <div class="cart-wrap">
                                             <ul>
                                                 <li>
@@ -552,25 +552,94 @@ hoàn hảo cho mùa hè Ấn Độ.
                                             </a>
                                             <div>
                                                 <span class="theme-color">
-                                                    @if ($item->variants->min('price') == $item->variants->max('price'))
-                                                        {{ number_format($item->variants->min('price')) }} Vnđ
+                                                    @if ($item->variants->min('sale_price') == $item->variants->max('sale_price'))
+                                                        {{ number_format($item->variants->min('sale_price')) }} Vnđ
                                                     @else
-                                                        {{ number_format($item->variants->min('price')) }} -
-                                                        {{ number_format($item->variants->max('price')) }} Vnđ
+                                                        {{ number_format($item->variants->min('sale_price')) }} -
+                                                        {{ number_format($item->variants->max('sale_price')) }} Vnđ
                                                     @endif
                                                 </span>
                                             </div>
                                         </div>
-                                </div>
+
+                                    </div>
                             </div>
                         </div>
                         @endforeach
                         
+                        {{-- <div class="pagination-box d-flex justify-content-center">
+                                {{ $products->links('pagination::bootstrap-4') }}
+                            </div> --}}
+                            @if ($products->hasPages())
+    <nav class="page-section">
+        <ul class="pagination">
+            {{-- Nút Previous --}}
+            @if ($products->onFirstPage())
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                </li>
+            @else
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->previousPageUrl() }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Số trang --}}
+            @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                @if ($page == $products->currentPage())
+                    <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                @else
+                    <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                @endif
+            @endforeach
+
+            {{-- Nút Next --}}
+            @if ($products->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->nextPageUrl() }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            @else
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                </li>
+            @endif
+        </ul>
+    </nav>
+@endif
+
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Nếu có lưu vị trí scroll, cuộn lại
+    if (sessionStorage.getItem("scrollPos")) {
+        window.scrollTo(0, sessionStorage.getItem("scrollPos"));
+        sessionStorage.removeItem("scrollPos");
+    }
+
+    // Khi click phân trang, lưu vị trí scroll
+    document.querySelectorAll('.pagination a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            sessionStorage.setItem("scrollPos", window.scrollY);
+        });
+    });
+});
+</script>
+</section>
+
+
+
+
+
+
+
     <!-- product section 2 end -->
 
     <!-- Banner section 3 start -->

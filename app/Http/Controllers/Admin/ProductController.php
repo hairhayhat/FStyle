@@ -88,7 +88,7 @@ class ProductController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.product.edit', $product->id)
+        return redirect()->route('admin.product.index')
             ->with('success', 'Thêm sản phẩm thành công!');
     }
 
