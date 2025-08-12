@@ -540,11 +540,11 @@
                                             </a>
                                             <div>
                                                 <span class="theme-color">
-                                                    @if ($item->variants->min('price') == $item->variants->max('price'))
-                                                        {{ number_format($item->variants->min('price')) }} Vnđ
+                                                    @if ($item->variants->min('sale_price') == $item->variants->max('sale_price'))
+                                                        {{ number_format($item->variants->min('sale_price')) }} Vnđ
                                                     @else
-                                                        {{ number_format($item->variants->min('price')) }} -
-                                                        {{ number_format($item->variants->max('price')) }} Vnđ
+                                                        {{ number_format($item->variants->min('sale_price')) }} -
+                                                        {{ number_format($item->variants->max('sale_price')) }} Vnđ
                                                     @endif
                                                 </span>
                                             </div>
@@ -1715,10 +1715,9 @@
                         modal.find('.product-name').text(data.name);
                         modal.find('.main-product-image').attr('src', data.main_image);
 
-
-                        // Tính giá min - max
-                        const prices = data.variants.map(v => Number(String(v.price).replace(/,/g,
-                            '')));
+                        // Tính giá min - max (sử dụng sale_price thay vì price)
+                        const prices = data.variants.map(v => Number(String(v.sale_price).replace(
+                            /,/g, '')));
                         const min = Math.min(...prices);
                         const max = Math.max(...prices);
                         const priceText = min === max ?
@@ -1776,7 +1775,6 @@
                     alert('Lỗi khi gọi API.');
                 });
             });
-        });
 
         $(document).on('click', '.favorite-toggle', function(e) {
             e.preventDefault();

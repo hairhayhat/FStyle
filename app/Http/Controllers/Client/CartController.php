@@ -18,7 +18,7 @@ class CartController extends Controller
 
         $cartItems = $cart->details()->with('productVariant.product')->get();
         $total = $cartItems->sum(function ($item) {
-            return ($item->productVariant->price ?? 0) * $item->quantity;
+            return ($item->productVariant->sale_price ?? 0) * $item->quantity;
         });
 
         return view('client.cart', compact('cartItems', 'total'));
@@ -96,7 +96,7 @@ class CartController extends Controller
             CartDetail::create([
                 'cart_id' => $cart->id,
                 'product_variant_id' => $variant->id,
-                'price' => $variant->price,
+                'price' => $variant->sale_price,
                 'color' => $variant->color->name,
                 'size' => $variant->size->name,
                 'quantity' => $request->quantity
@@ -127,7 +127,7 @@ class CartController extends Controller
         $cartItems = $cart->details()->with('productVariant.product')->get();
 
         $total = $cartItems->sum(function ($item) {
-            return ($item->productVariant->price ?? 0) * $item->quantity;
+            return ($item->productVariant->sale_price ?? 0) * $item->quantity;
         });
 
         return view('client.partials.real-time-cart', compact('cartItems', 'total'))->render();

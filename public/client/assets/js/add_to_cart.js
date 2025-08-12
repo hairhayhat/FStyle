@@ -1,4 +1,39 @@
+// Định nghĩa hàm thông báo sử dụng SweetAlert2
+function showSuccessToast(message) {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: message,
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        background: '#4CAF50',
+        color: 'white'
+    });
+}
+
+function showErrorToast(message) {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: message,
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        background: '#f44336',
+        color: 'white'
+    });
+}
+
 $(document).ready(function () {
+    // Kiểm tra nếu SweetAlert2 đã được load
+    if (typeof Swal === 'undefined') {
+        console.error('SweetAlert2 is not loaded');
+        // Fallback sử dụng alert nếu SweetAlert2 không tồn tại
+        window.showSuccessToast = function (message) { alert('✓ ' + message); };
+        window.showErrorToast = function (message) { alert('✗ ' + message); };
+    }
+
     loadCartDropdown();
 
     $('#addToCartBtn').on('click', function () {
@@ -24,7 +59,8 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr) {
-                showErrorToast('Đã có lỗi xảy ra');
+                showErrorToast('Đã có lỗi xảy ra: ' +
+                    (xhr.responseJSON?.message || 'Vui lòng thử lại sau'));
             }
         });
     });
@@ -67,5 +103,4 @@ $(document).ready(function () {
             }
         });
     });
-
 });

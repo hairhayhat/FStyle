@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
@@ -80,6 +81,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+
+    Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
+    Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
@@ -113,8 +117,10 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');
     Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('client.checkout');
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('client.checkout.store');
+    Route::get('/checkout/{code}', [CheckoutController::class, 'detail'])->name('client.checkout.detail');
+    Route::post('/order/{id}/update-status', [CheckoutController::class, 'updateStatus'])->name('client.update.status');
+    Route::post('/order/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('client.cancel.order');
 
 
 });
-
 require __DIR__ . '/auth.php';
