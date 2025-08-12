@@ -15,6 +15,7 @@ use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -75,6 +76,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
         'update' => 'admin.size.update',
         'destroy' => 'admin.size.destroy',
     ]);
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {

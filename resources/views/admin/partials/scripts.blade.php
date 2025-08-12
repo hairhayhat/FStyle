@@ -33,6 +33,7 @@
 <!-- customizer js -->
 <script src="{{ asset('admin/assets/js/customizer.js') }}"></script>
 
+<script src="{{ asset('admin/assets/css/custom.css') }}"></script>
 <!-- ratio js -->
 <script src="{{ asset('admin/assets/js/ratio.js') }}"></script>
 
