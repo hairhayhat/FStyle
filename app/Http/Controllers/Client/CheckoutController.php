@@ -19,9 +19,25 @@ class CheckoutController extends Controller
 
         $cartItems = $cart->details()->with('productVariant.product')->get();
         $total = $cartItems->sum(function ($item) {
-            return ($item->productVariant->price ?? 0) * $item->quantity;
+            return ($item->productVariant->sale_price ?? 0) * $item->quantity;
         });
         return view('client.checkout', compact('cartItems', 'total', 'addresses'));
+    }
+
+    public function index()
+    {
+        $orders = Order::with('orderDetails.productVariant.product')->where('user_id', Auth::user()->id)->paginate(5);
+
+        return view('client.dashboard.order', compact('orders'));
+    }
+
+    public function detail($code)
+    {
+        $order = Order::with('orderDetails.productVariant.product', 'shippingAddress')
+            ->where('code', $code)
+            ->firstOrFail();
+
+        return view('client.checkout-success', compact('order'));
     }
 
     public function store(Request $request)
@@ -55,7 +71,7 @@ class CheckoutController extends Controller
             foreach ($cartItems as $item) {
                 $productVariant = $item->productVariant;
 
-                $price = $productVariant->price;
+                $price = $productVariant->sale_price;
                 $quantity = $item->quantity;
 
                 OrderDetail::create([
@@ -87,10 +103,40 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('client.welcome')->with('success', 'Đặt hàng thành công!');
+            return redirect()->route('client.checkout.detail', ['code' => $order->code])->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors('Có lỗi xảy ra khi đặt hàng: ' . $e->getMessage());
         }
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string|in:pending,shipped,delivered,cancelled'
+        ]);
+        $order = Order::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function cancelOrder(Request $request, $id)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:1000',
+            'status' => 'required|string|in:pending,shipped,delivered,cancelled'
+        ]);
+
+        $order = Order::findOrFail($id);
+
+        $order->status = $request->status;
+        $order->note = $request->reason;
+        $order->save();
+
+        return response()->json(['success' => true]);
+    }
+
+
 }

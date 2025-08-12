@@ -1,0 +1,18 @@
+<?php
+
+if (!function_exists('getStatusName')) {
+    function getStatusName($status)
+    {
+        $statusNames = [
+            'pending' => 'Chờ xác nhận',
+            'confirmed' => 'Đã xác nhận',
+            'packaging' => 'Đang đóng gói',
+            'shipped' => 'Đang giao hàng',
+            'delivered' => 'Đã giao hàng',
+            'cancelled' => 'Đã hủy',
+            'returned' => 'Đã trả hàng'
+        ];
+
+        return $statusNames[$status] ?? $status;
+    }
+}

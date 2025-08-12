@@ -5,6 +5,7 @@
     <meta name="description" content="Voxo admin template">
     <meta name="keywords" content="admin template, Voxo dashboard">
     <meta name="author" content="pixelstrap">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon (sửa đường dẫn) -->
     <link rel="icon" href="{{ asset('admin/assets/images/favicon.png') }}" type="image/x-icon">
