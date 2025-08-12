@@ -30,7 +30,7 @@ class CategoryController extends Controller
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'image' => 'required|mimes:jpg,jpeg,png|max:2048',
         ], [
-            'name.required' => 'Tên danh mục là bắt buộc.',
+            'name.required' => 'Tên danh mục không được để trống.',
             'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
             'slug.unique' => 'Slug đã tồn tại trong hệ thống.',
             'image.image' => 'File tải lên phải là hình ảnh.',
@@ -72,6 +72,13 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ],[
+            'name.required' => 'Tên danh mục không được để trống.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
+            'slug.unique' => 'Slug đã tồn tại trong hệ thống.',
+            'image.image' => 'File tải lên phải là hình ảnh.',
+            'image.mimes' => 'Ảnh phải có định dạng jpg, jpeg hoặc png.',
+            'image.max' => 'Ảnh không được vượt quá 2MB.',
         ]);
 
         $data = $request->only('name');
