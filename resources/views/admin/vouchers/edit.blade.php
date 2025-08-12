@@ -2,26 +2,23 @@
 
 @section('content')
     <div class="page-body">
-        <div class="title-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Sửa Voucher</h5>
-            <a href="{{ route('admin.vouchers.index') }}" class="btn btn-secondary">
-                <i class="fa fa-arrow-left me-1"></i> Quay lại
-            </a>
+        <div class="title-header">
+            <h5>Chỉnh sửa voucher</h5>
         </div>
 
-        <div class="container-fluid mt-3">
-            <form action="{{ route('admin.vouchers.update', $voucher->id) }}" method="POST"
-                class="theme-form theme-form-2 mega-form" novalidate>
+        <div class="container-fluid">
+            <form class="theme-form theme-form-2 mega-form" method="POST"
+                action="{{ route('admin.vouchers.update', $voucher->id) }}" novalidate>
                 @csrf
                 @method('PUT')
 
                 <div class="row">
-                    {{-- Thông tin voucher --}}
+                    {{-- THÔNG TIN VOUCHER --}}
                     <div class="col-12">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="card-header-2">
-                                    <h5>Thông tin Voucher</h5>
+                                    <h5>Thông tin voucher</h5>
                                 </div>
 
                                 {{-- Mã voucher --}}
@@ -43,11 +40,13 @@
                                     <div class="col-sm-10">
                                         <select name="type" class="form-control @error('type') is-invalid @enderror">
                                             <option value="fixed"
-                                                {{ old('type', $voucher->type) === 'fixed' ? 'selected' : '' }}>Giảm số tiền
-                                                cố định</option>
+                                                {{ old('type', $voucher->type) === 'fixed' ? 'selected' : '' }}>
+                                                Giảm số tiền cố định
+                                            </option>
                                             <option value="percent"
-                                                {{ old('type', $voucher->type) === 'percent' ? 'selected' : '' }}>Giảm theo
-                                                phần trăm</option>
+                                                {{ old('type', $voucher->type) === 'percent' ? 'selected' : '' }}>
+                                                Giảm theo phần trăm
+                                            </option>
                                         </select>
                                         @error('type')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -76,6 +75,21 @@
                                             class="form-control @error('min_order_amount') is-invalid @enderror"
                                             value="{{ old('min_order_amount', $voucher->min_order_amount) }}">
                                         @error('min_order_amount')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                {{-- Giá trị giảm tối đa --}}
+                                <div class="mb-4 row align-items-center">
+                                    <label class="form-label-title col-sm-2 mb-0">Giảm tối đa</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" step="1000" name="max_discount_amount"
+                                            class="form-control @error('max_discount_amount') is-invalid @enderror"
+                                            value="{{ old('max_discount_amount', $voucher->max_discount_amount) }}"
+                                            placeholder="Ví dụ: 500000">
+                                        <small class="text-muted">Để trống nếu không giới hạn số tiền giảm tối đa</small>
+                                        @error('max_discount_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -126,17 +140,19 @@
                                     <div class="col-sm-10">
                                         <select name="active" class="form-control @error('active') is-invalid @enderror">
                                             <option value="1"
-                                                {{ old('active', $voucher->active) == 1 ? 'selected' : '' }}>Hoạt động
+                                                {{ old('active', $voucher->active) == 1 ? 'selected' : '' }}>
+                                                Hoạt động
                                             </option>
                                             <option value="0"
-                                                {{ old('active', $voucher->active) == 0 ? 'selected' : '' }}>Tắt</option>
+                                                {{ old('active', $voucher->active) == 0 ? 'selected' : '' }}>
+                                                Tắt
+                                            </option>
                                         </select>
                                         @error('active')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -145,13 +161,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body text-end">
-                                <button class="btn btn-success px-4 py-2 fw-bold" type="submit">
-                                    <i class="fa fa-save me-1"></i> Cập nhật
+                                <button class="btn btn-primary px-4 py-2 fw-bold" type="submit">
+                                    <i class="bi bi-save me-1"></i> Cập nhật voucher
                                 </button>
-                                <a href="{{ route('admin.vouchers.index') }}"
-                                    class="btn btn-outline-secondary px-4 py-2 fw-bold">
-                                    Hủy
-                                </a>
                             </div>
                         </div>
                     </div>

@@ -4,11 +4,6 @@
     <div class="page-body">
         <div class="title-header title-header-1">
             <h5>Danh sách sản phẩm</h5>
-            <form class="d-inline-flex">
-                <a href="{{ route('admin.product.create') }}" class="align-items-center btn btn-theme">
-                    <i data-feather="plus-square"></i> Thêm sản phẩm
-                </a>
-            </form>
         </div>
 
         <div class="container-fluid">

@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreVoucherRequest;
-use App\Http\Requests\UpdateVoucherRequest;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class VoucherController extends Controller
@@ -32,14 +29,33 @@ class VoucherController extends Controller
     /**
      * Lưu voucher mới
      */
-    public function store(StoreVoucherRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['code'] = strtoupper($data['code']);
-        Voucher::create($data);
+        $request->validate([
+            'code' => 'required|unique:vouchers,code',
+            'type' => 'required|in:fixed,percent',
+            'value' => 'required|numeric|min:0',
+            'max_discount_amount' => 'nullable|numeric|min:0',
+            'min_order_amount' => 'nullable|numeric|min:0',
+            'starts_at' => 'nullable|date',
+            'expires_at' => 'nullable|date|after_or_equal:starts_at',
+            'usage_limit' => 'nullable|integer|min:0',
+            'active' => 'required|boolean',
+        ]);
 
-        return redirect()->route('admin.vouchers.index')
-            ->with('success', 'Tạo voucher thành công.');
+        Voucher::create($request->only([
+            'code',
+            'type',
+            'value',
+            'max_discount_amount',
+            'min_order_amount',
+            'starts_at',
+            'expires_at',
+            'usage_limit',
+            'active'
+        ]));
+
+        return redirect()->route('admin.vouchers.index')->with('success', 'Tạo voucher thành công');
     }
 
     /**
@@ -61,14 +77,33 @@ class VoucherController extends Controller
     /**
      * Cập nhật voucher
      */
-    public function update(UpdateVoucherRequest $request, Voucher $voucher)
+    public function update(Request $request, Voucher $voucher)
     {
-        $data = $request->validated();
-        $data['code'] = strtoupper($data['code']);
-        $voucher->update($data);
+        $request->validate([
+            'code' => 'required|unique:vouchers,code,' . $voucher->id,
+            'type' => 'required|in:fixed,percent',
+            'value' => 'required|numeric|min:0',
+            'max_discount_amount' => 'nullable|numeric|min:0',
+            'min_order_amount' => 'nullable|numeric|min:0',
+            'starts_at' => 'nullable|date',
+            'expires_at' => 'nullable|date|after_or_equal:starts_at',
+            'usage_limit' => 'nullable|integer|min:0',
+            'active' => 'required|boolean',
+        ]);
 
-        return redirect()->route('admin.vouchers.index')
-            ->with('success', 'Cập nhật voucher thành công.');
+        $voucher->update($request->only([
+            'code',
+            'type',
+            'value',
+            'max_discount_amount',
+            'min_order_amount',
+            'starts_at',
+            'expires_at',
+            'usage_limit',
+            'active'
+        ]));
+
+        return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật voucher thành công');
     }
 
     /**
@@ -78,8 +113,7 @@ class VoucherController extends Controller
     {
         $voucher->delete();
 
-        return redirect()->route('admin.vouchers.index')
-            ->with('success', 'Xóa voucher thành công.');
+        return redirect()->route('admin.vouchers.index')->with('success', 'Xóa voucher thành công.');
     }
 
     /**
@@ -115,12 +149,15 @@ class VoucherController extends Controller
 
         // Tính giảm giá
         if ($voucher->type === 'fixed') {
+            // Giảm cố định, không vượt quá tổng tiền
             $discount = min((float) $voucher->value, $orderAmount);
         } else {
+            // Giảm phần trăm
             $discount = round($orderAmount * ((float) $voucher->value / 100), 2);
 
-            if (!empty($voucher->meta['max_discount'])) {
-                $discount = min($discount, (float) $voucher->meta['max_discount']);
+            // Áp giới hạn max_discount_amount nếu có
+            if ($voucher->max_discount_amount !== null) {
+                $discount = min($discount, (float) $voucher->max_discount_amount);
             }
         }
 

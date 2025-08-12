@@ -6,11 +6,6 @@
         <div class="page-body">
             <div class="title-header title-header-1">
                 <h5>Danh mục</h5>
-                <form class="d-inline-flex">
-                    <a href="{{ route('admin.category.create') }}" class="align-items-center btn btn-theme">
-                        <i data-feather="plus-square"></i> Thêm mới
-                    </a>
-                </form>
             </div>
 
             <!-- Category List Start -->

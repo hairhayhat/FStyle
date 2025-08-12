@@ -38,10 +38,12 @@
                                     <label class="form-label-title col-sm-2 mb-0">Loại voucher</label>
                                     <div class="col-sm-10">
                                         <select name="type" class="form-control @error('type') is-invalid @enderror">
-                                            <option value="fixed" {{ old('type') === 'fixed' ? 'selected' : '' }}>Giảm số
-                                                tiền cố định</option>
-                                            <option value="percent" {{ old('type') === 'percent' ? 'selected' : '' }}>Giảm
-                                                theo phần trăm</option>
+                                            <option value="fixed" {{ old('type') === 'fixed' ? 'selected' : '' }}>
+                                                Giảm số tiền cố định
+                                            </option>
+                                            <option value="percent" {{ old('type') === 'percent' ? 'selected' : '' }}>
+                                                Giảm theo phần trăm
+                                            </option>
                                         </select>
                                         @error('type')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -71,6 +73,20 @@
                                             value="{{ old('min_order_amount', 0) }}"
                                             placeholder="Nhập giá trị đơn hàng tối thiểu">
                                         @error('min_order_amount')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                {{-- Giá trị giảm tối đa --}}
+                                <div class="mb-4 row align-items-center">
+                                    <label class="form-label-title col-sm-2 mb-0">Giảm tối đa</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" step="1000" name="max_discount_amount"
+                                            class="form-control @error('max_discount_amount') is-invalid @enderror"
+                                            value="{{ old('max_discount_amount') }}" placeholder="Ví dụ: 500000">
+                                        <small class="text-muted">Để trống nếu không giới hạn số tiền giảm tối đa</small>
+                                        @error('max_discount_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -108,7 +124,7 @@
                                     <div class="col-sm-10">
                                         <input type="number" name="usage_limit"
                                             class="form-control @error('usage_limit') is-invalid @enderror"
-                                            value="{{ old('usage_limit') }}">
+                                            value="{{ old('usage_limit') }}" placeholder="Để trống nếu không giới hạn">
                                         @error('usage_limit')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
@@ -120,16 +136,18 @@
                                     <label class="form-label-title col-sm-2 mb-0">Trạng thái</label>
                                     <div class="col-sm-10">
                                         <select name="active" class="form-control @error('active') is-invalid @enderror">
-                                            <option value="1" {{ old('active', 1) == 1 ? 'selected' : '' }}>Hoạt động
+                                            <option value="1" {{ old('active', 1) == 1 ? 'selected' : '' }}>
+                                                Hoạt động
                                             </option>
-                                            <option value="0" {{ old('active') == 0 ? 'selected' : '' }}>Tắt</option>
+                                            <option value="0" {{ old('active') == 0 ? 'selected' : '' }}>
+                                                Tắt
+                                            </option>
                                         </select>
                                         @error('active')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -139,16 +157,12 @@
                         <div class="card">
                             <div class="card-body text-end">
                                 <button class="btn btn-primary px-4 py-2 fw-bold" type="submit">
-                                    <i class="fa fa-save me-1"></i> Lưu Voucher
+                                    <i class="bi bi-plus-circle me-1"></i> Thêm Voucher
                                 </button>
-                                <a href="{{ route('admin.vouchers.index') }}" class="btn btn-secondary px-4 py-2 fw-bold">
-                                    Hủy
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
