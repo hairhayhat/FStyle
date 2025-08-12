@@ -32,6 +32,7 @@
 
 <!-- customizer js -->
 <script src="{{ asset('admin/assets/js/customizer.js') }}"></script>
+<script src="{{ asset('admin/assets/js/update_status_realtime.js') }}"></script>
 
 <script src="{{ asset('admin/assets/css/custom.css') }}"></script>
 <!-- ratio js -->

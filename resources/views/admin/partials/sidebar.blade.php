@@ -49,11 +49,11 @@
                     <li class="sidebar-list">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="archive"></i>
-                            <span>Orders</span>
+                            <span>Đơn hàng</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="order-list.html">Order List</a>
+                                <a href="{{ route('admin.order.index') }}">Danh sách đơn hàng</a>
                             </li>
                             <li>
                                 <a href="order-detail.html">Order Detail</a>

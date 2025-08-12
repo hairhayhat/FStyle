@@ -16,9 +16,19 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(matchedVariant);
 
         if (matchedVariant && matchedVariant.quantity > 0) {
-            priceDisplay.textContent = Number(matchedVariant.price).toLocaleString('vi-VN') + '₫';
+            // Thay đổi từ price sang sale_price ở đây
+            priceDisplay.textContent = Number(matchedVariant.sale_price).toLocaleString('vi-VN') + '₫';
             quantityDisplay.textContent = matchedVariant.color.name + ' Còn hàng';
             document.getElementById('productVariantId').value = matchedVariant.id;
+
+            // Hiển thị giá gốc nếu có (tùy chọn)
+            if (matchedVariant.price && matchedVariant.price !== matchedVariant.sale_price) {
+                const originalPriceElement = document.querySelector('.original-price');
+                if (originalPriceElement) {
+                    originalPriceElement.textContent = Number(matchedVariant.price).toLocaleString('vi-VN') + '₫';
+                    originalPriceElement.style.display = 'block';
+                }
+            }
         } else {
             priceDisplay.textContent = 'Không tìm thấy giá';
             quantityDisplay.textContent = 'Hết hàng';
