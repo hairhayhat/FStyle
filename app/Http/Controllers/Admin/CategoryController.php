@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = Category::latest()->get(); // hoặc ->paginate(10) nếu muốn phân trang
+        $categories = Category::paginate(10); // 10 là số bản ghi mỗi trang
         return view('admin.category.index', compact('categories'));
     }
 
@@ -72,7 +72,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ],[
+        ], [
             'name.required' => 'Tên danh mục không được để trống.',
             'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
             'slug.unique' => 'Slug đã tồn tại trong hệ thống.',
