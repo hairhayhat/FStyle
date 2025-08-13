@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VoucherController;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -77,6 +78,21 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
         'update' => 'admin.size.update',
         'destroy' => 'admin.size.destroy',
     ]);
+
+    // Voucher Routes
+    Route::resource('vouchers', VoucherController::class)->names([
+        'index' => 'admin.vouchers.index',
+        'create' => 'admin.vouchers.create',
+        'store' => 'admin.vouchers.store',
+        'show' => 'admin.vouchers.show',
+        'edit' => 'admin.vouchers.edit',
+        'update' => 'admin.vouchers.update',
+        'destroy' => 'admin.vouchers.destroy',
+    ]);
+
+    // Apply voucher (test hoặc checkout)
+    Route::post('voucher/apply', [VoucherController::class, 'apply'])->name('admin.voucher.apply');
+
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
@@ -102,8 +118,10 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::put('/address/{id}', [AddressController::class, 'update'])->name('client.address.update');
     Route::get('/api/address/{id}/edit', [AddressController::class, 'edit'])->name('api.address.edit');
 
-    Route::post('/products/{product}/favorite', [FavoriteController::class, 'favorite'])->name('products.favorite');
-    Route::post('/products/{product}/unfavorite', [FavoriteController::class, 'unfavorite'])->name('products.unfavorite');
+    Route::post('/products/{product}/favorite', [FavoriteController::class, 'favorite'])->name('client.products.favorite');
+    Route::get('/wishlist', [FavoriteController::class, 'wishlist'])->name('client.wishlist');
+    Route::get('/products/{product}/variants', [FavoriteController::class, 'getProductVariants'])->name('client.products.variants');
+    Route::post('/products/{product}/unfavorite', [FavoriteController::class, 'unfavorite'])->name('client.products.unfavorite');
 
     Route::get('/cart', [CartController::class, 'index'])->name('client.cart');
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('client.cart.add');

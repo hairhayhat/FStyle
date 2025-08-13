@@ -201,7 +201,7 @@ hoàn hảo cho mùa hè Ấn Độ.
                                 alt="">
                         </a>
                         <div class="banner-detail">
-                            <a href="javacript:void(0)" class="heart-wishlist">
+                            <a href="javascript:void(0)" class="heart-wishlist" data-product-id="1" data-is-favorited="false">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span class="font-dark-30">26% <span>OFF</span></span>
@@ -221,7 +221,7 @@ hoàn hảo cho mùa hè Ấn Độ.
                                 alt="">
                         </a>
                         <div class="banner-detail">
-                            <a href="javacript:void(0)" class="heart-wishlist">
+                            <a href="javacript:void(0)" class="heart-wishlist" data-product-id="2" data-is-favorited="false">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span class="font-dark-30">50% <span>OFF</span></span>
@@ -241,7 +241,7 @@ hoàn hảo cho mùa hè Ấn Độ.
                                 alt="">
                         </a>
                         <div class="banner-detail">
-                            <a href="javacript:void(0)" class="heart-wishlist">
+                            <a href="javacript:void(0)" class="heart-wishlist" data-product-id="3" data-is-favorited="false">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span class="font-dark-30">36% <span>OFF</span></span>
@@ -610,7 +610,6 @@ hoàn hảo cho mùa hè Ấn Độ.
         </ul>
     </nav>
 @endif
-
                     </div>
                 </div>
             </div>
@@ -809,7 +808,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $.get(url, function(res) {
                     if (res.success && res.data) {
                         const data = res.data;
-                        console.log(data);
+                   
                         // Cập nhật tên và ảnh chính
                         modal.find('.product-name').text(data.name);
                         modal.find('.main-product-image').attr('src', data.main_image);
@@ -875,11 +874,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
 
-            $(document).on('click', '.favorite-toggle', function(e) {
-                e.preventDefault();
-                console.log('Favorite button clicked');
-                handleFavoriteAction($(this));
-            })
+        $(document).on('click', '.favorite-toggle', function(e) {
+            e.preventDefault();
+         console.log("click");
+            handleFavoriteAction($(this));
         })
     </script>
 @endsection
