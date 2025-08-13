@@ -15,6 +15,9 @@
                 <label class="form-label-title col-sm-2 mb-0">Tên Danh Mục</label>
                 <div class="col-sm-10">
                     <input class="form-control" name="name" type="text" value="{{ old('name', $category->name) }}">
+                    @error('name')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="mb-4 row align-items-start">
