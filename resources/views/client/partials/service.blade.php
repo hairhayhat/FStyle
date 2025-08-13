@@ -9,8 +9,8 @@
                         </svg>
                     </div>
                     <div class="service-content">
-                        <h3 class="mb-2">Customer Servcies</h3>
-                        <span class="font-light">Top notch customer service.</span>
+                        <h3 class="mb-2">Dịch vụ Khách hàng</h3>
+                        <span class="font-light">Dịch vụ khách hàng hàng đầu.</span>
                     </div>
                 </div>
             </div>
@@ -23,8 +23,8 @@
                         </svg>
                     </div>
                     <div class="service-content">
-                        <h3 class="mb-2">Pickup At Any Store</h3>
-                        <span class="font-light">Free shipping on orders over $65.</span>
+                        <h3 class="mb-2">Nhận hàng tại bất kỳ cửa hàng nào</h3>
+                        <span class="font-light">Miễn phí vận chuyển cho đơn hàng trên 500.000 .</span>
                     </div>
                 </div>
             </div>
@@ -37,8 +37,8 @@
                         </svg>
                     </div>
                     <div class="service-content">
-                        <h3 class="mb-2">Secured Payment</h3>
-                        <span class="font-light">We accept all major credit cards.</span>
+                        <h3 class="mb-2">Thanh toán an toàn</h3>
+                        <span class="font-light">Chúng tôi chấp nhận tất cả các loại thẻ tín dụng phổ biến.</span>
                     </div>
                 </div>
             </div>
@@ -51,8 +51,8 @@
                         </svg>
                     </div>
                     <div class="service-content">
-                        <h3 class="mb-2">Free Returns</h3>
-                        <span class="font-light">30-days free return policy.</span>
+                        <h3 class="mb-2">Miễn phí đổi trả</h3>
+                        <span class="font-light">Chính sách đổi trả miễn phí trong 30 ngày.</span>
                     </div>
                 </div>
             </div>
