@@ -111,6 +111,22 @@
                             </li>
                         </ul>
                     </li>
+                    <li
+                        class="sidebar-list {{ request()->is('admin/voucher') || request()->is('admin/voucher/*') ? 'active' : '' }}">
+                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                            <i data-feather="tag"></i>
+                            <span>Voucher</span>
+                        </a>
+                        <ul class="sidebar-submenu"
+                            style="{{ request()->is('admin/voucher') || request()->is('admin/voucher/*') ? 'display: block;' : '' }}">
+                            <li class="{{ request()->routeIs('admin.voucher.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.vouchers.index') }}">Danh sách voucher</a>
+                            </li>
+                            <li class="{{ request()->routeIs('admin.voucher.create') ? 'active' : '' }}">
+                                <a href="{{ route('admin.vouchers.create') }}">Thêm voucher</a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li class="sidebar-list">
                         <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">

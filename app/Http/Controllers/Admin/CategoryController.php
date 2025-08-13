@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = Category::latest()->get(); // hoặc ->paginate(10) nếu muốn phân trang
+        $categories = Category::paginate(10); // 10 là số bản ghi mỗi trang
         return view('admin.category.index', compact('categories'));
     }
 
