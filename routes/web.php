@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckoutController;
@@ -29,9 +30,7 @@ Route::get('/filter-products', [SearchController::class, 'filter'])->name('produ
 
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
     // Category Routes

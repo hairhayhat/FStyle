@@ -26,15 +26,15 @@
                     <li class="back-btn"></li>
                     <li class="sidebar-main-title sidebar-main-title-3">
                         <div>
-                            <h6 class="lan-1">General</h6>
-                            <p class="lan-2">Dashboards &amp; Users.</p>
+                            <h6 class="lan-1">Tổng quan</h6>
+                            <p class="lan-2">Thống kê</p>
                         </div>
                     </li>
 
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="index.html">
+                        <a class="sidebar-link sidebar-title link-nav" href="{{ route('admin.dashboard') }}">
                             <i data-feather="home"></i>
-                            <span>Dashboard</span>
+                            <span>Thống kê</span>
                         </a>
                     </li>
 
