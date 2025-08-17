@@ -143,6 +143,15 @@
                             <li>
                                 <a href="{{ route('admin.size.index') }}">Kích thước</a>
                             </li>
+                            <li>
+                                                    <form method="POST" action="{{ route('logout') }}">
+                                                        @csrf
+                                                        <a href="{{ route('logout') }}"
+                                                            onclick="event.preventDefault(); this.closest('form').submit();"
+                                                            class="d-block">Đăng xuất</a>
+                                                    </form>
+                                                </li>
+
                         </ul>
                     </li>
 
