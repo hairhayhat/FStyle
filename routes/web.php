@@ -6,12 +6,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Client\AddressController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\FavoriteController;
@@ -30,9 +32,7 @@ Route::get('/filter-products', [SearchController::class, 'filter'])->name('produ
 
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
     // Category Routes
@@ -101,6 +101,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');
+    Route::get('/order/{code}', [OrderController::class, 'detail'])->name('admin.order.detail');
+
+    Route::get('/notification/fetch', [NotificationController::class, 'fetchNotification'])->name('admin.fetch.notification');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
@@ -130,7 +133,6 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
     Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::post('/buy-now', [CartController::class, 'buyNow'])->name('client.cart.buyNow');
-
 
     Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');
     Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('client.checkout');

@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
 use App\Models\Category;
+use App\Models\Notification;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Cache;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,11 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::middleware('api')
-            ->prefix('api')
-            ->group(base_path('routes/api.php'));
-        View::composer('client.partials.header', function ($view) {
-            $view->with('categories', Category::all());
-        });
+        View::share('categories', Cache::remember('categories', 3600, fn() => Category::all()));
+        View::share('notifications', Cache::remember('notifications', 60, fn() => Notification::latest()->take(10)->get()));
     }
 }

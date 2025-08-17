@@ -81,8 +81,9 @@
     <!-- Modal End -->
 
     <!-- latest js -->
-    @include('admin.partials.scripts')
     @yield('scripts')
+    @include('admin.partials.scripts')
+
 </body>
 
 

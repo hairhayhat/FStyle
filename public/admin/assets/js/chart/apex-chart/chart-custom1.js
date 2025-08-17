@@ -1,239 +1,177 @@
 //bar chart
+const chartData = monthsTotal.map((month, index) => {
+    return {
+        x: month,
+        y: netRevenue[index],
+        goals: [
+            {
+                name: "Expected",
+                value: 1400,
+                strokeWidth: 5,
+                strokeColor: "#775DD0",
+            },
+        ],
+    };
+});
+
 var options = {
-    series: [{
-            // name: "High - 2013",
-            data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35]
-        },
-
+    series: [
         {
-            // name: "Low - 2013",
-            data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47]
-        }
-    ],
-
-    chart: {
-        toolbar: {
-            show: false
-        }
-    },
-
-    chart: {
-        height: 320,
-    },
-
-    legend: {
-        show: false,
-    },
-
-    colors: ['#e22454', '#2483e2'],
-
-    markers: {
-        size: 1,
-    },
-
-    // grid: {
-    //     show: false,
-    //     xaxis: {
-    //         lines: {
-    //             show: false
-    //         }
-    //     },
-    // },
-
-    xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-        labels: {
-            show: false,
-        }
-    },
-
-    responsive: [{
-            breakpoint: 1400,
-            options: {
-                chart: {
-                    height: 300,
-                },
-            },
-        },
-
-        {
-            breakpoint: 992,
-            options: {
-                chart: {
-                    height: 210,
-                    width: "100%",
-                    offsetX: 0,
-                },
-            },
-        },
-
-        {
-            breakpoint: 578,
-            options: {
-                chart: {
-                    height: 200,
-                    width: "105%",
-                    offsetX: -20,
-                    offsetY: 10,
-                },
-            },
-        },
-
-        {
-            breakpoint: 430,
-            options: {
-                chart: {
-                    width: "108%",
-                },
-            },
-        },
-
-        {
-            breakpoint: 330,
-            options: {
-                chart: {
-                    width: "112%",
-                },
-            },
+            name: "Doanh thu thuần",
+            data: chartData,
         },
     ],
-};
-
-var chart = new ApexCharts(document.querySelector("#bar-chart-earning"), options);
-chart.render();
-
-// expenses cart
-var options = {
-    series: [{
-        name: 'Actual',
-
-        data: [{
-                x: '2011',
-                y: 1292,
-                goals: [{
-                    name: 'Expected',
-                    value: 1400,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2012',
-                y: 4432,
-                goals: [{
-                    name: 'Expected',
-                    value: 5400,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2013',
-                y: 5423,
-                goals: [{
-                    name: 'Expected',
-                    value: 5200,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2014',
-                y: 6653,
-                goals: [{
-                    name: 'Expected',
-                    value: 6500,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2015',
-                y: 8133,
-                goals: [{
-                    name: 'Expected',
-                    value: 6600,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2016',
-                y: 7132,
-                goals: [{
-                    name: 'Expected',
-                    value: 7500,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2017',
-                y: 7332,
-                goals: [{
-                    name: 'Expected',
-                    value: 8700,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            },
-
-            {
-                x: '2018',
-                y: 6553,
-                goals: [{
-                    name: 'Expected',
-                    value: 7300,
-                    strokeWidth: 5,
-                    strokeColor: '#775DD0'
-                }]
-            }
-        ]
-    }],
-
     chart: {
         height: 320,
-        type: 'bar'
+        type: "bar",
     },
-
     plotOptions: {
         bar: {
-            columnWidth: '40%'
+            columnWidth: "40%",
+        },
+    },
+    colors: ["#e22454"],
+    dataLabels: {
+        enabled: false,
+    },
+    legend: {
+        show: false,
+    },
+
+    yaxis: {
+        labels: {
+            formatter: function (val) {
+                return val.toLocaleString("vi-VN");
+            },
+        },
+        title: {
+            text: "Doanh thu thuần",
+        },
+    },
+
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val.toLocaleString("vi-VN") + " ₫";
+            },
+        },
+        x: {
+            formatter: function (val) {
+                return "Tháng " + val;
+            },
+        },
+    },
+};
+
+var chart = new ApexCharts(
+    document.querySelector("#bar-chart-earning"),
+    options
+);
+chart.render();
+
+
+var options = {
+    series: [
+        {
+            name: "Doanh thu trung bình mỗi đơn",
+            type: "line",
+            data: aovData,
+        },
+        {
+            name: "Số đơn hàng",
+            type: "line",
+            data: ordersData,
+        },
+    ],
+
+    chart: {
+        height: 320,
+        type: "line",
+        toolbar: { show: false },
+    },
+
+    colors: ["#e22454", "#2483e2"],
+
+    stroke: {
+        width: 3,
+        curve: "smooth",
+    },
+
+    markers: { size: 4 },
+
+    xaxis: {
+        categories: months,
+        title: { text: "Tháng" },
+    },
+
+    yaxis: [
+        {
+            title: { text: "Doanh thu trung bình mỗi đơn" },
+            labels: {
+                formatter: function (val) {
+                    return val.toLocaleString("vi-VN");
+                },
+            },
+        },
+        {
+            opposite: true,
+            title: { text: "Số đơn hàng" },
+            labels: {
+                formatter: function (val) {
+                    return val;
+                },
+            },
+        },
+    ],
+
+    tooltip: {
+        shared: true,
+        intersect: false,
+        y: [
+            {
+                formatter: function (val) {
+                    return val.toLocaleString("vi-VN") + " ₫";
+                },
+            },
+            {
+                formatter: function (val) {
+                    return val;
+                },
+            },
+        ],
+        x: {
+            formatter: function (val) {
+                return "Tháng " + val;
+            }
         }
     },
 
-    colors: ['#e22454'],
-    dataLabels: {
-        enabled: false
-    },
-
     legend: {
-        show: false,
-    }
+        show: true,
+        position: "top",
+    },
 };
-
 var chart = new ApexCharts(document.querySelector("#report-chart"), options);
 chart.render();
 
 //pie chart for visitors
 var options = {
     series: [44, 55, 41, 17],
-    labels: ['The Passersby', 'The Occasionals', 'The Regulars', 'The Superfans'],
+    labels: [
+        "The Passersby",
+        "The Occasionals",
+        "The Regulars",
+        "The Superfans",
+    ],
     chart: {
         width: "100%",
         height: 275,
-        type: 'donut',
+        type: "donut",
     },
 
     legend: {
-        fontSize: '12px',
-        position: 'bottom',
+        fontSize: "12px",
+        position: "bottom",
         offsetX: 1,
         offsetY: -1,
 
@@ -243,24 +181,25 @@ var options = {
         },
 
         itemMargin: {
-            vertical: 2
+            vertical: 2,
         },
     },
 
-    colors: ['#4aa4d9', '#ef3f3e', '#9e65c2', '#6670bd', '#FF9800'],
+    colors: ["#4aa4d9", "#ef3f3e", "#9e65c2", "#6670bd", "#FF9800"],
 
     plotOptions: {
         pie: {
             startAngle: -90,
-            endAngle: 270
-        }
+            endAngle: 270,
+        },
     },
 
     dataLabels: {
-        enabled: false
+        enabled: false,
     },
 
-    responsive: [{
+    responsive: [
+        {
             breakpoint: 1835,
             options: {
                 chart: {
@@ -268,11 +207,11 @@ var options = {
                 },
 
                 legend: {
-                    position: 'bottom',
+                    position: "bottom",
 
                     itemMargin: {
                         horizontal: 5,
-                        vertical: 1
+                        vertical: 1,
                     },
                 },
             },
@@ -286,7 +225,7 @@ var options = {
                 },
 
                 legend: {
-                    position: 'bottom',
+                    position: "bottom",
                 },
             },
         },
@@ -299,7 +238,7 @@ var options = {
                 },
 
                 legend: {
-                    position: 'bottom',
+                    position: "bottom",
                 },
             },
         },
@@ -312,8 +251,8 @@ var options = {
                 },
 
                 legend: {
-                    fontSize: '10px',
-                    position: 'bottom',
+                    fontSize: "10px",
+                    position: "bottom",
                     offsetY: 10,
                 },
             },
@@ -321,13 +260,13 @@ var options = {
 
         {
             theme: {
-                mode: 'dark',
-                palette: 'palette1',
+                mode: "dark",
+                palette: "palette1",
                 monochrome: {
                     enabled: true,
-                    color: '#255aee',
-                    shadeTo: 'dark',
-                    shadeIntensity: 0.65
+                    color: "#255aee",
+                    shadeTo: "dark",
+                    shadeIntensity: 0.65,
                 },
             },
         },
@@ -340,8 +279,8 @@ var options = {
                 },
 
                 legend: {
-                    fontSize: '12px',
-                    position: 'bottom',
+                    fontSize: "12px",
+                    position: "bottom",
                     offsetX: 5,
                     offsetY: -5,
 
@@ -351,7 +290,7 @@ var options = {
                     },
 
                     itemMargin: {
-                        vertical: 1
+                        vertical: 1,
                     },
                 },
             },
@@ -359,5 +298,8 @@ var options = {
     ],
 };
 
-var chart = new ApexCharts(document.querySelector("#pie-chart-visitors"), options);
+var chart = new ApexCharts(
+    document.querySelector("#pie-chart-visitors"),
+    options
+);
 chart.render();

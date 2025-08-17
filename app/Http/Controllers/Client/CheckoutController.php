@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Voucher;
+use App\Services\NotificationService;
 
 class CheckoutController extends Controller
 {
+    public function __construct
+    (
+        private NotificationService $notificationService,
+    ) {
+
+    }
     public function checkout(Request $request)
     {
         if ($request->get('type') === 'buy_now') {
@@ -24,7 +31,6 @@ class CheckoutController extends Controller
                     ->withErrors('Không có sản phẩm nào để mua ngay.');
             }
 
-            // Lấy đầy đủ thông tin variant kèm product
             $variant = ProductVariant::with('product')
                 ->find($buyNow['product_variant_id']);
 
@@ -38,7 +44,6 @@ class CheckoutController extends Controller
                 ]
             ]);
 
-
             $total = $cartItems->sum(function ($item) {
                 $price = $item->productVariant->sale_price ?? $item->productVariant->price ?? 0;
                 return $price * $item->quantity;
@@ -49,7 +54,6 @@ class CheckoutController extends Controller
             return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
         }
 
-        // Trường hợp giỏ hàng bình thường
         $cart = Auth::user()->cart;
         $cartItems = $cart->details()->with('productVariant.product')->get();
         $total = $cartItems->sum(function ($item) {
@@ -137,6 +141,12 @@ class CheckoutController extends Controller
                     'status' => 'pending',
                 ]);
             }
+
+            $this->notificationService->notifyOrderToAdmin(
+                'Bạn có đơn hàng mới',
+                "Tài khoản {$user->name} đã đặt đơn #{$order->code}",
+                "/admin/orders/{$order->code}"
+            );
 
             DB::commit();
 
