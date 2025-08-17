@@ -140,91 +140,20 @@
                 <!-- Earning chart  end-->
 
                 <!-- Transactions start-->
-                <div class="col-xxl-4 col-md-6">
+                                <div class="col-xl-4">
                     <div class="card o-hidden card-hover">
-                        <div class="card-header border-0">
+                        <div class="card-header border-0 pb-1">
                             <div class="card-header-title">
-                                <h4>Transactions</h4>
+                                <h4>Số người sử dụng theo tháng</h4>
                             </div>
                         </div>
-
-                        <div class="card-body pt-0">
-                            <div>
-                                <div class="table-responsive table-desi">
-                                    <table class="user-table transactions-table table border-0">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="transactions-icon">
-                                                        <i data-feather="shield"></i>
-                                                    </div>
-                                                    <div class="transactions-name">
-                                                        <h6>Wallets</h6>
-                                                        <p>Starbucks</p>
-                                                    </div>
-                                                </td>
-
-                                                <td class="lost">-$74</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="td-color-1">
-                                                    <div class="transactions-icon">
-                                                        <i data-feather="check"></i>
-                                                    </div>
-                                                    <div class="transactions-name">
-                                                        <h6>Bank Transfer</h6>
-                                                        <p>Add Money</p>
-                                                    </div>
-                                                </td>
-
-                                                <td class="success">+$125</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="td-color-2">
-                                                    <div class="transactions-icon">
-                                                        <i data-feather="dollar-sign"></i>
-                                                    </div>
-                                                    <div class="transactions-name">
-                                                        <h6>Paypal</h6>
-                                                        <p>Add Money</p>
-                                                    </div>
-                                                </td>
-
-                                                <td class="lost">-$50</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="td-color-3">
-                                                    <div class="transactions-icon">
-                                                        <i data-feather="credit-card"></i>
-                                                    </div>
-                                                    <div class="transactions-name">
-                                                        <h6>Mastercard</h6>
-                                                        <p>Ordered Food</p>
-                                                    </div>
-                                                </td>
-
-                                                <td class="lost">-$40</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="td-color-4 pb-0">
-                                                    <div class="transactions-icon">
-                                                        <i data-feather="trending-up"></i>
-                                                    </div>
-                                                    <div class="transactions-name">
-                                                        <h6>Transfer</h6>
-                                                        <p>Refund</p>
-                                                    </div>
-                                                </td>
-
-                                                <td class="success pb-0">+$90</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="card-body p-0">
+                            <div id="bar-chart-user"></div>
                         </div>
                     </div>
                 </div>
+                <!-- Earning chart end-->
+
                 <!-- Transactions end-->
 
                 <!-- visitors chart start-->
@@ -340,5 +269,7 @@
         const aovData = @json($aovData);
         const monthsTotal = @json($monthsTotal);
         const netRevenue = @json($netRevenue);
+        const usersData = @json($usersData);
+        const monthsUser = @json($monthsUser);
     </script>
 @endsection
