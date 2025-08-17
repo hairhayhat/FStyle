@@ -10,7 +10,7 @@
                             <tr class="table-head">
                                 <th scope="col">Ảnh</th>
                                 <th scope="col">Tên sản phẩm</th>
-                                <th scope="col">Danh mục</th>
+                                {{-- <th scope="col">Danh mục</th> --}}
                                 <th scope="col">Thông tin</th>
                                 <th scope="col">Số lượng</th>
                                 <th scope="col">Giá tiền</th>
@@ -26,7 +26,7 @@
 
                                 <tr>
                                     <td>
-                                        <a href="product-left-sidebar.html">
+                                        <a href="{{ route('product.detail', ['slug' => $product->slug]) }}">
                                             <img src="{{ asset('storage/' . $product->image) }}" class="blur-up lazyload"
                                                 alt="">
                                         </a>
@@ -34,9 +34,9 @@
                                     <td>
                                         <p class="m-0">{{ $product->name }}</p>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <p class="fs-6 m-0">{{ $product->category->name }}</p>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <p class="theme-color fs-6">{{ $item->color }}, {{ $item->size }}</p>
                                     </td>
@@ -49,6 +49,12 @@
                                         <p class="m-0">{{ $item->quantity * $item->price }}</p>
                                     </td>
                                     <td>
+                                        <button class="btn btn-success remove-item" data-id="{{ $item->id }}"><i
+                                                class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-solid-default fw-bold cart-action-btn"
+                                            data-action="buy" data-id="{{ $variant->id }}">
+                                            <i class="fa fa-bolt"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach

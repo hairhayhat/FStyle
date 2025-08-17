@@ -2,26 +2,63 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
-use App\Models\OrderDetail;
 use App\Models\Payment;
+use App\Models\Product;
+use App\Models\OrderDetail;
+use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Voucher;
 
 class CheckoutController extends Controller
 {
-    public function checkout()
+    public function checkout(Request $request)
     {
-        $cart = Auth::user()->cart;
-        $addresses = Auth::user()->addresses;
+        if ($request->get('type') === 'buy_now') {
+            $buyNow = session('buy_now');
+            if (!$buyNow) {
+                return redirect()->route('client.welcome')
+                    ->withErrors('Không có sản phẩm nào để mua ngay.');
+            }
 
+            // Lấy đầy đủ thông tin variant kèm product
+            $variant = ProductVariant::with('product')
+                ->find($buyNow['product_variant_id']);
+
+            $cartItems = collect([
+                (object) [
+                    'productVariant' => $variant,
+                    'price' => $variant->sale_price ?? $variant->price ?? 0,
+                    'quantity' => $buyNow['quantity'],
+                    'color' => $variant->color->name,
+                    'size' => $variant->size->name
+                ]
+            ]);
+
+
+            $total = $cartItems->sum(function ($item) {
+                $price = $item->productVariant->sale_price ?? $item->productVariant->price ?? 0;
+                return $price * $item->quantity;
+            });
+
+            $addresses = Auth::user()->addresses;
+            $vouchers = Voucher::all();
+            return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
+        }
+
+        // Trường hợp giỏ hàng bình thường
+        $cart = Auth::user()->cart;
         $cartItems = $cart->details()->with('productVariant.product')->get();
         $total = $cartItems->sum(function ($item) {
-            return ($item->productVariant->sale_price ?? 0) * $item->quantity;
+            $price = $item->productVariant->sale_price ?? $item->productVariant->price ?? 0;
+            return $price * $item->quantity;
         });
-        return view('client.checkout', compact('cartItems', 'total', 'addresses'));
+        $addresses = Auth::user()->addresses;
+        $vouchers = Voucher::all();
+        return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
     }
 
     public function index()
@@ -136,6 +173,48 @@ class CheckoutController extends Controller
         $order->save();
 
         return response()->json(['success' => true]);
+    }
+
+    public function reBuy($id)
+    {
+        $order = Order::with('orderDetails.productVariant')->findOrFail($id);
+        $cart = Auth::user()->cart;
+
+        if (!$cart) {
+            return response()->json(['success' => false, 'message' => 'Giỏ hàng không tồn tại']);
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($order->orderDetails as $detail) {
+                $existingItem = $cart->details()
+                    ->where('product_variant_id', $detail->product_variant_id)
+                    ->where('size', $detail->size)
+                    ->where('color', $detail->color)
+                    ->first();
+
+                if ($existingItem) {
+                    $existingItem->update([
+                        'quantity' => $existingItem->quantity + $detail->quantity
+                    ]);
+                } else {
+                    $cart->details()->create([
+                        'product_variant_id' => $detail->product_variant_id,
+                        'quantity' => $detail->quantity,
+                        'price' => $detail->price,
+                        'size' => $detail->size,
+                        'color' => $detail->color,
+                    ]);
+                }
+            }
+            $order->delete();
+
+            DB::commit();
+            return redirect()->route('client.cart');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
 

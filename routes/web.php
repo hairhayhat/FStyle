@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
+use App\Models\Favorite;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\CheckoutController;
-use App\Http\Controllers\Client\ProfileController as ClientProfileController;
-use App\Http\Controllers\Admin\ProductVariantController;
-use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
-use App\Http\Controllers\Admin\SizeController;
-use App\Http\Controllers\Client\FavoriteController;
-use App\Http\Controllers\Client\AddressController;
 use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Client\SearchController;
-use App\Http\Controllers\ProfileController;
-use App\Models\Favorite;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Client\SearchController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Client\AddressController;
+use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\FavoriteController;
+use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -128,6 +129,7 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/cart-dropdown', [CartController::class, 'getDropdownHTML']);
     Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
     Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+    Route::post('/buy-now', [CartController::class, 'buyNow'])->name('client.cart.buyNow');
 
 
     Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');
@@ -136,7 +138,9 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/checkout/{code}', [CheckoutController::class, 'detail'])->name('client.checkout.detail');
     Route::post('/order/{id}/update-status', [CheckoutController::class, 'updateStatus'])->name('client.update.status');
     Route::post('/order/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('client.cancel.order');
+    Route::post('/checkout/{order}/rebuy', [CheckoutController::class, 'reBuy'])->name('client.checkout.rebuy');
 
+    Route::post('/voucher/check', [ClientVoucherController::class, 'check'])->name('voucher.check');
 
 });
 require __DIR__ . '/auth.php';

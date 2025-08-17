@@ -88,7 +88,12 @@
                                             @elseif ($order->status === 'delivered')
                                                 <button type="button" class="btn btn-primary"> Đánh giá ngay</button>
                                             @elseif($order->status === 'cancelled')
-                                                <button type="button"> Mua lại</button>
+                                                <form
+                                                    action="{{ route('client.checkout.rebuy', ['order' => $order->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-warning"> Mua lại</button>
+                                                </form>
                                             @else
                                                 <button type="button" class="btn btn-danger btn-cancel-order"
                                                     data-order-id="{{ $order->id }}">Hủy

@@ -132,12 +132,21 @@
                                         </div>
 
                                         <div class="product-buttons">
-                                            <button type="button" id="addToCartBtn"
-                                                class="btn btn-solid hover-solid btn-animation">
+                                            <button type="button"
+                                                class="btn btn-solid hover-solid btn-animation cart-action-btn"
+                                                data-action="add">
                                                 <i class="fa fa-shopping-cart"></i>
                                                 <span>Thêm vào giỏ hàng</span>
                                             </button>
+
+                                            <button type="button"
+                                                class="btn btn-solid hover-solid btn-animation cart-action-btn"
+                                                data-action="buy">
+                                                <i class="fa fa-bolt"></i>
+                                                <span>Mua ngay</span>
+                                            </button>
                                         </div>
+
                                     </form>
 
                                 </div>
@@ -158,8 +167,8 @@
                                 <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
                                     data-bs-target="#desc" type="button">Mô tả</button>
 
-                                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#review"
-                                    type="button">Bình luận</button>
+                                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                    data-bs-target="#review" type="button">Bình luận</button>
                             </div>
                         </nav>
 

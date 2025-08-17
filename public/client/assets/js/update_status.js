@@ -29,9 +29,12 @@ $(document).ready(function () {
                                 confirmButtonText: 'Đánh giá',
                                 denyButtonText: 'Để sau',
                                 allowOutsideClick: false
-                            }).then(() => {
-                                // Chuyển đến trang đánh giá (nếu có)
-                                // window.location.href = `/order/${orderId}/review`;
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire("Saved!", "", "success");
+                                } else if (result.isDenied) {
+                                    window.location.reload();
+                                }
                             });
                         } else {
                             Swal.fire('Lỗi', 'Cập nhật trạng thái thất bại. Vui lòng thử lại.', 'error');
@@ -107,6 +110,7 @@ $('.btn-cancel-order').click(function () {
                 success: function (res) {
                     if (res.success) {
                         Swal.fire('Đã hủy đơn', 'Đơn hàng của bạn đã được hủy.', 'success');
+                        window.location.reload();
                     } else {
                         Swal.fire('Lỗi', 'Hủy đơn thất bại, vui lòng thử lại.', 'error');
                     }
