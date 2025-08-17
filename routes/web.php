@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
+    Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     // Category Routes
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
 

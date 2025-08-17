@@ -116,8 +116,9 @@
                                 <li class="onhover-dropdown">
                                     <div class="cart-media">
                                         @auth
-                                            <img src="{{ asset('storage/avatars/' . Auth::user()->avatar) }}" alt="avatar"
-                                                class="rounded-circle" style="width:32px;height:32px;object-fit:cover;">
+                                            <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}"
+                                                alt="Avatar" class="rounded-circle"
+                                                style="width:32px;height:32px;object-fit:cover;">
                                         @else
                                             <i data-feather="user"></i>
                                         @endauth
@@ -155,7 +156,7 @@
                                             <span class="label label-theme rounded-pill">5</span>
                                         </a>
                                     </div>
-                                   
+
                                 </li>
                                 <li class="onhover-dropdown cart-dropdown">
                                     <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">
