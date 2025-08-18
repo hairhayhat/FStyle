@@ -1,24 +1,28 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\CheckoutController;
-use App\Http\Controllers\Client\ProfileController as ClientProfileController;
-use App\Http\Controllers\Admin\ProductVariantController;
-use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
-use App\Http\Controllers\Admin\SizeController;
-use App\Http\Controllers\Client\FavoriteController;
-use App\Http\Controllers\Client\AddressController;
-use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Client\SearchController;
-use App\Http\Controllers\ProfileController;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Client\SearchController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Client\AddressController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\FavoriteController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Client\ProfileController as ClientProfileController;
+use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
+use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -100,6 +104,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');
+    Route::get('/orders/{code}', [OrderController::class, 'detail'])->name('admin.order.detail');
+
+    Route::get('/notification/fetch', [NotificationController::class, 'fetchNotification'])->name('admin.fetch.notification');
+    Route::post('/notification/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('admin.notification.markAsRead');
+    Route::post('/notification/{id}/assign-admin', [NotificationController::class, 'assignedAdmin'])->name('admin.notification.assignAdmin');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
@@ -128,7 +137,7 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/cart-dropdown', [CartController::class, 'getDropdownHTML']);
     Route::post('/remove-from-cart', [CartController::class, 'remove'])->name('cart.remove');
     Route::put('/cart/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
-
+    Route::post('/buy-now', [CartController::class, 'buyNow'])->name('client.cart.buyNow');
 
     Route::get('/checkout/index', [CheckoutController::class, 'index'])->name('client.checkout.index');
     Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('client.checkout');
@@ -136,7 +145,15 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/checkout/{code}', [CheckoutController::class, 'detail'])->name('client.checkout.detail');
     Route::post('/order/{id}/update-status', [CheckoutController::class, 'updateStatus'])->name('client.update.status');
     Route::post('/order/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('client.cancel.order');
+    Route::post('/checkout/{order}/rebuy', [CheckoutController::class, 'reBuy'])->name('client.checkout.rebuy');
 
+    Route::post('/voucher/check', [ClientVoucherController::class, 'check'])->name('voucher.check');
+
+    Route::get('/notification/fetch', [ClientNotificationController::class, 'fetchNotification'])->name('client.fetch.notification');
+    Route::post('/notification/{id}/mark-as-read', [ClientNotificationController::class, 'markAsRead'])->name('client.notification.markAsRead');
+
+    Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+    Route::get('/payment/vnpay/ipn', [VNPayController::class, 'ipn'])->name('vnpay.ipn');
 
 });
 require __DIR__ . '/auth.php';

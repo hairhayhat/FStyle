@@ -8,12 +8,12 @@
                     <h3 class="mb-3">Địa chỉ nhận hàng</h3>
                     <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate>
                         @csrf
+                        <input type="hidden" name="voucher_code" id="voucher_code_input">
                         <div class="save-details-box" id="addressList">
                             <div class="row g-3">
                                 @foreach ($addresses as $item)
                                     <div class="col-xl-4 col-md-6">
                                         <label class="save-details">
-                                            <!-- Thêm required vào 1 radio để bắt buộc chọn -->
                                             <input type="radio" name="selected_address" value="{{ $item->id }}"
                                                 @if ($item->is_default) checked @endif required>
 
@@ -85,36 +85,79 @@
                 <div class="col-lg-4">
                     <div class="your-cart-box">
                         <h3 class="mb-3 d-flex text-capitalize">Giỏ hàng<span
-                                class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">3</span>
+                                class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">{{ count($cartItems) }}</span>
                         </h3>
                         <ul class="list-group mb-3">
                             @foreach ($cartItems as $item)
                                 @php
-                                    $variant = $item->productVariant;
-                                    $product = $variant?->product;
+                                    if (is_array($item)) {
+                                        $variant = $item['productVariant'];
+                                        $product = $variant->product ?? null;
+                                        $quantity = $item['quantity'];
+                                        $price = $variant->sale_price ?? 0;
+                                        $color = $item['color'] ?? null;
+                                        $size = $item['size'] ?? null;
+                                    } else {
+                                        $variant = $item->productVariant;
+                                        $product = $variant?->product;
+                                        $quantity = $item->quantity;
+                                        $price = $item->price;
+                                        $color = $item->color;
+                                        $size = $item->size;
+                                    }
                                 @endphp
 
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
-                                        <h6 class="my-0">{{ $product->name }}</h6>
-                                        <small>{{ $item->color }}, Size {{ $item->size }}, {{ $item->quantity }}
+                                        <h6 class="my-0">{{ $product?->name }}</h6>
+                                        <small>{{ $color }}, Size {{ $size }}, {{ $quantity }}
                                             cái</small>
                                     </div>
-                                    <span> {{ $item->quantity * $item->price }}đ </span>
+                                    <span>{{ number_format($quantity * $price) }}đ/cái</span>
                                 </li>
                             @endforeach
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div>
+                                    <h6 class="my-0">Mã giảm giá</h6>
+                                    <small></small>
+                                </div>
+                                <span id="voucher-discount">-0đ</span>
+                            </li>
+
                             <li class="list-group-item d-flex lh-condensed justify-content-between">
                                 <span class="fw-bold">Tổng (Vnđ)</span>
-                                <strong>{{ $total }}</strong>
+                                <strong id="cart-total-display" data-total="{{ $total }}">
+                                    {{ number_format($total) }}đ
+                                </strong>
                             </li>
                         </ul>
 
                         <form class="card border-0">
                             <div class="input-group custome-imput-group">
-                                <input type="text" class="form-control" placeholder="Promo code">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-solid-default rounded-0">Redeem</button>
-                                </div>
+                                <select class="form-control" id="voucher-select">
+                                    <option value="">Chọn mã khuyến mãi</option>
+                                    @foreach ($vouchers as $item)
+                                        @if ($item->type == 'percent')
+                                            <option value="{{ $item->code }}" data-type="percent"
+                                                data-value="{{ (int) $item->value }}"
+                                                data-max="{{ $item->max_discount_amount }}"
+                                                data-min="{{ $item->min_order_amount }}">
+                                                Giảm {{ (int) $item->value }}%. Tối đa
+                                                {{ number_format($item->max_discount_amount) }}đ
+                                                cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
+                                            </option>
+                                        @else
+                                            <option value="{{ $item->code }}" data-type="fixed"
+                                                data-value="{{ $item->value }}"
+                                                data-max="{{ $item->max_discount_amount }}"
+                                                data-min="{{ $item->min_order_amount }}">
+                                                Giảm {{ number_format($item->value, 0) }}đ. Tối đa
+                                                {{ number_format($item->max_discount_amount) }}đ
+                                                cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                         </form>
                     </div>

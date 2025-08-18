@@ -29,9 +29,12 @@ $(document).ready(function () {
                                 confirmButtonText: 'Đánh giá',
                                 denyButtonText: 'Để sau',
                                 allowOutsideClick: false
-                            }).then(() => {
-                                // Chuyển đến trang đánh giá (nếu có)
-                                // window.location.href = `/order/${orderId}/review`;
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire("Saved!", "", "success");
+                                } else if (result.isDenied) {
+                                    window.location.reload();
+                                }
                             });
                         } else {
                             Swal.fire('Lỗi', 'Cập nhật trạng thái thất bại. Vui lòng thử lại.', 'error');
@@ -66,7 +69,6 @@ $('.btn-cancel-order').click(function () {
         confirmButtonText: 'Xác nhận hủy',
         cancelButtonText: 'Hủy bỏ',
         preConfirm: () => {
-            // Lấy lý do được chọn hoặc nhập
             let selectedReason = $('input[name="cancelReason"]:checked').val();
             let customReason = $('#customReason').val().trim();
 
@@ -83,7 +85,6 @@ $('.btn-cancel-order').click(function () {
             return selectedReason === 'Khác' ? customReason : selectedReason;
         },
         didOpen: () => {
-            // Hiện/ẩn textarea khi chọn "Khác"
             $('input[name="cancelReason"]').change(function () {
                 if ($('#reasonOtherRadio').is(':checked')) {
                     $('#customReason').show().focus();
@@ -95,7 +96,6 @@ $('.btn-cancel-order').click(function () {
     }).then((result) => {
         if (result.isConfirmed) {
             const reason = result.value;
-            // Gửi lý do về server xử lý hủy đơn
             $.ajax({
                 url: `/client/order/${orderId}/cancel`,
                 method: 'POST',
@@ -107,6 +107,7 @@ $('.btn-cancel-order').click(function () {
                 success: function (res) {
                     if (res.success) {
                         Swal.fire('Đã hủy đơn', 'Đơn hàng của bạn đã được hủy.', 'success');
+                        window.location.reload();
                     } else {
                         Swal.fire('Lỗi', 'Hủy đơn thất bại, vui lòng thử lại.', 'error');
                     }

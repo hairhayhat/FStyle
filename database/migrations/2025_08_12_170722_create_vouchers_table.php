@@ -10,16 +10,16 @@ class CreateVouchersTable extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique(); // mã voucher
-            $table->enum('type', ['fixed','percent'])->default('fixed'); // kiểu: tiền cố định hoặc %
-            $table->decimal('value', 12, 2); // giá trị (số tiền hoặc %)
-            $table->decimal('min_order_amount', 12, 2)->default(0); // giá trị tối thiểu đơn hàng
+            $table->string('code')->unique();
+            $table->enum('type', ['fixed', 'percent'])->default('fixed');
+            $table->decimal('value', 12, 2);
+            $table->decimal('min_order_amount', 12, 2)->default(0);
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('expires_at')->nullable();
-            $table->unsignedInteger('usage_limit')->nullable(); // tổng số lần có thể dùng (null = vô hạn)
-            $table->unsignedInteger('used_count')->default(0); // đã dùng bao nhiêu lần
+            $table->unsignedInteger('usage_limit')->nullable();
+            $table->unsignedInteger('used_count')->default(0);
             $table->boolean('active')->default(true);
-            $table->json('meta')->nullable(); // lưu thêm điều kiện (ví dụ chỉ cho category X...)
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }

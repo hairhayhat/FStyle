@@ -18,7 +18,7 @@ class HomeController extends Controller
             ->take(5)
             ->get();
         $favoriteProductIds = [];
-        $products= Product::with(['category', 'variants', 'galleries'])
+        $products = Product::with(['category', 'variants', 'galleries'])
             ->orderBy('created_at', 'desc')
             ->paginate(8);
         $categories = Category::all();
@@ -26,7 +26,7 @@ class HomeController extends Controller
         if (Auth::check()) {
             $favoriteProductIds = Auth::user()->favorites->pluck('id')->toArray();
         }
-        return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories','products'));
+        return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories', 'products'));
     }
 
     public function show($slug)
@@ -77,7 +77,10 @@ class HomeController extends Controller
             $product = Product::with(['category', 'variants', 'galleries'])
                 ->where('slug', $slug)
                 ->firstOrFail();
-
+            if (is_null($product->views)) {
+                $product->views = 0;
+                $product->save();
+            }
             $product->increment('views');
             $sizes = Size::all();
             $sameCateProducts = Product::with(['category', 'variants', 'galleries'])
@@ -91,7 +94,7 @@ class HomeController extends Controller
             }
 
             return view('client.product.detail', compact('product', 'sizes', 'sameCateProducts', 'favoriteProductIds'));
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return back()->with('error', 'Sản phẩm không tồn tại');
         }
     }

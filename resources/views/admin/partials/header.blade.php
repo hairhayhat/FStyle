@@ -38,41 +38,10 @@
                 <li class="onhover-dropdown">
                     <div class="notification-box">
                         <span class="lnr lnr-alarm"></span>
-                        <span class="badge rounded-pill badge-theme">4</span>
+                        <span class="badge rounded-pill badge-theme"></span>
                     </div>
-                    <ul class="notification-dropdown onhover-show-div">
-                        <li>
-                            <span class="lnr lnr-alarm"></span>
-                            <h6 class="f-18 mb-0">Notitications</h6>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-circle-o me-3 font-primary"></i>Delivery processing <span
-                                    class="pull-right">10
-                                    min.</span>
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-circle-o me-3 font-success"></i>Order Complete<span class="pull-right">1
-                                    hr</span>
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-circle-o me-3 font-info"></i>Tickets Generated<span class="pull-right">3
-                                    hr</span>
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-circle-o me-3 font-danger"></i>Delivery Complete<span
-                                    class="pull-right">6 hr</span>
-                            </p>
-                        </li>
-                        <li>
-                            <a class="btn btn-primary" href="javascript:void(0)">Check all notification</a>
-                        </li>
+
+                    <ul class="notification-dropdown onhover-show-div" style="max-height: 300px; overflow-y: auto;">
                     </ul>
                 </li>
 

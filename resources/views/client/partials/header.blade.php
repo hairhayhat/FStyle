@@ -68,7 +68,7 @@
                                                 @foreach ($categories as $item)
                                                     <li>
                                                         <a
-                                                            href="{{route('search.category', ["slug" => $item->slug])}}">{{$item->name}}</a>
+                                                            href="{{ route('search.category', ['slug' => $item->slug]) }}">{{ $item->name }}</a>
                                                     </li>
                                                 @endforeach
 
@@ -91,7 +91,8 @@
                                             </ul>
                                         </li>
                                         <li class="mobile-poster d-flex d-xl-none">
-                                            <img src="client/assets/assets/images/pwa.png" class="img-fluid" alt="">
+                                            <img src="client/assets/assets/images/pwa.png" class="img-fluid"
+                                                alt="">
                                             <div class="mobile-contain">
                                                 <h5>Enjoy app-like experience</h5>
                                                 <p class="font-light">With this Screen option you can use Website
@@ -149,14 +150,25 @@
                                     </div>
                                 </li>
 
-                                <li class="onhover-dropdown wislist-dropdown">
+                                <li class="onhover-dropdown notification-dropdown">
                                     <div class="cart-media">
-                                        <a href="{{ route('client.wishlist') }}">
-                                            <i data-feather="heart"></i>
-                                            <span class="label label-theme rounded-pill">5</span>
+                                        <a href="#" class="notification-icon">
+                                            <i data-feather="bell"></i>
+                                            <span class="label label-theme rounded-pill notification-badge">0</span>
                                         </a>
                                     </div>
-
+                                    <div class="onhover-div notification-menu">
+                                        <div class="notification-header">
+                                            <i class="lnr lnr-alarm"></i>
+                                            <h6>Thông báo</h6>
+                                        </div>
+                                        <div class="notification-list">
+                                        </div>
+                                        <div class="notification-footer">
+                                            <a href="/admin/notifications" class="btn btn-solid-default w-100">Kiểm tra toàn
+                                                bộ thông báo</a>
+                                        </div>
+                                    </div>
                                 </li>
                                 <li class="onhover-dropdown cart-dropdown">
                                     <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">

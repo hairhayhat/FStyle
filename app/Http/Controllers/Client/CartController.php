@@ -26,56 +26,19 @@ class CartController extends Controller
 
     public function addToCart(Request $request): JsonResponse
     {
+        if ($request->product_variant_id == 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại hoặc đã hết hàng. Vui lòng chọn sản phẩm khác',
+            ], 400);
+        }
+
         $userId = Auth::user()->id;
 
-        // Xử lý trường hợp thêm từ wishlist (có color_id và size_id)
-        if ($request->has('color_id') && $request->has('size_id')) {
-            $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'color_id' => 'required|exists:colors,id',
-                'size_id' => 'required|exists:sizes,id',
-                'quantity' => 'required|integer|min:1',
-            ]);
-
-            // Tìm product variant dựa trên product_id, color_id, size_id
-            $variant = ProductVariant::where('product_id', $request->product_id)
-                ->where('color_id', $request->color_id)
-                ->where('size_id', $request->size_id)
-                ->where('quantity', '>', 0)
-                ->first();
-
-            if (!$variant) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Biến thể sản phẩm không tồn tại hoặc đã hết hàng',
-                ], 400);
-            }
-
-            // Kiểm tra số lượng
-            if ($request->quantity > $variant->quantity) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Số lượng vượt quá tồn kho. Chỉ còn ' . $variant->quantity . ' sản phẩm',
-                ], 400);
-            }
-
-            $productVariantId = $variant->id;
-        } else {
-            // Xử lý trường hợp thêm trực tiếp (có product_variant_id)
-            if ($request->product_variant_id == 0) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Sản phẩm không tồn tại hoặc đã hết hàng. Vui lòng chọn sản phẩm khác',
-                ], 400);
-            }
-
-            $request->validate([
-                'product_variant_id' => 'required|exists:product_variants,id',
-                'quantity' => 'required|integer|min:1',
-            ]);
-
-            $productVariantId = $request->product_variant_id;
-        }
+        $request->validate([
+            'product_variant_id' => 'required|exists:product_variants,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId],
@@ -83,7 +46,7 @@ class CartController extends Controller
         );
 
         $existingItem = CartDetail::where('cart_id', $cart->id)
-            ->where('product_variant_id', $productVariantId)
+            ->where('product_variant_id', $request->product_variant_id)
             ->first();
 
         if ($existingItem) {
@@ -91,7 +54,7 @@ class CartController extends Controller
             $existingItem->save();
         } else {
             $variant = ProductVariant::with('product', 'color', 'size')
-                ->find($productVariantId);
+                ->find($request->product_variant_id);
 
             CartDetail::create([
                 'cart_id' => $cart->id,
@@ -103,15 +66,37 @@ class CartController extends Controller
             ]);
         }
 
-        // Lấy tổng số lượng sản phẩm trong giỏ hàng
-        $cartCount = $cart->details()->sum('quantity');
-
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Đã thêm vào giỏ hàng thành công',
-            'cart_count' => $cartCount
         ]);
     }
+
+    public function buyNow(Request $request)
+    {
+        $request->validate([
+            'product_variant_id' => 'required|exists:product_variants,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $variant = ProductVariant::with('product')->findOrFail($request->product_variant_id);
+
+        $buyNowData = [
+            'product_variant_id' => $variant->id,
+            'price' => $variant->price,
+            'quantity' => $request->quantity,
+            'size' => $variant->size->name,
+            'color' => $variant->color->name
+        ];
+
+        session()->put('buy_now', $buyNowData);
+
+        return response()->json([
+            'success' => true,
+            'redirect_url' => route('client.checkout', ['type' => 'buy_now'])
+        ]);
+    }
+
 
     public function getDropdownHTML()
     {

@@ -6,13 +6,14 @@ const chartData = monthsTotal.map((month, index) => {
         goals: [
             {
                 name: "Expected",
-                value: 1400, // giá trị mục tiêu cố định, hoặc bạn có thể dùng mảng $expected
+                value: 1400,
                 strokeWidth: 5,
                 strokeColor: "#775DD0",
             },
         ],
     };
 });
+
 var options = {
     series: [
         {
@@ -36,14 +37,38 @@ var options = {
     legend: {
         show: false,
     },
+
+    yaxis: {
+        labels: {
+            formatter: function (val) {
+                return val.toLocaleString("vi-VN");
+            },
+        },
+        title: {
+            text: "Doanh thu thuần",
+        },
+    },
+
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val.toLocaleString("vi-VN") + " ₫";
+            },
+        },
+        x: {
+            formatter: function (val) {
+                return "Tháng " + val;
+            },
+        },
+    },
 };
+
 var chart = new ApexCharts(
     document.querySelector("#bar-chart-earning"),
     options
 );
 chart.render();
 
-// expenses cart
 
 var options = {
     series: [
@@ -65,7 +90,7 @@ var options = {
         toolbar: { show: false },
     },
 
-    colors: ["#e22454", "#2483e2"], // đỏ AOV, xanh Orders
+    colors: ["#e22454", "#2483e2"],
 
     stroke: {
         width: 3,
@@ -79,16 +104,47 @@ var options = {
         title: { text: "Tháng" },
     },
 
-    // Trục Y kép
     yaxis: [
         {
             title: { text: "Doanh thu trung bình mỗi đơn" },
+            labels: {
+                formatter: function (val) {
+                    return val.toLocaleString("vi-VN");
+                },
+            },
         },
         {
             opposite: true,
             title: { text: "Số đơn hàng" },
+            labels: {
+                formatter: function (val) {
+                    return val;
+                },
+            },
         },
     ],
+
+    tooltip: {
+        shared: true,
+        intersect: false,
+        y: [
+            {
+                formatter: function (val) {
+                    return val.toLocaleString("vi-VN") + " ₫";
+                },
+            },
+            {
+                formatter: function (val) {
+                    return val;
+                },
+            },
+        ],
+        x: {
+            formatter: function (val) {
+                return "Tháng " + val;
+            }
+        }
+    },
 
     legend: {
         show: true,
@@ -142,18 +198,16 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#bar-chart-user"), options);
 chart.render();
 
-//pie chart for visitors
 var options = {
-    series: [44, 55, 41, 17],
+    series: totalPercen,
     labels: [
-        "The Passersby",
-        "The Occasionals",
-        "The Regulars",
-        "The Superfans",
+        "COD",
+        "VNPay",
+        "Momo",
+        "ZaloPay",
     ],
     chart: {
-        width: "100%",
-        height: 275,
+        height: 320,
         type: "donut",
     },
 
