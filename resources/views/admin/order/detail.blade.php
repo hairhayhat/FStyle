@@ -117,6 +117,9 @@
                                                     </li>
                                                     <li>Trạng thái: <strong> {{ getStatusName($order->status) }}</strong>
                                                     </li>
+                                                    @if ($order->status == 'cancelled')
+                                                        <li>Lý do hủy: {{ $order->note }}</li>
+                                                    @endif
                                                     <li>Tổng hóa đơn:
                                                         {{ number_format($order->total_amount, 0, ',', '.') }}đ</li>
                                                 </ul>

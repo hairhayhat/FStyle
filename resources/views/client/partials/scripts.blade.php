@@ -43,3 +43,4 @@
     <script src="{{ asset('client/assets/js/update_status.js') }}"></script>
     <script src="{{ asset('client/assets/js/check_voucher.js') }}"></script>
     <script src="{{ asset('client/assets/js/sticky-cart-bottom.js') }}"></script>
+    <script src="{{ asset('client/assets/js/fetch-notification.js') }}"></script>

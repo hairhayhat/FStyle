@@ -3,130 +3,170 @@
 namespace App\Services;
 
 use App\Models\Order;
-use Carbon\Carbon;
 use App\Models\User;
-
+use App\Models\Notification;
+use Carbon\Carbon;
+use App\Models\Payment;
 class DashboardService
 {
-    public function getOrdersAndAOVByMonth($from_date = null, $to_date = null): array
+    public function getOrdersAndAOVByMonth(?string $from_date = null, ?string $to_date = null): array
     {
-        $query = Order::query();
+        return $this->getMonthlyMetrics(
+            Order::query(),
+            [
+                'COUNT(*) as total_orders',
+                'SUM(total_amount) as total_revenue',
+                'SUM(total_amount) / COUNT(*) as avg_order_value'
+            ],
+            $from_date,
+            $to_date,
+            ['ordersData' => 'total_orders', 'aovData' => 'avg_order_value']
+        );
+    }
 
-        // Nếu có from_date và to_date thì lọc theo khoảng ngày
-        if ($from_date && $to_date) {
-            $query->whereBetween('created_at', [
-                Carbon::parse($from_date)->startOfDay(),
-                Carbon::parse($to_date)->endOfDay()
-            ]);
-        } else {
-            // Ngược lại lọc theo năm hiện tại
-            $year = Carbon::now()->year;
-            $query->whereYear('created_at', $year);
-        }
+    public function getNetRevenueByMonth(?string $from_date = null, ?string $to_date = null): array
+    {
+        return $this->getMonthlyMetrics(
+            Order::query(),
+            ['SUM(total_amount) as revenue'],
+            $from_date,
+            $to_date,
+            ['netRevenue' => 'revenue']
+        );
+    }
 
-        // Đếm số đơn hàng theo tháng
-        $orderCounts = (clone $query)
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total_orders')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total_orders', 'month');
+    public function getUsersByMonth(?string $from_date = null, ?string $to_date = null): array
+    {
+        return $this->getMonthlyMetrics(
+            User::query(),
+            ['COUNT(*) as total_users'],
+            $from_date,
+            $to_date,
+            ['usersData' => 'total_users']
+        );
+    }
 
-        // Tính AOV (Average Order Value) theo tháng
-        $aov = (clone $query)
-            ->selectRaw('MONTH(created_at) as month, SUM(total_amount) / COUNT(*) as avg_order_value')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('avg_order_value', 'month');
+    public function getUserNotificationsByMonth(?string $from_date = null, ?string $to_date = null): array
+    {
+        return $this->getMonthlyMetrics(
+            Notification::query()->where('type', 'user_to_admin'),
+            ['COUNT(*) as total'],
+            $from_date,
+            $to_date,
+            ['notificationsData' => 'total']
+        );
+    }
 
-        // Chuẩn hóa đủ 12 tháng
-        $months = range(1, 12);
-        $ordersData = [];
-        $aovData = [];
+    public function getDeleveryAndCancellByMonth(?string $from_date = null, ?string $to_date = null): array
+    {
+        return $this->getMonthlyMetrics(
+            Order::query()->whereIn('status', ['delivered', 'cancelled']),
+            [
+                'SUM(CASE WHEN status = "delivered" THEN 1 ELSE 0 END) as total_delivered',
+                'SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) as total_cancelled'
+            ],
+            $from_date,
+            $to_date,
+            ['deliveredData' => 'total_delivered', 'cancelledData' => 'total_cancelled']
+        );
+    }
 
-        foreach ($months as $m) {
-            $ordersData[] = $orderCounts[$m] ?? 0;
-            $aovData[] = $aov[$m] ?? 0;
+    public function getPercentageOfPayment(?string $from_date = null, ?string $to_date = null): array
+    {
+        $period = $this->getDateRange($from_date, $to_date);
+
+        $paymentMethodsOrder = [
+            'COD',
+            'VNPay',
+            'MoMo',
+            'ZaloPay'
+        ];
+
+        $totalPayments = Payment::where('status', 'success')
+            ->whereBetween('created_at', [$period['start'], $period['end']])
+            ->count();
+
+        $percentages = array_fill(0, count($paymentMethodsOrder), 0);
+
+        if ($totalPayments > 0) {
+            $paymentCounts = Payment::where('status', 'success')
+                ->whereBetween('created_at', [$period['start'], $period['end']])
+                ->selectRaw('method, COUNT(*) as count')
+                ->groupBy('method')
+                ->pluck('count', 'method');
+
+            foreach ($paymentMethodsOrder as $index => $method) {
+                if (isset($paymentCounts[$method])) {
+                    $percentages[$index] = round(($paymentCounts[$method] / $totalPayments) * 100, 2);
+                }
+            }
         }
 
         return [
-            'months' => $months,
-            'ordersData' => $ordersData,
-            'aovData' => $aovData,
+            'payment_percentages' => $percentages,
+            'total_payments' => $totalPayments,
+            'period' => [
+                'start' => $period['start']->toDateString(),
+                'end' => $period['end']->toDateString()
+            ]
         ];
     }
 
-    public function getNetRevenueByMonth($from_date = null, $to_date = null): array
-    {
-        $query = Order::query();
+    protected function getMonthlyMetrics(
+        $query,
+        array $selects,
+        ?string $from_date,
+        ?string $to_date,
+        array $outputMappings
+    ): array {
+        $period = $this->getDateRange($from_date, $to_date);
+        $query->whereBetween('created_at', [$period['start'], $period['end']]);
 
-        if ($from_date && $to_date) {
-            // lọc theo ngày đầy đủ
-            $query->whereBetween('created_at', [
-                Carbon::parse($from_date)->startOfDay(),
-                Carbon::parse($to_date)->endOfDay()
-            ]);
-        } else {
-            // mặc định lọc theo năm hiện tại
-            $year = Carbon::now()->year;
-            $query->whereYear('created_at', $year);
-        }
-
-        // Doanh thu thuần theo tháng
-        $revenues = (clone $query)
-            ->selectRaw('MONTH(created_at) as month, SUM(total_amount) as revenue')
-            ->groupBy('month')
+        $results = (clone $query)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, ' . implode(', ', $selects))
+            ->groupBy('year', 'month')
+            ->orderBy('year')
             ->orderBy('month')
-            ->pluck('revenue', 'month');
+            ->get()
+            ->keyBy(fn($item) => $item->year . '-' . $item->month);
 
-        $months = range(1, 12);
-        $netRevenue = [];
+        return $this->formatMonthlyResults($period['start'], $period['end'], $results, $outputMappings);
+    }
 
-        foreach ($months as $m) {
-            $netRevenue[] = $revenues[$m] ?? 0;
+    protected function getDateRange(?string $from_date, ?string $to_date): array
+    {
+        if ($from_date && $to_date) {
+            return [
+                'start' => Carbon::parse($from_date)->startOfMonth(),
+                'end' => Carbon::parse($to_date)->endOfMonth()
+            ];
         }
 
         return [
-            'months' => $months,
-            'netRevenue' => $netRevenue,
+            'start' => Carbon::now()->startOfYear(),
+            'end' => Carbon::now()->endOfYear()
         ];
     }
 
-    public function getUsersByMonth($from_date = null, $to_date = null): array
+    protected function formatMonthlyResults(Carbon $start, Carbon $end, $results, array $outputMappings): array
     {
-        $query = User::query();
-
-        // Nếu có khoảng ngày thì lọc theo from_date - to_date
-        if ($from_date && $to_date) {
-            $query->whereBetween('created_at', [
-                Carbon::parse($from_date)->startOfDay(),
-                Carbon::parse($to_date)->endOfDay()
-            ]);
-        } else {
-            // Nếu không có thì mặc định lấy theo năm hiện tại
-            $year = Carbon::now()->year;
-            $query->whereYear('created_at', $year);
+        $formatted = ['months' => []];
+        foreach ($outputMappings as $key => $field) {
+            $formatted[$key] = [];
         }
 
-        // Đếm user đăng ký theo tháng
-        $userCounts = (clone $query)
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total_users')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total_users', 'month');
+        $current = $start->copy();
+        while ($current <= $end) {
+            $key = $current->format('Y-n');
+            $formatted['months'][] = $current->format('Y-m');
 
-        // Chuẩn hóa 12 tháng
-        $months = range(1, 12);
-        $usersData = [];
+            foreach ($outputMappings as $outputKey => $field) {
+                $formatted[$outputKey][] = $results[$key]->$field ?? 0;
+            }
 
-        foreach ($months as $m) {
-            $usersData[] = $userCounts[$m] ?? 0;
+            $current->addMonth();
         }
 
-        return [
-            'months' => $months,
-            'usersData' => $usersData,
-        ];
+        return $formatted;
     }
-
-
 }

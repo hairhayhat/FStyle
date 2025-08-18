@@ -15,16 +15,15 @@ class NotificationService
      * @param string $message
      * @param string|null $link
      * @param int|null $relatedId
-     * @param string $type
      * @return Notification
      */
-    public function notifyAdmins(string $title, string $message, string $type, string $link = null, int $relatedId = null)
+    public function notifyAdmins(string $title, string $message, string $link = null, int $relatedId = null)
     {
         $notification = Notification::create([
             'title' => $title,
             'message' => $message,
             'link' => $link,
-            'type' => $type,
+            'type' => 'user_to_admin',
             'related_id' => $relatedId,
         ]);
 

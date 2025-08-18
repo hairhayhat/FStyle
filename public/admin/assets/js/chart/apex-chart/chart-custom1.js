@@ -198,18 +198,16 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#bar-chart-user"), options);
 chart.render();
 
-//pie chart for visitors
 var options = {
-    series: [44, 55, 41, 17],
+    series: totalPercen,
     labels: [
-        "The Passersby",
-        "The Occasionals",
-        "The Regulars",
-        "The Superfans",
+        "COD",
+        "VNPay",
+        "Momo",
+        "ZaloPay",
     ],
     chart: {
-        width: "100%",
-        height: 275,
+        height: 320,
         type: "donut",
     },
 

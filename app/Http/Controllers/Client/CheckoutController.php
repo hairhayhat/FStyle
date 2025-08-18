@@ -175,7 +175,6 @@ class CheckoutController extends Controller
             $this->notificationService->notifyAdmins(
                 'Bạn có đơn hàng mới',
                 "Tài khoản {$user->name} đã đặt đơn #{$order->code}",
-                'order',
                 "/admin/orders/{$order->code}",
                 $order->id
             );
@@ -205,18 +204,32 @@ class CheckoutController extends Controller
     public function cancelOrder(Request $request, $id)
     {
         $request->validate([
-            'reason' => 'required|string|max:1000',
-            'status' => 'required|string|in:pending,shipped,delivered,cancelled'
+            'reason' => 'required|string|max:1000'
         ]);
 
         $order = Order::findOrFail($id);
-
-        $order->status = $request->status;
+        $order->status = 'cancelled';
         $order->note = $request->reason;
         $order->save();
 
-        return response()->json(['success' => true]);
+        if ($order->payment) {
+            $order->payment->update(['status' => 'failed']);
+        }
+
+        $this->notificationService->notifyAdmins(
+            "Đơn hàng đã bị huỷ",
+            "Tài khoản {$order->user->name} đã huỷ đơn hàng #{$order->code}",
+            "/admin/orders/{$order->code}",
+            $order->id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Huỷ đơn hàng thành công.',
+            'order' => $order
+        ]);
     }
+
 
     public function reBuy($id)
     {

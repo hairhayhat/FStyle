@@ -69,7 +69,6 @@ $('.btn-cancel-order').click(function () {
         confirmButtonText: 'Xác nhận hủy',
         cancelButtonText: 'Hủy bỏ',
         preConfirm: () => {
-            // Lấy lý do được chọn hoặc nhập
             let selectedReason = $('input[name="cancelReason"]:checked').val();
             let customReason = $('#customReason').val().trim();
 
@@ -86,7 +85,6 @@ $('.btn-cancel-order').click(function () {
             return selectedReason === 'Khác' ? customReason : selectedReason;
         },
         didOpen: () => {
-            // Hiện/ẩn textarea khi chọn "Khác"
             $('input[name="cancelReason"]').change(function () {
                 if ($('#reasonOtherRadio').is(':checked')) {
                     $('#customReason').show().focus();
@@ -98,7 +96,6 @@ $('.btn-cancel-order').click(function () {
     }).then((result) => {
         if (result.isConfirmed) {
             const reason = result.value;
-            // Gửi lý do về server xử lý hủy đơn
             $.ajax({
                 url: `/client/order/${orderId}/cancel`,
                 method: 'POST',

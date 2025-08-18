@@ -58,9 +58,9 @@
                 </li>
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
-                        <img class="user-profile rounded-circle" src="admin/assets/images/users/4.jpg" alt="">
+                        <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}" alt="Avatar">
                         <div class="user-name-hide media-body">
-                            <span>Emay Walter</span>
+                            <span>{{Auth::user()->name}}</span>
                             <p class="mb-0 font-roboto">Admin</p>
                         </div>
                     </div>

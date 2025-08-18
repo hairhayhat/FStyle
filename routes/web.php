@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
+use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
 
 Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
+    Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     // Category Routes
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
 
@@ -145,6 +147,9 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/checkout/{order}/rebuy', [CheckoutController::class, 'reBuy'])->name('client.checkout.rebuy');
 
     Route::post('/voucher/check', [ClientVoucherController::class, 'check'])->name('voucher.check');
+
+    Route::get('/notification/fetch', [ClientNotificationController::class, 'fetchNotification'])->name('client.fetch.notification');
+    Route::post('/notification/{id}/mark-as-read', [ClientNotificationController::class, 'markAsRead'])->name('client.notification.markAsRead');
 
 });
 require __DIR__ . '/auth.php';

@@ -1,14 +1,12 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <!-- index body start -->
     <div class="page-body">
         <div class="container-fluid">
             <div class="row">
                 <div class="title-header d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Thống kê</h5>
 
-                    <!-- Select filter theo thời gian -->
                     <form method="GET" action="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2">
                         @php
                             use Carbon\Carbon;
@@ -27,7 +25,6 @@
 
                     </form>
                 </div>
-                <!-- chart caard section start -->
                 <div class="col-sm-6 col-xxl-3 col-lg-6">
                     <div class="b-b-primary border-5 border-0 card o-hidden">
                         <div class="custome-1-bg b-r-4 card-body">
@@ -100,14 +97,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- chart caard section End -->
 
-                <!-- Earning chart star-->
                 <div class="col-xl-4">
                     <div class="card o-hidden card-hover">
                         <div class="card-header border-0 pb-1">
                             <div class="card-header-title">
-                                <h4>Doanh thu thuần theo tháng</h4>
+                                <h4>Doanh thu thuần</h4>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -115,9 +110,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Earning chart end-->
 
-                <!-- Earning chart star-->
                 <div class="col-xl-8">
                     <div class="card o-hidden ">
                         <div class="card-header border-0 pb-1">
@@ -130,14 +123,25 @@
                         </div>
                     </div>
                 </div>
-                <!-- Earning chart  end-->
 
-                <!-- Transactions start-->
+                <div class="col-12">
+                    <div class="card o-hidden ">
+                        <div class="card-header border-0 pb-1">
+                            <div class="card-header-title">
+                                <h4>Mua và trả hàng</h4>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="sales-purchase-return-cart"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-xl-4">
                     <div class="card o-hidden card-hover">
                         <div class="card-header border-0 pb-1">
                             <div class="card-header-title">
-                                <h4>Số người sử dụng theo tháng</h4>
+                                <h4>Số người sử dụng</h4>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -145,18 +149,33 @@
                         </div>
                     </div>
                 </div>
-                <!-- Earning chart end-->
 
-                <!-- Transactions end-->
+                <div class="col-xl-4 col-lg-12 col-md-6">
+                    <div class="h-100">
+                        <div class="card o-hidden  ">
+                            <div class="card-header border-0 pb-1">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="card-header-title">
+                                        <h4>Số thông báo</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="pie-chart">
+                                    <div id="employ-salary"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- visitors chart start-->
                 <div class="col-xxl-4 col-md-6">
                     <div class="h-100">
                         <div class="card o-hidden card-hover">
                             <div class="card-header border-0">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="card-header-title">
-                                        <h4>Visitors</h4>
+                                        <h4>Tỷ lệ thanh toán</h4>
                                     </div>
                                 </div>
                             </div>
@@ -168,74 +187,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- visitors chart end-->
 
-                <!-- New & Update start-->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card o-hidden card-hover">
-                        <div class="card-header border-0">
-                            <div class="card-header-title">
-                                <h4>New & Update</h4>
-                            </div>
-                        </div>
-
-                        <div class="card-body pt-0">
-                            <ul class="StepProgress">
-                                <li class="StepProgress-item">
-                                    <strong>Update Product</strong>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                </li>
-                                <li class="StepProgress-item">
-                                    <strong>James liked Nike Shoes</strong>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                </li>
-                                <li class="StepProgress-item">
-                                    <strong>john just buy your product</strong>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                </li>
-                                <li class="StepProgress-item">
-                                    <strong>Jihan dor just save your product</strong>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- New & Update end-->
-                <!-- Browser States start-->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card o-hidden card-hover">
-                        <div class="card-header border-0">
-                            <div class="card-header-title">
-                                <h4>Top 5 sản phẩm được xem nhiều nhất</h4>
-                            </div>
-                        </div>
-
-                        <div class="card-body pt-0">
-                            <ul class="brower-states">
-                                @foreach ($topTierProducts as $topTier)
-                                    <li class="brower-item">
-                                        <a href="{{ route('admin.product.show', ['product' => $topTier->id]) }}">
-                                            <div class="browser-image">
-                                                <img src="{{ asset('storage/' . $topTier->image) }}" class="img-fluid"
-                                                    alt="">
-                                                <h5>{{ \Illuminate\Support\Str::limit($topTier->name, 15) }}</h5>
-                                            </div>
-                                        </a>
-                                        <div class="browser-progressbar">
-                                            <h6>{{ $topTier->views }} Lượt xem</h6>
-                                        </div>
-                                    </li>
-                                @endforeach
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- Browser States end-->
             </div>
         </div>
-        <!-- Container-fluid Ends-->
     </div>
 @endsection
 @section('scripts')
@@ -251,12 +205,10 @@
             }
         }
 
-        // chạy khi load lại trang (giữ trạng thái cũ)
         window.onload = function() {
             toggleDateRange();
         };
 
-        //bảng so sánh Số đơn hàng & Doanh thu trung bình
         const months = @json($months);
         const ordersData = @json($ordersData);
         const aovData = @json($aovData);
@@ -264,5 +216,11 @@
         const netRevenue = @json($netRevenue);
         const usersData = @json($usersData);
         const monthsUser = @json($monthsUser);
+        const monthsNotify = @json($monthsNotify);
+        const notifyData = @json($notifyData);
+        const monthsDelivery = @json($monthsDelivery);
+        const deliveryData = @json($deliveryData);
+        const cancelData = @json($cancelData);
+        const totalPercen = @json($totalPercen);
     </script>
 @endsection
