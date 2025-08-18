@@ -4,6 +4,7 @@
     margin-top: 0.25rem;
     font-weight: 500;
 }
+
 #drop-area {
     cursor: pointer;
     background-color: #f8f9fa;
@@ -19,6 +20,7 @@
     margin: 0;
     color: #6c757d;
 }
+
 .dropzone-box {
     cursor: pointer;
     transition: 0.3s;
@@ -56,6 +58,7 @@
     position: relative;
     display: inline-block;
 }
+
 .image-nav-button {
     position: absolute;
     top: 50%;
@@ -84,7 +87,9 @@
     outline: none;
     box-shadow: none;
 }
+
 --------------------------------------------
+
 /* Container pagination */
 .pagination {
     display: flex;
@@ -94,7 +99,8 @@
 
 /* Mặc định của page link */
 .page-link {
-    color: #4f46e5; /* Xanh Indigo */
+    color: #4f46e5;
+    /* Xanh Indigo */
     border: 1px solid #ddd;
     padding: 8px 14px;
     border-radius: 8px;
@@ -136,6 +142,11 @@
     }
 }
 
-
-
-
+.unread-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #28a745;
+    /* xanh lá (Bootstrap success) */
+    border-radius: 50%;
+}

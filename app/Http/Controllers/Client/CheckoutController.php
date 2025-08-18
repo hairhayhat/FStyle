@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Client;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Voucher;
 use App\Models\OrderDetail;
+use App\Models\OrderVoucher;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Voucher;
 use App\Services\NotificationService;
 
 class CheckoutController extends Controller
@@ -67,7 +68,7 @@ class CheckoutController extends Controller
 
     public function index()
     {
-        $orders = Order::with('orderDetails.productVariant.product')->where('user_id', Auth::user()->id)->paginate(5);
+        $orders = Order::with('orderDetails.productVariant.product', 'orderVoucher')->where('user_id', Auth::user()->id)->paginate(5);
 
         return view('client.dashboard.order', compact('orders'));
     }
@@ -86,6 +87,7 @@ class CheckoutController extends Controller
         $request->validate([
             'selected_address' => 'required|exists:addresses,id',
             'payment_method' => 'nullable|string|in:vnpay,momo,zalopay',
+            'voucher_code' => 'nullable|string|exists:vouchers,code',
         ]);
 
         $user = Auth::user();
@@ -125,32 +127,63 @@ class CheckoutController extends Controller
                 ]);
 
                 $totalPrice += $price * $quantity;
+
                 $productVariant->decrement('quantity', $quantity);
             }
 
-            $order->total_amount = $totalPrice;
+            $discountAmount = 0;
+
+            if ($request->filled('voucher_code')) {
+                $voucher = Voucher::where('code', $request->voucher_code)->first();
+
+                if ($voucher && $voucher->isValidForAmount($totalPrice)) {
+                    if ($voucher->type === 'percent') {
+                        $discountAmount = ($totalPrice * $voucher->value) / 100;
+                        if ($voucher->max_discount_amount) {
+                            $discountAmount = min($discountAmount, $voucher->max_discount_amount);
+                        }
+                    } else {
+                        $discountAmount = $voucher->value;
+                    }
+
+                    $discountAmount = min($discountAmount, $totalPrice);
+
+                    OrderVoucher::create([
+                        'order_id' => $order->id,
+                        'voucher_id' => $voucher->id,
+                        'code' => $voucher->code,
+                        'discount' => $discountAmount,
+                        'applied_at' => now(),
+                    ]);
+
+                    $voucher->increment('used_count');
+                }
+            }
+
+            $order->total_amount = $totalPrice - $discountAmount;
             $order->save();
 
             $cart->details()->delete();
 
-            if ($request->payment_method == null) {
-                Payment::create([
-                    'order_id' => $order->id,
-                    'method' => 'COD',
-                    'total_amount' => $order->total_amount,
-                    'status' => 'pending',
-                ]);
-            }
+            Payment::create([
+                'order_id' => $order->id,
+                'method' => $request->payment_method ?? 'COD',
+                'total_amount' => $order->total_amount,
+                'status' => 'pending',
+            ]);
 
-            $this->notificationService->notifyOrderToAdmin(
+            $this->notificationService->notifyAdmins(
                 'Bạn có đơn hàng mới',
                 "Tài khoản {$user->name} đã đặt đơn #{$order->code}",
-                "/admin/orders/{$order->code}"
+                'order',
+                "/admin/orders/{$order->code}",
+                $order->id
             );
 
             DB::commit();
 
-            return redirect()->route('client.checkout.detail', ['code' => $order->code])->with('success', 'Đặt hàng thành công!');
+            return redirect()->route('client.checkout.detail', ['code' => $order->code])
+                ->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors('Có lỗi xảy ra khi đặt hàng: ' . $e->getMessage());

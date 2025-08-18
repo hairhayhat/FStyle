@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('#voucher-select').on('change', function () {
         let code = $(this).val();
         let orderAmount = parseFloat($('#cart-total-display').data('total')) || 0;
+        $('#voucher_code_input').val(code);
 
         if (!code) {
             $('#voucher-discount').text('-0đ');

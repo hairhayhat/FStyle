@@ -88,7 +88,7 @@
                                         <h5 class="font-light">Voucher: </h5>
                                     </td>
                                     <td>
-                                        <h4>$12.00</h4>
+                                        <h4>-{{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ</h4>
                                     </td>
                                 </tr>
 
@@ -127,11 +127,19 @@
                                 </ul>
                             </div>
 
-                            <div class="col-12">
+                            <div class="col-sm-6">
                                 <div class="payment-mode">
                                     <h4>Hình thức thanh toán</h4>
                                     <p>{{ $order->payment->method }}</p>
                                 </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <h4>voucher</h4>
+                                <ul class="order-details">
+                                    <li>Voucher code: {{ $order->orderVoucher->code }}</li>
+                                    <li>Giảm: {{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ</li>
+                                </ul>
                             </div>
                         </div>
                     </div>

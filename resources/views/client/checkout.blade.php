@@ -8,12 +8,12 @@
                     <h3 class="mb-3">Địa chỉ nhận hàng</h3>
                     <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate>
                         @csrf
+                        <input type="hidden" name="voucher_code" id="voucher_code_input">
                         <div class="save-details-box" id="addressList">
                             <div class="row g-3">
                                 @foreach ($addresses as $item)
                                     <div class="col-xl-4 col-md-6">
                                         <label class="save-details">
-                                            <!-- Thêm required vào 1 radio để bắt buộc chọn -->
                                             <input type="radio" name="selected_address" value="{{ $item->id }}"
                                                 @if ($item->is_default) checked @endif required>
 

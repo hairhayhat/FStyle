@@ -38,36 +38,11 @@
                 <li class="onhover-dropdown">
                     <div class="notification-box">
                         <span class="lnr lnr-alarm"></span>
-                        <span class="badge rounded-pill badge-theme">{{ $notifications->count() }}</span>
+                        <span class="badge rounded-pill badge-theme"></span>
                     </div>
 
                     <ul class="notification-dropdown onhover-show-div" style="max-height: 300px; overflow-y: auto;">
-                        <li class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
-                            <h6 class="f-18 mb-0">
-                                <span class="lnr lnr-alarm me-2"></span> Thông báo
-                            </h6>
-                            <a href="" class="small">Xem tất cả</a>
-                        </li>
-
-                        @forelse ($notifications as $item)
-                            <li class="p-2 border-bottom">
-                                <a href="{{ $item->link ?? '#' }}"
-                                    class="d-flex justify-content-between text-decoration-none">
-                                    <div>
-                                        <small class="text-muted d-block">{{ $item->message }}</small>
-                                    </div>
-                                    <div class="text-end ms-2">
-                                        <small class="text-muted">{{ $item->time_ago }}</small>
-                                    </div>
-                                </a>
-                            </li>
-                        @empty
-                            <li>
-                                <p class="text-center text-muted mb-0">Không có thông báo nào</p>
-                            </li>
-                        @endforelse
                     </ul>
-
                 </li>
 
                 <li>

@@ -11,31 +11,16 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'type',
         'title',
         'message',
         'link',
-        'is_read',
-        'processed_by',
-        'processed_at',
+        'related_id',
     ];
-
-    protected $casts = [
-        'is_read' => 'boolean',
-        'processed_at' => 'datetime',
-    ];
-
     protected $appends = ['time_ago'];
-
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function processedBy()
-    {
-        return $this->belongsTo(User::class, 'processed_by');
+        return $this->hasMany(NotificationUser::class);
     }
 
     public function getTimeAgoAttribute()

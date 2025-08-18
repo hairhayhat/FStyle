@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Services\DashboardService;
+use App\Models\ProductVariant;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\DashboardService;
 
 class DashboardController extends Controller
 {
@@ -20,15 +22,22 @@ class DashboardController extends Controller
     {
         $query = Order::query();
 
-        // Lọc theo filter
-        if ($request->filter) {
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : Carbon::now()->subYear()->format('Y-m-d');
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : Carbon::now()->format('Y-m-d');
+
+        if ($fromDate && $toDate) {
+            $query->whereBetween('created_at', [$fromDate, $toDate]);
+        } elseif ($request->filter) {
             switch ($request->filter) {
                 case 'today':
                     $query->whereDate('created_at', Carbon::today());
                     break;
 
                 case 'week':
-                    $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                    $query->whereBetween('created_at', [
+                        Carbon::now()->startOfWeek(),
+                        Carbon::now()->endOfWeek()
+                    ]);
                     break;
 
                 case 'month':
@@ -39,48 +48,36 @@ class DashboardController extends Controller
                 case 'year':
                     $query->whereYear('created_at', Carbon::now()->year);
                     break;
-
-                case 'custom':
-                    if ($request->from_date && $request->to_date) {
-                        $query->whereBetween('created_at', [
-                            Carbon::parse($request->from_date)->startOfDay(),
-                            Carbon::parse($request->to_date)->endOfDay()
-                        ]);
-                    }
-                    break;
             }
         }
 
-        // Lấy orders sau khi filter
         $orders = $query->get();
         $totalBooking = $orders->count();
 
-        // Top sản phẩm nhiều view
         $topTierProducts = Product::with('variants')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get();
 
-        // Tính tổng tồn kho
-        $totalInventory = 0;
-        $products = Product::with('variants')->get();
-        foreach ($products as $product) {
-            foreach ($product->variants as $variant) {
-                $totalInventory += $variant->quantity * $variant->import_price;
-            }
-        }
+        $totalInventory = ProductVariant::whereBetween('created_at', [$fromDate, $toDate])
+            ->sum(DB::raw('quantity * import_price'));
 
-        // Tính tổng doanh thu
-        $totalEarnings = $orders->sum('total_amount');
+        $totalEarnings = (clone $query)->sum('total_amount');
 
-        $chartData = $this->dashboardService->getOrdersAndAOVByMonth();
+        $chartData = $this->dashboardService->getOrdersAndAOVByMonth($fromDate, $toDate);
         $months = $chartData['months'];
         $ordersData = $chartData['ordersData'];
         $aovData = $chartData['aovData'];
 
-        $chartTotalData = $this->dashboardService->getNetRevenueByMonth();
+        // Chart doanh thu
+        $chartTotalData = $this->dashboardService->getNetRevenueByMonth($fromDate, $toDate);
         $monthsTotal = $chartTotalData['months'];
         $netRevenue = $chartTotalData['netRevenue'];
+
+        // Chart user
+        $usersTotal = $this->dashboardService->getUsersByMonth($fromDate, $toDate);
+        $monthsUser = $usersTotal['months'];
+        $usersData = $usersTotal['usersData'];
 
         return view('admin.dashboard.index', compact(
             'totalBooking',
@@ -92,6 +89,9 @@ class DashboardController extends Controller
             'aovData',
             'monthsTotal',
             'netRevenue',
+            'monthsUser',
+            'usersData'
         ));
     }
+
 }

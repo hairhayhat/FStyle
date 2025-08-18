@@ -9,14 +9,11 @@ return new class extends Migration {
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
             $table->string('type', 50)->nullable();
             $table->string('title');
             $table->text('message');
             $table->string('link')->nullable();
-            $table->boolean('is_read')->default(false);
-            $table->unsignedBigInteger('processed_by')->nullable();
-            $table->timestamp('processed_at')->nullable();
+            $table->unsignedBigInteger('related_id')->nullable();
             $table->timestamps();
         });
     }
@@ -26,3 +23,4 @@ return new class extends Migration {
         Schema::dropIfExists('notifications');
     }
 };
+

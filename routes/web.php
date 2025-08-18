@@ -101,9 +101,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');
-    Route::get('/order/{code}', [OrderController::class, 'detail'])->name('admin.order.detail');
+    Route::get('/orders/{code}', [OrderController::class, 'detail'])->name('admin.order.detail');
 
     Route::get('/notification/fetch', [NotificationController::class, 'fetchNotification'])->name('admin.fetch.notification');
+    Route::post('/notification/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('admin.notification.markAsRead');
+    Route::post('/notification/{id}/assign-admin', [NotificationController::class, 'assignedAdmin'])->name('admin.notification.assignAdmin');
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {

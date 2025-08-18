@@ -40,7 +40,12 @@
                                             @endphp
                                             @foreach ($orders as $order)
                                                 <tr>
-                                                    <td>#{{ $order->code }}</td>
+                                                    <td>
+                                                        <a
+                                                            href="{{ route('admin.order.detail', ['code' => $order->code]) }}">
+                                                            #{{ $order->code }}
+                                                        </a>
+                                                    </td>
 
                                                     <td>Jul 20, 2021</td>
 

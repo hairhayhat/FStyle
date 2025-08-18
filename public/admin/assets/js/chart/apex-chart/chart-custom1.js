@@ -153,6 +153,50 @@ var options = {
 };
 var chart = new ApexCharts(document.querySelector("#report-chart"), options);
 chart.render();
+//so nguoi dung theo thang
+var options = {
+    series: [
+        {
+            name: "Người dùng",
+            type: "line",
+            data: usersData,
+        },
+    ],
+
+    chart: {
+        height: 320,
+        type: "line",
+        toolbar: { show: false },
+    },
+
+    colors: ["#2483e2"], // đỏ AOV, xanh Orders
+
+    stroke: {
+        width: 3,
+        curve: "smooth",
+    },
+
+    markers: { size: 4 },
+
+    xaxis: {
+        categories: monthsUser,
+        title: { text: "Tháng" },
+    },
+
+    // Trục Y kép
+    yaxis: [
+        {
+            title: { text: "Số người dùng" },
+        },
+    ],
+
+    legend: {
+        show: true,
+        position: "top",
+    },
+};
+var chart = new ApexCharts(document.querySelector("#bar-chart-user"), options);
+chart.render();
 
 //pie chart for visitors
 var options = {
