@@ -25,6 +25,7 @@
                             <th scope="col">Thông tin sản phẩm</th>
                             <th scope="col">Mã hóa đơn</th>
                             <th scope="col">Trạng thái</th>
+                            <th scope="col">Thanh toán</th>
                             <th scope="col">Tổng tiền</th>
                             <th scope="col">Thao tác</th>
                         </tr>
@@ -72,6 +73,19 @@
                                                     @else text-muted @endif">
                                                 {{ getStatusName($order->status) }}
                                             </span>
+                                        </td>
+                                        <td rowspan="{{ $detailCount }}">
+                                            @if ($order->payment->method === 'COD')
+                                                <span class="badge bg-secondary">Thanh toán khi nhận hàng</span>
+                                            @elseif($order->payment->method === 'VNPay')
+                                                @if ($order->payment->status === 'failed')
+                                                    <span class="badge bg-danger">Bạn phải thanh toán để tiếp tục</span>
+                                                @else
+                                                    <span class="badge bg-success">Thanh toán qua VNPay</span>
+                                                @endif
+                                            @else
+                                                <span class="badge bg-danger">Chưa thanh toán</span>
+                                            @endif
                                         </td>
                                         <td rowspan="{{ $detailCount }}">
                                             <p class="theme-color fs-6">

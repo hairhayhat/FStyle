@@ -14,7 +14,13 @@ class Payment extends Model
         'method',
         'total_amount',
         'status',
-        'paid_at'
+        'paid_at',
+        'gateway_data',
+    ];
+
+    protected $casts = [
+        'paid_at' => 'datetime',
+        'gateway_data' => 'array',
     ];
 
     public function order()
