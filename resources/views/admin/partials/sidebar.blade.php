@@ -112,6 +112,19 @@
                         </ul>
                     </li>
                     <li
+                        class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
+                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                            <i data-feather="box"></i>
+                            <span>Bình luận</span>
+                        </a>
+                        <ul class="sidebar-submenu"
+                            style="{{ request()->is('admin/product') || request()->is('admin/product/*') ? 'display: block;' : '' }}">
+                            <li class="{{ request()->routeIs('admin.product.index') ? 'active' : '' }}">
+                                <a href="{{ route('admin.comments.index') }}">Danh sách bình luận</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li
                         class="sidebar-list {{ request()->is('admin/voucher') || request()->is('admin/voucher/*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="tag"></i>
@@ -144,13 +157,13 @@
                                 <a href="{{ route('admin.size.index') }}">Kích thước</a>
                             </li>
                             <li>
-                                                    <form method="POST" action="{{ route('logout') }}">
-                                                        @csrf
-                                                        <a href="{{ route('logout') }}"
-                                                            onclick="event.preventDefault(); this.closest('form').submit();"
-                                                            class="d-block">Đăng xuất</a>
-                                                    </form>
-                                                </li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();"
+                                        class="d-block">Đăng xuất</a>
+                                </form>
+                            </li>
 
                         </ul>
                     </li>

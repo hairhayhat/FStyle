@@ -20,8 +20,6 @@
 
                         <div class="success-contain">
                             <h4>Đặt hàng thành công</h4>
-                            <h5 class="font-light">Payment Is Successfully Processsed And Your Order Is On The Way</h5>
-                            <h6 class="font-light">Transaction ID:267676GHERT105467</h6>
                         </div>
                     </div>
                 </div>
@@ -88,7 +86,7 @@
                                         <h5 class="font-light">Voucher: </h5>
                                     </td>
                                     <td>
-                                        <h4>-{{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ</h4>
+                                        <h4>-{{ number_format($order->orderVoucher->discount ?? 0, 0, ',', '.') }}đ</h4>
                                     </td>
                                 </tr>
 
@@ -131,14 +129,37 @@
                                 <div class="payment-mode">
                                     <h4>Hình thức thanh toán</h4>
                                     <p>{{ $order->payment->method }}</p>
+
+                                    @if ($order->payment->method === 'VNPay' && $order->payment->gateway_data)
+                                        @php
+                                            $vnpayData = $order->payment->gateway_data;
+                                        @endphp
+
+                                        <ul class="order-details">
+                                            <li>Số tiền: {{ number_format($vnpayData['vnp_Amount'] / 100, 0, ',', '.') }}₫
+                                            </li>
+                                            <li>Mã đơn hàng: {{ $vnpayData['vnp_TxnRef'] }}</li>
+                                            <li>Ngày thanh toán:
+                                                {{ \Carbon\Carbon::createFromFormat('YmdHis', $vnpayData['vnp_PayDate'])->format('d/m/Y H:i:s') }}
+                                            </li>
+                                            <li>Mã ngân hàng: {{ $vnpayData['vnp_BankCode'] }}</li>
+                                            <li>Loại thẻ: {{ $vnpayData['vnp_CardType'] }}</li>
+                                            <li>Mã giao dịch ngân hàng: {{ $vnpayData['vnp_BankTranNo'] }}</li>
+                                            <li>Mã giao dịch VNPay: {{ $vnpayData['vnp_TransactionNo'] }}</li>
+                                            <li>Trạng thái:
+                                                {{ $vnpayData['vnp_TransactionStatus'] === '00' ? 'Thành công' : 'Thất bại' }}
+                                            </li>
+                                        </ul>
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="col-sm-6">
                                 <h4>voucher</h4>
                                 <ul class="order-details">
-                                    <li>Voucher code: {{ $order->orderVoucher->code }}</li>
-                                    <li>Giảm: {{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ</li>
+                                    <li>Voucher code: {{ $order->orderVoucher->code ?? 0 }}</li>
+                                    <li>Giảm:
+                                        {{ number_format($order->orderVoucher->discount ?? 0, 0, ',', '.') }}đ</li>
                                 </ul>
                             </div>
                         </div>

@@ -25,10 +25,8 @@ $(document).ready(function () {
                     $('#voucher-discount').text(`-${res.discount.toLocaleString()}đ`);
                     $('#cart-total-display').text(res.new_total.toLocaleString() + 'đ');
 
-                    // Thông báo thành công
                     showSuccessToast('Áp dụng voucher thành công!');
                 } else {
-                    // Thông báo lỗi
                     showErrorToast(res.message);
 
                     $('#voucher-discount').text('-0đ');

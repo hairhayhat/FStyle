@@ -15,14 +15,18 @@ class OrderController extends Controller
 
     }
 
-    public function index()
-    {
-        $orders = Order::with('orderDetails.productVariant.product')
-            ->orderByDesc('created_at')
-            ->paginate(10);
+public function index()
+{
+    $orders = Order::with('orderDetails.productVariant.product', 'payment')
+        ->whereHas('payment', function($query) {
+            $query->where('status', '!=', 'failed');
+        })
+        ->orderByDesc('created_at')
+        ->paginate(10);
 
-        return view('admin.order.index', compact('orders'));
-    }
+    return view('admin.order.index', compact('orders'));
+}
+
 
     public function updateStatus(Order $order, Request $request)
     {

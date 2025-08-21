@@ -87,7 +87,7 @@
                                                             <h5>Giảm giá :</h5>
                                                         </td>
                                                         <td>
-                                                            <h4>-{{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ
+                                                            <h4>-{{ number_format($order->orderVoucher->discount ?? 0, 0, ',', '.') }}đ
                                                             </h4>
                                                         </td>
                                                     </tr>
@@ -125,21 +125,30 @@
                                                 </ul>
 
                                                 <h4>Voucher áp dụng</h4>
-                                                <ul class="order-details">
-                                                    <li>
-                                                        ID voucher: {{ $order->orderVoucher->code }} -
-                                                        {{ $order->orderVoucher->voucher->type == 'percent'
-                                                            ? 'Giảm ' . intval($order->orderVoucher->voucher->value) . '%'
-                                                            : 'Giảm cố định ' . number_format($order->orderVoucher->voucher->value, 0, ',', '.') . 'đ' }}
-                                                    </li>
+                                                @if ($order->orderVoucher)
+                                                    <ul class="order-details">
+                                                        <li>
+                                                            ID voucher: {{ $order->orderVoucher->code ?? 0 }} -
+                                                            {{ $order->orderVoucher->voucher->type == 'percent'
+                                                                ? 'Giảm ' . intval($order->orderVoucher->voucher->value) . '%'
+                                                                : 'Giảm cố định ' . number_format($order->orderVoucher->voucher->value, 0, ',', '.') . 'đ' }}
+                                                        </li>
 
-                                                    <li>Ngày áp dụng:
-                                                        {{ $order->orderVoucher->applied_at->format('H:i:s, d-m-Y') }}
-                                                    </li>
-                                                    <li>Giảm:
-                                                        {{ number_format($order->orderVoucher->discount, 0, ',', '.') }}đ
-                                                    </li>
-                                                </ul>
+                                                        <li>Ngày áp dụng:
+                                                            {{ $order->orderVoucher->applied_at->format('H:i:s, d-m-Y') }}
+                                                        </li>
+                                                        <li>Giảm:
+                                                            {{ number_format($order->orderVoucher->discount ?? 0, 0, ',', '.') }}đ
+                                                        </li>
+                                                    </ul>
+                                                @else
+                                                    <ul class="order-details">
+                                                        <li>
+                                                            Không có voucher áp dụng
+                                                        </li>
+                                                    </ul>
+                                                @endif
+
 
                                                 <h4>Thông tin người nhận</h4>
                                                 <ul class="order-details">
@@ -151,6 +160,31 @@
                                                 <div class="payment-mode">
                                                     <h4>Hình thức thanh toán</h4>
                                                     <p>{{ $order->payment->method }}</p>
+
+                                                    @if ($order->payment->method === 'VNPay' && $order->payment->gateway_data)
+                                                        @php
+                                                            $vnpayData = $order->payment->gateway_data;
+                                                        @endphp
+
+                                                        <ul class="order-details">
+                                                            <li>Số tiền:
+                                                                {{ number_format($vnpayData['vnp_Amount'] / 100, 0, ',', '.') }}₫
+                                                            </li>
+                                                            <li>Mã đơn hàng: {{ $vnpayData['vnp_TxnRef'] }}</li>
+                                                            <li>Ngày thanh toán:
+                                                                {{ \Carbon\Carbon::createFromFormat('YmdHis', $vnpayData['vnp_PayDate'])->format('d/m/Y H:i:s') }}
+                                                            </li>
+                                                            <li>Mã ngân hàng: {{ $vnpayData['vnp_BankCode'] }}</li>
+                                                            <li>Loại thẻ: {{ $vnpayData['vnp_CardType'] }}</li>
+                                                            <li>Mã giao dịch ngân hàng: {{ $vnpayData['vnp_BankTranNo'] }}
+                                                            </li>
+                                                            <li>Mã giao dịch VNPay: {{ $vnpayData['vnp_TransactionNo'] }}
+                                                            </li>
+                                                            <li>Trạng thái:
+                                                                {{ $vnpayData['vnp_TransactionStatus'] === '00' ? 'Thành công' : 'Thất bại' }}
+                                                            </li>
+                                                        </ul>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

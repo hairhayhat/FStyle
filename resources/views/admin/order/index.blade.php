@@ -43,7 +43,7 @@
                                                     <td>
                                                         <a
                                                             href="{{ route('admin.order.detail', ['code' => $order->code]) }}">
-                                                            #{{ $order->code }}
+                                                            {{ $order->code }}
                                                         </a>
                                                     </td>
 
@@ -105,36 +105,12 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="mt-3">
+                                    {{ $orders->links('vendor.pagination.bootstrap-5') }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Pagination Box Start -->
-                        <div class=" pagination-box">
-                            <nav class="ms-auto me-auto " aria-label="...">
-                                <ul class="pagination pagination-primary">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="javascript:void(0)">Previous</a>
-                                    </li>
-
-                                    <li class="page-item active">
-                                        <a class="page-link" href="javascript:void(0)">1</a>
-                                    </li>
-
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">2</a>
-                                    </li>
-
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">3</a>
-                                    </li>
-
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                        <!-- Pagination Box End -->
                     </div>
                 </div>
             </div>

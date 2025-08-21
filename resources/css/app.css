@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.pagination .page-item.active .page-link {
+    background-color: #e22454 !important;
+    border-color: #e22454 !important;
+    /* viền cùng màu */
+    color: #fff !important;
+    /* chữ màu trắng */
+}
+
+.pagination .page-link {
+    color: #e22454;
+    /* màu chữ các trang chưa active */
+}
+
+.pagination .page-link:hover {
+    background-color: #e0e0e0;
+    /* hover nhẹ */
+    color: #e22454;
+}

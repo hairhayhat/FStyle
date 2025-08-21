@@ -79,7 +79,7 @@
                                                 <span class="badge bg-secondary">Thanh toán khi nhận hàng</span>
                                             @elseif($order->payment->method === 'VNPay')
                                                 @if ($order->payment->status === 'failed')
-                                                    <span class="badge bg-danger">Bạn phải thanh toán để tiếp tục</span>
+                                                    <span class="badge bg-danger">Lỗi thanh toán</span>
                                                 @else
                                                     <span class="badge bg-success">Thanh toán qua VNPay</span>
                                                 @endif
@@ -100,13 +100,23 @@
                                                 <button type="button" class="btn btn-success btn-receive-order"
                                                     data-order-id="{{ $order->id }}">Nhận đơn</button>
                                             @elseif ($order->status === 'delivered')
-                                                <button type="button" class="btn btn-primary"> Đánh giá ngay</button>
+                                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto btn-show-order"
+                                                    data-order-code="{{ $order->code }}">
+                                                    Đánh giá ngay
+                                                </button>
                                             @elseif($order->status === 'cancelled')
                                                 <form
                                                     action="{{ route('client.checkout.rebuy', ['order' => $order->id]) }}"
                                                     method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-warning"> Mua lại</button>
+                                                </form>
+                                            @elseif($order->payment->status == 'failed')
+                                                <form
+                                                    action="{{ route('client.checkout.edit', ['code' => $order->code]) }}"
+                                                    method="GET">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-warning"> Thanh toán lại</button>
                                                 </form>
                                             @else
                                                 <button type="button" class="btn btn-danger btn-cancel-order"
@@ -121,6 +131,31 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            <div class="mt-3">
+                {{ $orders->links('vendor.pagination.bootstrap-5') }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addComment">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('client.comment.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Nội dung sẽ load bằng AJAX -->
+                    </div>
+                    <div class="modal-footer pt-0 text-end d-block">
+                        <button type="button" class="btn bg-secondary text-white rounded-1"
+                            data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-solid-default rounded-1">Gửi đánh giá</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
