@@ -428,3 +428,57 @@ header .search-suggestion .product-info a {
 .notification-list::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+
+.payment-option {
+    transition: all 0.3s;
+}
+
+.payment-option.selected {
+    border-color: #0d6efd;
+    /* viền xanh */
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+    transform: scale(1.03);
+}
+
+.payment-option:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+}
+
+/* CSS custom cho pagination */
+.pagination .page-item.active .page-link {
+    background-color: #e22454 !important;
+    /* màu bạn muốn */
+    border-color: #e22454 !important;
+    /* viền cùng màu */
+    color: #fff !important;
+    /* chữ màu trắng */
+}
+
+.pagination .page-link {
+    color: #e22454;
+    /* màu chữ các trang chưa active */
+}
+
+.pagination .page-link:hover {
+    background-color: #e0e0e0;
+    /* hover nhẹ */
+    color: #e22454;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.rating-stars .star {
+    font-size: 20px;
+    color: #ddd;
+}
+
+.rating-stars .star.selected,
+.rating-stars .star.hover {
+    color: #ffc107;
+    /* màu vàng */
+}

@@ -186,177 +186,102 @@
 
                             <div class="tab-pane fade" id="review">
                                 <div class="row g-4">
+
                                     <div class="col-lg-4">
                                         <div class="customer-rating">
-                                            <h2>Customer reviews</h2>
+                                            <h2>Đánh giá của khách hàng</h2>
+
+                                            <!-- Sao trung bình -->
                                             <ul class="rating my-2 d-inline-block">
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star"></i>
-                                                </li>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <li><i
+                                                            class="fas fa-star {{ $i <= round($averageRating) ? 'theme-color' : '' }}"></i>
+                                                    </li>
+                                                @endfor
                                             </ul>
 
                                             <div class="global-rating">
-                                                <h5 class="font-light">82 Ratings</h5>
+                                                <h5 class="font-light">{{ $totalRatings }} Đánh giá</h5>
                                             </div>
 
+                                            <!-- % phân bố từng sao -->
                                             <ul class="rating-progess">
-                                                <li>
-                                                    <h5 class="me-3">5 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 78%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                @for ($i = 5; $i >= 1; $i--)
+                                                    <li>
+                                                        <h5 class="me-3">{{ $i }} Star</h5>
+                                                        <div class="progress">
+                                                            <div class="progress-bar" role="progressbar"
+                                                                style="width: {{ $ratingPercentages[$i] }}%"
+                                                                aria-valuenow="{{ $ratingPercentages[$i] }}"
+                                                                aria-valuemin="0" aria-valuemax="100">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <h5 class="ms-3">78%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">4 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 62%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">62%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">3 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 44%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">44%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">2 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 30%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">30%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">1 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 18%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">18%</h5>
-                                                </li>
+                                                        <h5 class="ms-3">{{ $ratingPercentages[$i] }}%</h5>
+                                                    </li>
+                                                @endfor
                                             </ul>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-8">
-                                        <p class="d-inline-block me-2">Rating</p>
-                                        <ul class="rating mb-3 d-inline-block">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                        <div class="review-box">
-                                            <form class="row g-4">
-                                                <div class="col-12 col-md-6">
-                                                    <label class="mb-1" for="name">Name</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        placeholder="Enter your name" required>
-                                                </div>
-
-                                                <div class="col-12 col-md-6">
-                                                    <label class="mb-1" for="id">Email Address</label>
-                                                    <input type="email" class="form-control" id="id"
-                                                        placeholder="Email Address" required>
-                                                </div>
-
-                                                <div class="col-12">
-                                                    <label class="mb-1" for="comments">Comments</label>
-                                                    <textarea class="form-control" placeholder="Leave a comment here" id="comments" style="height: 100px" required></textarea>
-                                                </div>
-
-                                                <div class="col-12">
-                                                    <button type="submit"
-                                                        class="btn default-light-theme default-theme default-theme-2">Submit</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 mt-4">
                                         <div class="customer-review-box">
-                                            <h4>Customer Reviews</h4>
+                                            <h4>Bình luận của khách hàng</h4>
 
-                                            <div class="customer-section">
-                                                <div class="customer-profile">
-                                                    <img src="assets/images/inner-page/review-image/1.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
+                                            @forelse($comments as $comment)
+                                                <div class="customer-section mb-4">
+                                                    <div class="customer-profile">
+                                                        <img src="{{ $comment->user->avatar ?? 'assets/images/default-avatar.jpg' }}"
+                                                            class="img-fluid blur-up lazyload" alt="">
+                                                    </div>
+
+                                                    <div class="customer-details">
+                                                        <h5>{{ $comment->user->name ?? $comment->name }}</h5>
+
+                                                        <ul class="rating my-2 d-inline-block">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <li>
+                                                                    <i
+                                                                        class="fas fa-star {{ $i <= $comment->rating ? 'theme-color' : '' }}"></i>
+                                                                </li>
+                                                            @endfor
+                                                        </ul>
+
+                                                        <p class="font-light">{{ $comment->content }}</p>
+
+                                                        <!-- Hiển thị ảnh/video của comment -->
+                                                        @if ($comment->media->count())
+                                                            <div class="comment-media d-flex flex-wrap mt-2">
+                                                                @foreach ($comment->media as $media)
+                                                                    @if (Str::endsWith($media->file_path, ['.mp4', '.webm', '.ogg']))
+                                                                        <video width="120" height="80" controls
+                                                                            class="me-2 mb-2">
+                                                                            <source src="{{ asset($media->file_path) }}"
+                                                                                type="video/mp4">
+                                                                            Your browser does not support the video tag.
+                                                                        </video>
+                                                                    @else
+                                                                        <img src="{{ asset($media->file_path) }}"
+                                                                            class="img-fluid me-2 mb-2"
+                                                                            style="width:120px; height:80px; object-fit:cover;"
+                                                                            alt="">
+                                                                    @endif
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+
+                                                        <p class="date-custo font-light">-
+                                                            {{ $comment->created_at->format('M d, Y') }}</p>
+                                                    </div>
                                                 </div>
-
-                                                <div class="customer-details">
-                                                    <h5>Mike K</h5>
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="font-light">I purchased my Tab S2 at Best Buy but I
-                                                        wanted
-                                                        to
-                                                        share my thoughts on Amazon. I'm not going to go over specs
-                                                        and
-                                                        such
-                                                        since you can read those in a hundred other places. Though I
-                                                        will
-                                                        say that the "new" version is preloaded with Marshmallow and
-                                                        now
-                                                        uses a Qualcomm octacore processor in place of the Exynos
-                                                        that
-                                                        shipped with the first gen.</p>
-
-                                                    <p class="date-custo font-light">- Sep 08, 2021</p>
-                                                </div>
-                                            </div>
+                                            @empty
+                                                <p>Chưa có đánh giá nào.</p>
+                                            @endforelse
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

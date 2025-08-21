@@ -2,18 +2,20 @@
 
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Client\AddressController;
+use App\Http\Controllers\Client\CommentController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\FavoriteController;
@@ -109,6 +111,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/notification/fetch', [NotificationController::class, 'fetchNotification'])->name('admin.fetch.notification');
     Route::post('/notification/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('admin.notification.markAsRead');
     Route::post('/notification/{id}/assign-admin', [NotificationController::class, 'assignedAdmin'])->name('admin.notification.assignAdmin');
+
+    Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+    Route::post('/comments/toggle-status/{comment}', [AdminCommentController::class, 'toggleStatus'])->name('admin.comments.toggleStatus');
+
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
@@ -146,14 +152,19 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/order/{id}/update-status', [CheckoutController::class, 'updateStatus'])->name('client.update.status');
     Route::post('/order/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('client.cancel.order');
     Route::post('/checkout/{order}/rebuy', [CheckoutController::class, 'reBuy'])->name('client.checkout.rebuy');
+    Route::get('/checkout/edit/{code}', [CheckoutController::class, 'edit'])->name('client.checkout.edit');
+    Route::put('/checkout/update/{code}', [CheckoutController::class, 'update'])->name('client.checkout.update');
+    Route::get('/checkout/apiDetail/{code}', [CheckoutController::class, 'apiDetail']);
 
     Route::post('/voucher/check', [ClientVoucherController::class, 'check'])->name('voucher.check');
 
     Route::get('/notification/fetch', [ClientNotificationController::class, 'fetchNotification'])->name('client.fetch.notification');
     Route::post('/notification/{id}/mark-as-read', [ClientNotificationController::class, 'markAsRead'])->name('client.notification.markAsRead');
 
-    Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
     Route::get('/payment/vnpay/ipn', [VNPayController::class, 'ipn'])->name('vnpay.ipn');
+    Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+
+    Route::post('/comment/store', [CommentController::class, 'store'])->name('client.comment.store');
 
 });
 require __DIR__ . '/auth.php';

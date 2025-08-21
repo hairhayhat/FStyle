@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Order;
+use App\Models\Address;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Voucher;
@@ -78,15 +79,48 @@ class CheckoutController extends Controller
         $order = Order::with('orderDetails.productVariant.product', 'shippingAddress')
             ->where('code', $code)
             ->firstOrFail();
-
         return view('client.checkout-success', compact('order'));
     }
+
+    public function apiDetail($code)
+    {
+        $order = Order::with('orderDetails.productVariant.product', 'shippingAddress')
+            ->where('code', $code)
+            ->firstOrFail();
+
+        return response()->json([
+            'order_id' => $order->id,
+            'order_code' => $order->code,
+            'shipping_address' => $order->shippingAddress ? [
+                'full_name' => $order->shippingAddress->full_name,
+                'phone' => $order->shippingAddress->phone,
+                'address' => $order->shippingAddress->address,
+            ] : null,
+            'items' => $order->orderDetails->map(function ($detail) {
+                $product = $detail->productVariant->product;
+
+                return [
+                    'id' => $detail->id,
+                    'product_id' => $product->id,
+                    'product_name' => $product->name ?? 'Sản phẩm không tồn tại',
+                    'variant_name' => $detail->productVariant->name ?? '',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'size' => $detail->size,
+                    'color' => $detail->color,
+                    'image_url' => $product && $product->image ? asset('/storage/' . $product->image) : asset('images/no-image.png'),
+                ];
+            }),
+        ]);
+    }
+
+
 
     public function store(Request $request)
     {
         $request->validate([
             'selected_address' => 'required|exists:addresses,id',
-            'payment_method' => 'nullable|string|in:vnpay,momo,zalopay',
+            'payment_method' => 'nullable|string|in:cod,vnpay,momo,zalopay',
             'voucher_code' => 'nullable|string|exists:vouchers,code',
         ]);
 
@@ -95,25 +129,22 @@ class CheckoutController extends Controller
         $cartItems = $cart->details()->with('productVariant.product')->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->back()->withErrors('Giỏ hàng trống, không thể đặt hàng.');
+            return redirect()->back()->with('error', 'Giỏ hàng trống, không thể đặt hàng.');
         }
 
         DB::beginTransaction();
-
         try {
-            $order = new Order();
-            $order->user_id = $user->id;
-            $order->address_id = $request->selected_address;
-            $order->code = bin2hex(random_bytes(8));
-            $order->status = 'pending';
-            $order->total_amount = 0;
-            $order->save();
+            $order = Order::create([
+                'user_id' => $user->id,
+                'address_id' => $request->selected_address,
+                'code' => bin2hex(random_bytes(8)),
+                'status' => 'pending',
+                'total_amount' => 0,
+            ]);
 
             $totalPrice = 0;
-
             foreach ($cartItems as $item) {
                 $productVariant = $item->productVariant;
-
                 $price = $productVariant->sale_price;
                 $quantity = $item->quantity;
 
@@ -132,7 +163,6 @@ class CheckoutController extends Controller
             }
 
             $discountAmount = 0;
-
             if ($request->filled('voucher_code')) {
                 $voucher = Voucher::where('code', $request->voucher_code)->first();
 
@@ -160,36 +190,139 @@ class CheckoutController extends Controller
                 }
             }
 
-            $order->total_amount = $totalPrice - $discountAmount;
-            $order->save();
+            $finalAmount = $totalPrice - $discountAmount;
+            $order->update(['total_amount' => $finalAmount]);
 
             $cart->details()->delete();
 
-            Payment::create([
+            $method = $request->payment_method ?? 'cod';
+
+            $payment = Payment::create([
                 'order_id' => $order->id,
-                'method' => $request->payment_method ?? 'COD',
-                'total_amount' => $order->total_amount,
+                'method' => strtoupper($method),
+                'total_amount' => $finalAmount,
                 'status' => 'pending',
             ]);
 
-            if ($request->payment_method === 'vnpay') {
-                return $this->processVNPayPayment($order, $order->payment);
-            }
-
             $this->notificationService->notifyAdmins(
-                'Bạn có đơn hàng mới',
-                "Tài khoản {$user->name} đã đặt đơn #{$order->code}",
-                "/admin/orders/{$order->code}",
-                $order->id
+                'Đơn hàng mới',
+                "Tài khoản $user->name đã đặt đơn $order->code",
+                "/admin/orders/$order->code",
+                "$order->id",
             );
 
             DB::commit();
+
+            if ($method === 'vnpay') {
+                return $this->processVNPayPayment($order, $payment);
+            }
 
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Có lỗi xảy ra khi đặt hàng: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi đặt hàng: ' . $e->getMessage());
+        }
+    }
+
+    public function edit($code)
+    {
+        $order = Order::with('orderDetails.productVariant.product', 'shippingAddress')
+            ->where('code', $code)
+            ->firstOrFail();
+        $addresses = Address::all();
+        $vouchers = Voucher::all();
+        return view('client.edit-checkout', compact('order', 'addresses', 'vouchers'));
+    }
+
+    public function update(Request $request, $code)
+    {
+        $request->validate([
+            'selected_address' => 'required|exists:addresses,id',
+            'payment_method' => 'nullable|string|in:cod,vnpay,momo,zalopay',
+            'voucher_code' => 'nullable|string|exists:vouchers,code',
+        ]);
+
+        $order = Order::with(['orderDetails.productVariant', 'payment', 'orderVoucher'])
+            ->where('code', $code)
+            ->firstOrFail();
+
+        DB::beginTransaction();
+        try {
+            $order->address_id = $request->selected_address;
+            $order->status = 'pending';
+
+            $totalPrice = 0;
+            foreach ($order->orderDetails as $detail) {
+                $totalPrice += $detail->price * $detail->quantity;
+            }
+
+            if ($order->orderVoucher) {
+                $oldVoucher = $order->orderVoucher->voucher;
+                if ($oldVoucher && $oldVoucher->used_count > 0) {
+                    $oldVoucher->decrement('used_count');
+                }
+                $order->orderVoucher()->delete();
+            }
+
+            $discountAmount = 0;
+            if ($request->filled('voucher_code')) {
+                $voucher = Voucher::where('code', $request->voucher_code)->first();
+
+                if ($voucher && $voucher->isValidForAmount($totalPrice)) {
+                    if ($voucher->type === 'percent') {
+                        $discountAmount = ($totalPrice * $voucher->value) / 100;
+                        if ($voucher->max_discount_amount) {
+                            $discountAmount = min($discountAmount, $voucher->max_discount_amount);
+                        }
+                    } else {
+                        $discountAmount = $voucher->value;
+                    }
+
+                    $discountAmount = min($discountAmount, $totalPrice);
+
+                    $order->orderVoucher()->create([
+                        'voucher_id' => $voucher->id,
+                        'code' => $voucher->code,
+                        'discount' => $discountAmount,
+                        'applied_at' => now(),
+                    ]);
+
+                    $voucher->increment('used_count');
+                }
+            }
+
+            $finalAmount = $totalPrice - $discountAmount;
+            $order->total_amount = $finalAmount;
+            $order->save();
+
+            $method = $request->payment_method ?? 'cod';
+
+            if ($order->payment) {
+                $order->payment->update([
+                    'method' => strtoupper($method),
+                    'total_amount' => $finalAmount,
+                    'status' => 'pending',
+                ]);
+            } else {
+                $order->payment()->create([
+                    'method' => strtoupper($method),
+                    'total_amount' => $finalAmount,
+                    'status' => 'pending',
+                ]);
+            }
+
+            DB::commit();
+
+            if ($method === 'vnpay') {
+                return $this->processVNPayPayment($order, $order->payment);
+            }
+
+            return redirect()->route('client.checkout.detail', ['code' => $order->code])
+                ->with('success', 'Cập nhật đơn hàng thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật đơn hàng: ' . $e->getMessage());
         }
     }
 
@@ -280,7 +413,7 @@ class CheckoutController extends Controller
     protected function processVNPayPayment(Order $order, Payment $payment)
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://localhost:8000/client/payment/vnpay/return";
+        $vnp_Returnurl = "http://127.0.0.1:8000/client/payment/vnpay/return";
         $vnp_TmnCode = "VFD3SN64";
         $vnp_HashSecret = "I5H2HD3HTN7ZDJ1APE3GY37AB0LY8S8H";
 

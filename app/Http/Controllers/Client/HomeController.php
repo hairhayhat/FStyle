@@ -74,14 +74,16 @@ class HomeController extends Controller
     public function detailProduct($slug)
     {
         try {
-            $product = Product::with(['category', 'variants', 'galleries'])
+            $product = Product::with(['category', 'variants', 'galleries', 'comments.user']) // eager load comments với user
                 ->where('slug', $slug)
                 ->firstOrFail();
+
             if (is_null($product->views)) {
                 $product->views = 0;
                 $product->save();
             }
             $product->increment('views');
+
             $sizes = Size::all();
             $sameCateProducts = Product::with(['category', 'variants', 'galleries'])
                 ->where('category_id', $product->category_id)
@@ -93,10 +95,35 @@ class HomeController extends Controller
                 $favoriteProductIds = Auth::user()->favorites->pluck('product_id')->toArray();
             }
 
-            return view('client.product.detail', compact('product', 'sizes', 'sameCateProducts', 'favoriteProductIds'));
+            $comments = $product->ActiveComments();
+
+            $totalRatings = $comments->count();
+            $averageRating = $totalRatings ? round($comments->avg('rating'), 1) : 0;
+
+            $ratingCounts = [];
+            for ($i = 1; $i <= 5; $i++) {
+                $ratingCounts[$i] = $comments->where('rating', $i)->count();
+            }
+
+            $ratingPercentages = [];
+            for ($i = 1; $i <= 5; $i++) {
+                $ratingPercentages[$i] = $totalRatings ? round($ratingCounts[$i] / $totalRatings * 100) : 0;
+            }
+
+            return view('client.product.detail', compact(
+                'product',
+                'sizes',
+                'sameCateProducts',
+                'favoriteProductIds',
+                'comments',
+                'totalRatings',
+                'averageRating',
+                'ratingPercentages'
+            ));
         } catch (\Exception) {
             return back()->with('error', 'Sản phẩm không tồn tại');
         }
     }
+
 }
 

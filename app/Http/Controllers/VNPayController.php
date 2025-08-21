@@ -12,14 +12,37 @@ class VNPayController extends Controller
 
     public function return(Request $request)
     {
-        $data = $request->all();
+        $order = Order::where('code', $request->vnp_TxnRef)->first();
+
+        if (!$order) {
+            return redirect()->route('client.checkout.index')
+                ->with('error', 'Không tìm thấy đơn hàng.');
+        }
 
         if ($request->vnp_ResponseCode == '00') {
-            return view('vnpay.success', compact('data'));
+            $order->payment()->update([
+                'status' => 'success',
+                'paid_at' => now(),
+                'gateway_data' => json_encode($request->all()),
+            ]);
+
+            return redirect()->route('client.checkout.detail', ['code' => $order->code])
+                ->with('success', 'Thanh toán thành công!');
+        } elseif ($request->vnp_ResponseCode == '24') {
+            $order->payment()->update(['status' => 'failed']);
+
+            return redirect()->route('client.checkout.edit', ['code' => $request->vnp_TxnRef])
+                ->with('error', 'Bạn đã hủy thanh toán. Vui lòng chọn lại phương thức khác.');
         } else {
-            return view('vnpay.fail', compact('data'));
+            $order->payment()->update(['status' => 'failed']);
+
+            return redirect()->route('client.checkout.index')
+                ->with('error', 'Thanh toán VNPay thất bại. Mã lỗi: ' . $request->vnp_ResponseCode);
         }
     }
+
+
+
 
     public function ipn(Request $request)
     {

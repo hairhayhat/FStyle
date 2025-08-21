@@ -59,7 +59,7 @@ class VoucherController extends Controller
             ]);
         }
 
-        // Nếu tất cả hợp lệ → tính giảm giá
+
         $discount = 0;
         if ($voucher->type === 'percent') {
             $discount = ($orderAmount * $voucher->value) / 100;

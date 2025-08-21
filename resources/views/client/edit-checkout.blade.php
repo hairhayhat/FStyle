@@ -6,20 +6,22 @@
             <div class="row g-4">
                 <div class="col-lg-8">
                     <h3 class="mb-3">Địa chỉ nhận hàng</h3>
-                    <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate>
+                    <form class="needs-validation" action="{{ route('client.checkout.update', ['code' => $order->code]) }}"
+                        method="POST" novalidate>
                         @csrf
-                        <input type="hidden" name="voucher_code" id="voucher_code_input">
+                        @method('PUT')
+
+                        <input type="hidden" name="voucher_code" id="voucher_code_input" value="{{ $order->voucher_code }}">
+
                         <div class="save-details-box" id="addressList">
                             <div class="row g-3">
                                 @foreach ($addresses as $item)
                                     <div class="col-xl-4 col-md-6">
                                         <label class="save-details">
                                             <input type="radio" name="selected_address" value="{{ $item->id }}"
-                                                @if ($item->is_default) checked @endif required>
+                                                @if ($order->address_id == $item->id) checked @endif required>
 
                                             <span class="badge-nickname">{{ $item->nickname }}</span>
-
-                                            <div class="save-name"></div>
 
                                             <div class="save-address">
                                                 <p><strong>Địa chỉ:</strong> {{ $item->address }}</p>
@@ -41,19 +43,14 @@
 
                         <hr class="my-lg-5 my-4">
 
-                        <h3 class="mb-3">Hình thức thanh toán
-                            <small
-                                style="color: #dc3545; font-weight: 600; font-size: 0.9rem; display: block; margin-top: 0.3rem;">
-                                Nếu bạn không lựa chọn hình thức thanh toán, hệ thống sẽ tự động chọn COD
-                            </small>
-                        </h3>
+                        <h3 class="mb-3">Hình thức thanh toán</h3>
 
                         <div class="row g-3 my-3">
                             <div class="col-6">
                                 <div class="form-check text-center p-3 border rounded-3 shadow-sm h-100 payment-option"
                                     data-target="cod" style="cursor: pointer; transition: all 0.3s;">
                                     <input class="form-check-input d-none" type="radio" name="payment_method"
-                                        id="cod" value="cod">
+                                        id="cod" value="cod" @checked($order->payment?->method === 'cod')>
                                     <label class="form-check-label d-block" for="cod">
                                         <img src="{{ asset('client/assets/images/logo/cod.png') }}" alt="COD"
                                             class="img-fluid mb-2" style="height:80px; width:auto;">
@@ -65,7 +62,7 @@
                                 <div class="form-check text-center p-3 border rounded-3 shadow-sm h-100 payment-option"
                                     data-target="vnpay" style="cursor: pointer; transition: all 0.3s;">
                                     <input class="form-check-input d-none" type="radio" name="payment_method"
-                                        id="vnpay" value="vnpay">
+                                        id="vnpay" value="vnpay" @checked($order->payment?->method === 'vnpay')>
                                     <label class="form-check-label d-block" for="vnpay">
                                         <img src="{{ asset('client/assets/images/logo/vnpay.jpg') }}" alt="VNPay"
                                             class="img-fluid mb-2" style="height:80px; width:auto;">
@@ -75,89 +72,75 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-solid-default mt-4" type="submit">Đặt hàng</button>
+                        <button class="btn btn-solid-default mt-4" type="submit">Cập nhật đơn hàng</button>
                     </form>
-
                 </div>
 
                 <div class="col-lg-4">
                     <div class="your-cart-box">
-                        <h3 class="mb-3 d-flex text-capitalize">Giỏ hàng<span
-                                class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">{{ count($cartItems) }}</span>
+                        <h3 class="mb-3 d-flex text-capitalize">
+                            Đơn hàng
+                            <span class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">
+                                {{ $order->orderDetails->count() }}
+                            </span>
                         </h3>
                         <ul class="list-group mb-3">
-                            @foreach ($cartItems as $item)
-                                @php
-                                    if (is_array($item)) {
-                                        $variant = $item['productVariant'];
-                                        $product = $variant->product ?? null;
-                                        $quantity = $item['quantity'];
-                                        $price = $variant->sale_price ?? 0;
-                                        $color = $item['color'] ?? null;
-                                        $size = $item['size'] ?? null;
-                                    } else {
-                                        $variant = $item->productVariant;
-                                        $product = $variant?->product;
-                                        $quantity = $item->quantity;
-                                        $price = $item->price;
-                                        $color = $item->color;
-                                        $size = $item->size;
-                                    }
-                                @endphp
-
+                            @php
+                                $new_total = 0;
+                            @endphp
+                            @foreach ($order->orderDetails as $item)
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
-                                        <h6 class="my-0">{{ $product?->name }}</h6>
-                                        <small>{{ $color }}, Size {{ $size }}, {{ $quantity }}
+                                        <h6 class="my-0">{{ $item->productVariant?->product?->name }}</h6>
+                                        <small>{{ $item->color }}, Size {{ $item->size }}, {{ $item->quantity }}
                                             cái</small>
                                     </div>
-                                    <span>{{ number_format($quantity * $price) }}đ/cái</span>
+                                    <span>{{ number_format($item->price * $item->quantity) }}đ</span>
                                 </li>
+                                @php
+                                    $new_total += $item->price * $item->quantity;
+                                @endphp
                             @endforeach
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
                                 <div>
                                     <h6 class="my-0">Mã giảm giá</h6>
-                                    <small></small>
                                 </div>
-                                <span id="voucher-discount">-0đ</span>
+                                <span id="voucher-discount">-{{ number_format($order->orderVoucher->discount ?? 0) }}đ</span>
                             </li>
 
                             <li class="list-group-item d-flex lh-condensed justify-content-between">
                                 <span class="fw-bold">Tổng (Vnđ)</span>
-                                <strong id="cart-total-display" data-total="{{ $total }}">
-                                    {{ number_format($total) }}đ
+                                <strong id="cart-total-display" data-total="{{ $new_total }}">
+                                    {{ number_format($order->total_amount) }}đ
                                 </strong>
                             </li>
                         </ul>
 
                         <form class="card border-0">
                             <div class="input-group custome-imput-group">
-                                <select class="form-control" id="voucher-select">
+                                <select class="form-control" id="voucher-select" name="voucher_code">
                                     <option value="">Chọn mã khuyến mãi</option>
                                     @foreach ($vouchers as $item)
-                                        @if ($item->type == 'percent')
-                                            <option value="{{ $item->code }}" data-type="percent"
-                                                data-value="{{ (int) $item->value }}"
-                                                data-max="{{ $item->max_discount_amount }}"
-                                                data-min="{{ $item->min_order_amount }}">
-                                                Giảm {{ (int) $item->value }}%. Tối đa
-                                                {{ number_format($item->max_discount_amount) }}đ
+                                        <option value="{{ $item->code }}" data-type="{{ $item->type }}"
+                                            data-value="{{ (int) $item->value }}"
+                                            data-max="{{ $item->max_discount_amount }}"
+                                            data-min="{{ $item->min_order_amount }}"
+                                            {{ isset($order->orderVoucher->code) && $order->orderVoucher->code == $item->code ? 'selected' : '' }}>
+                                            @if ($item->type == 'percent')
+                                                Giảm {{ (int) $item->value }}%.
+                                                Tối đa {{ number_format($item->max_discount_amount) }}đ
                                                 cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
-                                            </option>
-                                        @else
-                                            <option value="{{ $item->code }}" data-type="fixed"
-                                                data-value="{{ $item->value }}"
-                                                data-max="{{ $item->max_discount_amount }}"
-                                                data-min="{{ $item->min_order_amount }}">
-                                                Giảm {{ number_format($item->value, 0) }}đ. Tối đa
-                                                {{ number_format($item->max_discount_amount) }}đ
+                                            @else
+                                                Giảm {{ number_format($item->value, 0) }}đ.
+                                                Tối đa {{ number_format($item->max_discount_amount) }}đ
                                                 cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
-                                            </option>
-                                        @endif
+                                            @endif
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
