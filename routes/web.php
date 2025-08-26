@@ -123,6 +123,10 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('dashboard', function () {
         return view("client.dashboard.dashboard");
     })->name('client.dashboard');
+    // routes/web.php
+    Route::get('/change-password', [ProfileController::class, 'changePassword'])->name('client.changePassword');
+    Route::post('/change-password', [ProfileController::class, 'updatePassword'])->name('client.updatePassword');
+
 
     Route::get('/profile', [ClientProfileController::class, 'renderProfile'])->name('client.profile');
     Route::post('/profile', [ClientProfileController::class, 'updateProfile'])->name('client.profile.update');

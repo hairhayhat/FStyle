@@ -74,4 +74,11 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Mật khẩu đã được thay đổi thành công!');
     }
+    public function dashboard(){
+
+        $user = Auth::user();
+
+        return view('client.dashboard.index', compact('user'));
+    }
+
 }

@@ -14,7 +14,7 @@
 
         <li class="nav-item mb-2">
             <a href="#" class="nav-link font-light" id="2-tab">
-                <i class="fas fa-angle-right"></i>Wishlist
+                <i class="fas fa-angle-right"></i>Danh sách yêu thích
             </a>
         </li>
 
@@ -25,21 +25,10 @@
         </li>
 
         <li class="nav-item mb-2">
-            <a href="#" class="nav-link font-light" id="4-tab">
-                <i class="fas fa-angle-right"></i>Payment
-            </a>
-        </li>
-
-        <li class="nav-item mb-2">
             <a href="{{ route('client.profile') }}" class="nav-link font-light" id="5-tab">
                 <i class="fas fa-angle-right"></i>Thông tin cá nhân
             </a>
         </li>
 
-        <li class="nav-item">
-            <a href="#" class="nav-link font-light" id="6-tab">
-                <i class="fas fa-angle-right"></i>Security
-            </a>
-        </li>
     </ul>
 </div>

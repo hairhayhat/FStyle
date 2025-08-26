@@ -16,10 +16,15 @@ class CartController extends Controller
     {
         $cart = Auth::user()->cart;
 
-        $cartItems = $cart->details()->with('productVariant.product')->get();
-        $total = $cartItems->sum(function ($item) {
-            return ($item->productVariant->sale_price ?? 0) * $item->quantity;
-        });
+        if (!$cart || $cart->details()->count() === 0) {
+            $cartItems = collect();
+            $total = 0;
+        } else {
+            $cartItems = $cart->details()->with('productVariant.product')->get();
+            $total = $cartItems->sum(function ($item) {
+                return ($item->productVariant->sale_price ?? 0) * $item->quantity;
+            });
+        }
 
         return view('client.cart', compact('cartItems', 'total'));
     }

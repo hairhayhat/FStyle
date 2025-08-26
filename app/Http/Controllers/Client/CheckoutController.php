@@ -90,13 +90,13 @@ class CheckoutController extends Controller
         $payment = $request->get('payment');
 
         $statusCounts = [
-            'pending' => Order::where('status', 'pending')->count(),
-            'confirmed' => Order::where('status', 'confirmed')->count(),
-            'packaging' => Order::where('status', 'packaging')->count(),
-            'shipped' => Order::where('status', 'shipped')->count(),
-            'delivered' => Order::where('status', 'delivered')->count(),
-            'cancelled' => Order::where('status', 'cancelled')->count(),
-            'returned' => Order::where('status', 'returned')->count(),
+            'pending'    => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
+            'confirmed'  => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
+            'packaging'  => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
+            'shipped'    => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
+            'delivered'  => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
+            'cancelled'  => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+            'returned'   => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
         ];
 
         $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment'])
@@ -123,6 +123,7 @@ class CheckoutController extends Controller
 
         return view('client.dashboard.order', compact('orders', 'statusCounts', 'status', 'payment'));
     }
+
 
     public function detail($code)
     {

@@ -47,7 +47,7 @@ class Product extends Model
     {
         return $this->hasMany(Favorite::class);
     }
-    
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -57,6 +57,5 @@ class Product extends Model
     {
         return $this->hasMany(Comment::class)->where('status', 1);
     }
-
 
 }

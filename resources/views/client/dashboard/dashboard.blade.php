@@ -7,13 +7,16 @@
                 <div class="dashboard-right">
                     <div class="dashboard">
                         <div class="page-title title title1 title-effect">
-                            <h2>My Dashboard</h2>
+                            <h2> Trang quản lý </h2>
                         </div>
                         <div class="welcome-msg">
-                            <h6 class="font-light">Hello, <span>MARK JECNO !</span></h6>
-                            <p class="font-light">From your My Account Dashboard you have the ability to
-                                view a snapshot of your recent account activity and update your account
-                                information. Select a link below to view or edit information.</p>
+                            <h6 class="font-light">
+                                Xin chào, <span>{{ Auth::user()->name }}</span>!
+                            </h6>
+                            <p class="font-light">
+                                Từ bảng điều khiển tài khoản của bạn, bạn có thể xem nhanh hoạt động gần đây
+                                và cập nhật thông tin cá nhân. Chọn mục bên dưới để xem hoặc chỉnh sửa.
+                            </p>
                         </div>
 
                         <div class="order-box-contain my-4">
@@ -22,13 +25,13 @@
                                     <div class="order-box">
                                         <div class="order-box-image">
                                             <img src="assets/images/svg/box.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                         </div>
                                         <div class="order-box-contain">
                                             <img src="assets/images/svg/box1.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                             <div>
-                                                <h5 class="font-light">total order</h5>
+                                                <h5 class="font-light">Tổng số đơn hàng</h5>
                                                 <h3>3648</h3>
                                             </div>
                                         </div>
@@ -39,13 +42,13 @@
                                     <div class="order-box">
                                         <div class="order-box-image">
                                             <img src="assets/images/svg/sent.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                         </div>
                                         <div class="order-box-contain">
                                             <img src="assets/images/svg/sent1.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                             <div>
-                                                <h5 class="font-light">pending orders</h5>
+                                                <h5 class="font-light">Đơn hàng chờ xử lý</h5>
                                                 <h3>215</h3>
                                             </div>
                                         </div>
@@ -56,13 +59,13 @@
                                     <div class="order-box">
                                         <div class="order-box-image">
                                             <img src="assets/images/svg/wishlist.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                         </div>
                                         <div class="order-box-contain">
                                             <img src="assets/images/svg/wishlist1.png" class="img-fluid blur-up lazyload"
-                                                alt="">
+                                                 alt="">
                                             <div>
-                                                <h5 class="font-light">wishlist</h5>
+                                                <h5 class="font-light">Danh sách yêu thích</h5>
                                                 <h3>63874</h3>
                                             </div>
                                         </div>
@@ -73,58 +76,60 @@
 
                         <div class="box-account box-info">
                             <div class="box-head">
-                                <h3>Account Information</h3>
+                                <h3>Thông tin tài khoản</h3>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="box">
                                         <div class="box-title">
-                                            <h4>Contact Information</h4><a href="javascript:void(0)">Edit</a>
+                                            <h4>Thông tin liên hệ</h4>
+                                            <a href="{{ route('client.profile') }}">Chỉnh sửa</a>
                                         </div>
                                         <div class="box-content">
-                                            <h6 class="font-light">MARK JECNO</h6>
-                                            <h6 class="font-light">MARk-JECNO@gmail.com</h6>
-                                            <a href="javascript:void(0)">Change Password</a>
+                                            <h6 class="font-light">{{ Auth::user()->name }}</h6>
+                                            <h6 class="font-light">{{ Auth::user()->email }}</h6>
+                                            <a href="{{ route('client.changePassword') }}">Đổi mật khẩu</a>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-sm-6">
                                     <div class="box">
                                         <div class="box-title">
-                                            <h4>Newsletters</h4><a href="javascript:void(0)">Edit</a>
+                                            <h4>Bản tin</h4>
+                                            <a href="javascript:void(0)">Chỉnh sửa</a>
                                         </div>
                                         <div class="box-content">
-                                            <h6 class="font-light">You are currently not subscribed to any
-                                                newsletter.</h6>
+                                            <h6 class="font-light">Bạn hiện chưa đăng ký bất kỳ bản tin nào.</h6>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div>
                                 <div class="box address-box">
                                     <div class="box-title">
-                                        <h4>Address Book</h4><a href="javascript:void(0)">Manage
-                                            Addresses</a>
+                                        <h4>Sổ địa chỉ</h4>
+                                        <a href="javascript:void(0)">Quản lý địa chỉ</a>
                                     </div>
                                     <div class="box-content">
                                         <div class="row g-4">
                                             <div class="col-sm-6">
-                                                <h6 class="font-light">Default Billing Address</h6>
-                                                <h6 class="font-light">You have not set a default
-                                                    billing address.</h6>
-                                                <a href="javascript:void(0)">Edit Address</a>
+                                                <h6 class="font-light">Địa chỉ thanh toán mặc định</h6>
+                                                <h6 class="font-light">Bạn chưa đặt địa chỉ thanh toán mặc định.</h6>
+                                                <a href="javascript:void(0)">Chỉnh sửa địa chỉ</a>
                                             </div>
                                             <div class="col-sm-6">
-                                                <h6 class="font-light">Default Shipping Address</h6>
-                                                <h6 class="font-light">You have not set a default
-                                                    shipping address.</h6>
-                                                <a href="javascript:void(0)">Edit Address</a>
+                                                <h6 class="font-light">Địa chỉ giao hàng mặc định</h6>
+                                                <h6 class="font-light">Bạn chưa đặt địa chỉ giao hàng mặc định.</h6>
+                                                <a href="javascript:void(0)">Chỉnh sửa địa chỉ</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

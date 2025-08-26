@@ -95,7 +95,7 @@ class HomeController extends Controller
                 $favoriteProductIds = Auth::user()->favorites->pluck('product_id')->toArray();
             }
 
-            $comments = $product->ActiveComments();
+            $comments = $product->ActiveComments;
 
             $totalRatings = $comments->count();
             $averageRating = $totalRatings ? round($comments->avg('rating'), 1) : 0;
