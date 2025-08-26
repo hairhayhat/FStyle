@@ -45,3 +45,4 @@
     <script src="{{ asset('client/assets/js/sticky-cart-bottom.js') }}"></script>
     <script src="{{ asset('client/assets/js/fetch-notification.js') }}"></script>
     <script src="{{ asset('client/assets/js/add_comment.js') }}"></script>
+    <script src="{{ asset('client/assets/js/filter-order.js') }}"></script>
