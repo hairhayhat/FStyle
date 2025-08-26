@@ -31,7 +31,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // Validate sản phẩm
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -40,14 +39,37 @@ class ProductController extends Controller
             'gallery' => 'nullable|array',
             'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
-            // Validate variants
             'variants' => 'required|array',
             'variants.*.color_id' => 'required|exists:colors,id',
             'variants.*.size_id' => 'required|exists:sizes,id',
             'variants.*.import_price' => 'required|numeric|min:0',
             'variants.*.sale_price' => 'required|numeric|min:0',
             'variants.*.quantity' => 'required|integer|min:0',
+        ], [
+            'required' => ':attribute không được để trống.',
+            'string' => ':attribute phải là chuỗi.',
+            'max' => ':attribute không được vượt quá :max ký tự.',
+            'integer' => ':attribute phải là số nguyên.',
+            'numeric' => ':attribute phải là số.',
+            'min' => ':attribute phải lớn hơn hoặc bằng :min.',
+            'exists' => ':attribute không tồn tại trong hệ thống.',
+            'image' => ':attribute phải là hình ảnh.',
+            'mimes' => ':attribute phải có định dạng: :values.',
+            'array' => ':attribute phải là một mảng.',
+            'name' => 'Tên sản phẩm',
+            'category_id' => 'Danh mục',
+            'description' => 'Mô tả sản phẩm',
+            'image' => 'Ảnh chính',
+            'gallery' => 'Thư viện ảnh',
+            'gallery.*' => 'Ảnh trong thư viện',
+            'variants' => 'Biến thể sản phẩm',
+            'variants.*.color_id' => 'Màu sắc',
+            'variants.*.size_id' => 'Size',
+            'variants.*.import_price' => 'Giá nhập',
+            'variants.*.sale_price' => 'Giá bán',
+            'variants.*.quantity' => 'Số lượng',
         ]);
+
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
@@ -56,8 +78,15 @@ class ProductController extends Controller
         // Lưu ảnh chính
         $mainImagePath = $request->file('image')->store('products', 'public');
 
-        // Tạo slug từ name
         $slug = Str::slug($request->name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
 
         // Tạo sản phẩm
         $product = Product::create([
