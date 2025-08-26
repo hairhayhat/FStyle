@@ -9,6 +9,11 @@
                     <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate>
                         @csrf
                         <input type="hidden" name="voucher_code" id="voucher_code_input">
+                        <input type="hidden" name="type" value="{{ request('type') }}">
+                        @foreach (request('cart_items', []) as $id)
+                            <input type="hidden" name="cart_items[]" value="{{ $id }}">
+                        @endforeach
+
                         <div class="save-details-box" id="addressList">
                             <div class="row g-3">
                                 @foreach ($addresses as $item)
@@ -77,7 +82,6 @@
 
                         <button class="btn btn-solid-default mt-4" type="submit">Đặt hàng</button>
                     </form>
-
                 </div>
 
                 <div class="col-lg-4">
@@ -111,7 +115,7 @@
                                         <small>{{ $color }}, Size {{ $size }}, {{ $quantity }}
                                             cái</small>
                                     </div>
-                                    <span>{{ number_format($quantity * $price) }}đ/cái</span>
+                                    <span>{{ number_format($price) }}đ/cái</span>
                                 </li>
                             @endforeach
                             <li class="list-group-item d-flex justify-content-between lh-condensed">

@@ -26,14 +26,16 @@ class CheckoutController extends Controller
     }
     public function checkout(Request $request)
     {
-        if ($request->get('type') === 'buy_now') {
+        $type = $request->get('type');
+
+        if ($type === 'buy_now') {
             $buyNow = session('buy_now');
             if (!$buyNow) {
                 return redirect()->route('client.welcome')
                     ->withErrors('Không có sản phẩm nào để mua ngay.');
             }
 
-            $variant = ProductVariant::with('product')
+            $variant = ProductVariant::with('product', 'color', 'size')
                 ->find($buyNow['product_variant_id']);
 
             $cartItems = collect([
@@ -45,25 +47,38 @@ class CheckoutController extends Controller
                     'size' => $variant->size->name
                 ]
             ]);
+        } elseif ($type === 'cart') {
+            $cart = Auth::user()->cart;
+            $selectedIds = $request->input('cart_items', []);
 
-            $total = $cartItems->sum(function ($item) {
-                $price = $item->productVariant->sale_price ?? $item->productVariant->price ?? 0;
-                return $price * $item->quantity;
-            });
+            if (empty($selectedIds)) {
+                return redirect()->back()->withErrors('Bạn chưa chọn sản phẩm nào để thanh toán.');
+            }
 
-            $addresses = Auth::user()->addresses;
-            $vouchers = Voucher::all();
-            return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
+            $cartItems = $cart->details()
+                ->with('productVariant.product', 'productVariant.color', 'productVariant.size')
+                ->whereIn('id', $selectedIds)
+                ->get()
+                ->map(function ($item) {
+                    return (object) [
+                        'productVariant' => $item->productVariant,
+                        'price' => $item->productVariant->sale_price ?? $item->productVariant->price ?? 0,
+                        'quantity' => $item->quantity,
+                        'color' => $item->color,
+                        'size' => $item->size
+                    ];
+                });
+        } else {
+            return redirect()->route('client.welcome');
         }
 
-        $cart = Auth::user()->cart;
-        $cartItems = $cart->details()->with('productVariant.product')->get();
         $total = $cartItems->sum(function ($item) {
-            $price = $item->productVariant->sale_price ?? $item->productVariant->price ?? 0;
-            return $price * $item->quantity;
+            return $item->price * $item->quantity;
         });
+
         $addresses = Auth::user()->addresses;
         $vouchers = Voucher::all();
+
         return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
     }
 
@@ -151,14 +166,20 @@ class CheckoutController extends Controller
 
     protected function getOrderItems(Request $request, $user)
     {
-        if ($request->get('type') === 'buy_now') {
-            $buyNow = session('buy_now');
-            if (!$buyNow)
-                return collect();
+        $type = $request->get('type');
 
-            $variant = ProductVariant::with('product')->find($buyNow['product_variant_id']);
-            if (!$variant)
+        if ($type === 'buy_now') {
+            $buyNow = session('buy_now');
+            if (!$buyNow) {
                 return collect();
+            }
+
+            $variant = ProductVariant::with('product', 'size', 'color')
+                ->find($buyNow['product_variant_id']);
+
+            if (!$variant) {
+                return collect();
+            }
 
             return collect([
                 (object) [
@@ -169,18 +190,30 @@ class CheckoutController extends Controller
                     'price' => $variant->sale_price ?? $variant->price ?? 0,
                 ]
             ]);
+        } elseif ($type === 'cart') {
+            $cart = $user->cart;
+
+            $selectedIds = $request->input('cart_items', []);
+            if (empty($selectedIds)) {
+                return collect();
+            }
+
+            return $cart->details()
+                ->with('productVariant.product', 'productVariant.size', 'productVariant.color')
+                ->whereIn('id', $selectedIds)
+                ->get()
+                ->map(function ($item) {
+                    return (object) [
+                        'product_variant_id' => $item->product_variant_id,
+                        'size' => $item->size,
+                        'color' => $item->color,
+                        'quantity' => $item->quantity,
+                        'price' => $item->productVariant->sale_price ?? $item->productVariant->price ?? 0,
+                    ];
+                });
         }
 
-        $cart = $user->cart;
-        return $cart->details()->with('productVariant.product')->get()->map(function ($item) {
-            return (object) [
-                'product_variant_id' => $item->product_variant_id,
-                'size' => $item->size,
-                'color' => $item->color,
-                'quantity' => $item->quantity,
-                'price' => $item->productVariant->sale_price ?? $item->productVariant->price ?? 0,
-            ];
-        });
+        return collect();
     }
 
     protected function calculateTotal($items, $voucherCode = null)
@@ -260,19 +293,28 @@ class CheckoutController extends Controller
             }
 
             if ($request->get('type') === 'cart') {
-                $user->cart->details()->delete();
+                $selectedIds = $request->input('cart_items', []);
+                if (!empty($selectedIds)) {
+                    $user->cart->details()->whereIn('id', $selectedIds)->delete();
+                }
             } else {
                 session()->forget('buy_now');
             }
 
-            Payment::create([
+            $method = $request->payment_method ?? 'cod';
+
+            $payment = Payment::create([
                 'order_id' => $order->id,
-                'method' => strtoupper($request->payment_method ?? 'cod'),
+                'method' => $method,
                 'total_amount' => $total - $discount,
                 'status' => 'pending',
             ]);
 
             DB::commit();
+
+            if ($method === 'vnpay') {
+                return $this->processVNPayPayment($order, $payment);
+            }
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
@@ -423,7 +465,6 @@ class CheckoutController extends Controller
         ]);
     }
 
-
     public function reBuy($id)
     {
         $order = Order::with('orderDetails.productVariant')->findOrFail($id);
@@ -538,7 +579,4 @@ class CheckoutController extends Controller
         return redirect($vnp_Url);
 
     }
-
-
-
 }
