@@ -67,11 +67,46 @@ class CheckoutController extends Controller
         return view('client.checkout', compact('cartItems', 'total', 'addresses', 'vouchers'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('orderDetails.productVariant.product', 'orderVoucher')->where('user_id', Auth::user()->id)->paginate(5);
+        $sort = $request->get('sort', 'desc');
+        $perPage = $request->get('per_page', 5);
+        $status = $request->get('status');
+        $payment = $request->get('payment');
 
-        return view('client.dashboard.order', compact('orders'));
+        $statusCounts = [
+            'pending' => Order::where('status', 'pending')->count(),
+            'confirmed' => Order::where('status', 'confirmed')->count(),
+            'packaging' => Order::where('status', 'packaging')->count(),
+            'shipped' => Order::where('status', 'shipped')->count(),
+            'delivered' => Order::where('status', 'delivered')->count(),
+            'cancelled' => Order::where('status', 'cancelled')->count(),
+            'returned' => Order::where('status', 'returned')->count(),
+        ];
+
+        $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment'])
+            ->where('user_id', Auth::id());
+
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        if (!empty($payment) && $payment !== 'all') {
+            $query->whereHas('payment', function ($q) use ($payment) {
+                $q->where('method', $payment);
+            });
+        }
+
+        $orders = $query->orderBy('updated_at', $sort)
+            ->paginate($perPage)
+            ->appends($request->all());
+
+        if ($request->ajax()) {
+            $html = view('client.partials.orders-table', compact('orders'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('client.dashboard.order', compact('orders', 'statusCounts', 'status', 'payment'));
     }
 
     public function detail($code)
@@ -100,7 +135,7 @@ class CheckoutController extends Controller
                 $product = $detail->productVariant->product;
 
                 return [
-                    'id' => $detail->id,
+                    'order_detail_id' => $detail->id,
                     'product_id' => $product->id,
                     'product_name' => $product->name ?? 'Sản phẩm không tồn tại',
                     'variant_name' => $detail->productVariant->name ?? '',
@@ -114,7 +149,56 @@ class CheckoutController extends Controller
         ]);
     }
 
+    protected function getOrderItems(Request $request, $user)
+    {
+        if ($request->get('type') === 'buy_now') {
+            $buyNow = session('buy_now');
+            if (!$buyNow)
+                return collect();
 
+            $variant = ProductVariant::with('product')->find($buyNow['product_variant_id']);
+            if (!$variant)
+                return collect();
+
+            return collect([
+                (object) [
+                    'product_variant_id' => $variant->id,
+                    'size' => $variant->size->name,
+                    'color' => $variant->color->name,
+                    'quantity' => $buyNow['quantity'],
+                    'price' => $variant->sale_price ?? $variant->price ?? 0,
+                ]
+            ]);
+        }
+
+        $cart = $user->cart;
+        return $cart->details()->with('productVariant.product')->get()->map(function ($item) {
+            return (object) [
+                'product_variant_id' => $item->product_variant_id,
+                'size' => $item->size,
+                'color' => $item->color,
+                'quantity' => $item->quantity,
+                'price' => $item->productVariant->sale_price ?? $item->productVariant->price ?? 0,
+            ];
+        });
+    }
+
+    protected function calculateTotal($items, $voucherCode = null)
+    {
+        $total = $items->sum(fn($item) => $item->price * $item->quantity);
+        $discount = 0;
+
+        if ($voucherCode) {
+            $voucher = Voucher::where('code', $voucherCode)->first();
+            if ($voucher && $voucher->isValidForAmount($total)) {
+                $discount = $voucher->type === 'percent'
+                    ? min(($total * $voucher->value) / 100, $voucher->max_discount_amount ?? $total)
+                    : min($voucher->value, $total);
+            }
+        }
+
+        return [$total, $discount];
+    }
 
     public function store(Request $request)
     {
@@ -122,14 +206,14 @@ class CheckoutController extends Controller
             'selected_address' => 'required|exists:addresses,id',
             'payment_method' => 'nullable|string|in:cod,vnpay,momo,zalopay',
             'voucher_code' => 'nullable|string|exists:vouchers,code',
+            'type' => 'nullable|string|in:cart,buy_now',
         ]);
 
         $user = Auth::user();
-        $cart = $user->cart;
-        $cartItems = $cart->details()->with('productVariant.product')->get();
+        $items = $this->getOrderItems($request, $user);
 
-        if ($cartItems->isEmpty()) {
-            return redirect()->back()->with('error', 'Giỏ hàng trống, không thể đặt hàng.');
+        if ($items->isEmpty()) {
+            return redirect()->back()->withErrors('Không có sản phẩm để đặt hàng.');
         }
 
         DB::beginTransaction();
@@ -143,46 +227,31 @@ class CheckoutController extends Controller
             ]);
 
             $totalPrice = 0;
-            foreach ($cartItems as $item) {
-                $productVariant = $item->productVariant;
-                $price = $productVariant->sale_price;
-                $quantity = $item->quantity;
-
+            foreach ($items as $item) {
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'product_variant_id' => $item->product_variant_id,
                     'size' => $item->size,
                     'color' => $item->color,
-                    'quantity' => $quantity,
-                    'price' => $price,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
                 ]);
-
-                $totalPrice += $price * $quantity;
-
-                $productVariant->decrement('quantity', $quantity);
+                $totalPrice += $item->price * $item->quantity;
+                ProductVariant::find($item->product_variant_id)->decrement('quantity', $item->quantity);
             }
 
-            $discountAmount = 0;
-            if ($request->filled('voucher_code')) {
+            [$total, $discount] = $this->calculateTotal($items, $request->voucher_code);
+
+            $order->update(['total_amount' => $total - $discount]);
+
+            if ($request->filled('voucher_code') && $discount > 0) {
                 $voucher = Voucher::where('code', $request->voucher_code)->first();
-
-                if ($voucher && $voucher->isValidForAmount($totalPrice)) {
-                    if ($voucher->type === 'percent') {
-                        $discountAmount = ($totalPrice * $voucher->value) / 100;
-                        if ($voucher->max_discount_amount) {
-                            $discountAmount = min($discountAmount, $voucher->max_discount_amount);
-                        }
-                    } else {
-                        $discountAmount = $voucher->value;
-                    }
-
-                    $discountAmount = min($discountAmount, $totalPrice);
-
+                if ($voucher) {
                     OrderVoucher::create([
                         'order_id' => $order->id,
                         'voucher_id' => $voucher->id,
                         'code' => $voucher->code,
-                        'discount' => $discountAmount,
+                        'discount' => $discount,
                         'applied_at' => now(),
                     ]);
 
@@ -190,38 +259,25 @@ class CheckoutController extends Controller
                 }
             }
 
-            $finalAmount = $totalPrice - $discountAmount;
-            $order->update(['total_amount' => $finalAmount]);
+            if ($request->get('type') === 'cart') {
+                $user->cart->details()->delete();
+            } else {
+                session()->forget('buy_now');
+            }
 
-            $cart->details()->delete();
-
-            $method = $request->payment_method ?? 'cod';
-
-            $payment = Payment::create([
+            Payment::create([
                 'order_id' => $order->id,
-                'method' => strtoupper($method),
-                'total_amount' => $finalAmount,
+                'method' => strtoupper($request->payment_method ?? 'cod'),
+                'total_amount' => $total - $discount,
                 'status' => 'pending',
             ]);
 
-            $this->notificationService->notifyAdmins(
-                'Đơn hàng mới',
-                "Tài khoản $user->name đã đặt đơn $order->code",
-                "/admin/orders/$order->code",
-                "$order->id",
-            );
-
             DB::commit();
-
-            if ($method === 'vnpay') {
-                return $this->processVNPayPayment($order, $payment);
-            }
-
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi đặt hàng: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Lỗi khi đặt hàng: ' . $e->getMessage());
         }
     }
 

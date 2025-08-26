@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('.btn-receive-order').click(function () {
+    $(document).on('click', '.btn-receive-order', function () {
         const orderId = $(this).data('order-id');
 
         Swal.fire({
@@ -10,7 +10,6 @@ $(document).ready(function () {
             cancelButtonText: 'Hủy',
         }).then((result) => {
             if (result.isConfirmed) {
-                // Gửi AJAX cập nhật trạng thái
                 $.ajax({
                     url: `/client/order/${orderId}/update-status`,
                     type: 'POST',
@@ -47,76 +46,75 @@ $(document).ready(function () {
             }
         });
     });
-});
 
-$('.btn-cancel-order').click(function () {
-    const orderId = $(this).data('order-id');
+    $(document).on('click', '.btn-cancel-order', function () {
+        const orderId = $(this).data('order-id');
 
-    Swal.fire({
-        title: 'Hủy đơn hàng',
-        html: `
-            <p>Chọn lý do hủy hoặc nhập lý do khác:</p>
-            <div style="text-align:left; margin-bottom:10px;">
-                <label><input type="radio" name="cancelReason" value="Không còn nhu cầu" /> Không còn nhu cầu</label><br>
-                <label><input type="radio" name="cancelReason" value="Giá cao" /> Giá cao</label><br>
-                <label><input type="radio" name="cancelReason" value="Giao hàng chậm" /> Giao hàng chậm</label><br>
-                <label><input type="radio" name="cancelReason" value="Khác" id="reasonOtherRadio" /> Khác</label>
-            </div>
-            <textarea id="customReason" placeholder="Nhập lý do khác..." style="width:100%; display:none;"></textarea>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: 'Xác nhận hủy',
-        cancelButtonText: 'Hủy bỏ',
-        preConfirm: () => {
-            let selectedReason = $('input[name="cancelReason"]:checked').val();
-            let customReason = $('#customReason').val().trim();
+        Swal.fire({
+            title: 'Hủy đơn hàng',
+            html: `
+                <p>Chọn lý do hủy hoặc nhập lý do khác:</p>
+                <div style="text-align:left; margin-bottom:10px;">
+                    <label><input type="radio" name="cancelReason" value="Không còn nhu cầu" /> Không còn nhu cầu</label><br>
+                    <label><input type="radio" name="cancelReason" value="Giá cao" /> Giá cao</label><br>
+                    <label><input type="radio" name="cancelReason" value="Giao hàng chậm" /> Giao hàng chậm</label><br>
+                    <label><input type="radio" name="cancelReason" value="Khác" id="reasonOtherRadio" /> Khác</label>
+                </div>
+                <textarea id="customReason" placeholder="Nhập lý do khác..." style="width:100%; display:none;"></textarea>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Xác nhận hủy',
+            cancelButtonText: 'Hủy bỏ',
+            preConfirm: () => {
+                let selectedReason = $('input[name="cancelReason"]:checked').val();
+                let customReason = $('#customReason').val().trim();
 
-            if (!selectedReason) {
-                Swal.showValidationMessage('Vui lòng chọn hoặc nhập lý do hủy');
-                return false;
-            }
-
-            if (selectedReason === 'Khác' && customReason === '') {
-                Swal.showValidationMessage('Vui lòng nhập lý do khác');
-                return false;
-            }
-
-            return selectedReason === 'Khác' ? customReason : selectedReason;
-        },
-        didOpen: () => {
-            $('input[name="cancelReason"]').change(function () {
-                if ($('#reasonOtherRadio').is(':checked')) {
-                    $('#customReason').show().focus();
-                } else {
-                    $('#customReason').hide();
+                if (!selectedReason) {
+                    Swal.showValidationMessage('Vui lòng chọn hoặc nhập lý do hủy');
+                    return false;
                 }
-            });
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const reason = result.value;
-            $.ajax({
-                url: `/client/order/${orderId}/cancel`,
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ reason: reason, status: 'cancelled' }),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (res) {
-                    if (res.success) {
-                        Swal.fire('Đã hủy đơn', 'Đơn hàng của bạn đã được hủy.', 'success');
-                        window.location.reload();
+
+                if (selectedReason === 'Khác' && customReason === '') {
+                    Swal.showValidationMessage('Vui lòng nhập lý do khác');
+                    return false;
+                }
+
+                return selectedReason === 'Khác' ? customReason : selectedReason;
+            },
+            didOpen: () => {
+                $('input[name="cancelReason"]').change(function () {
+                    if ($('#reasonOtherRadio').is(':checked')) {
+                        $('#customReason').show().focus();
                     } else {
-                        Swal.fire('Lỗi', 'Hủy đơn thất bại, vui lòng thử lại.', 'error');
+                        $('#customReason').hide();
                     }
-                },
-                error: function () {
-                    Swal.fire('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
-                }
-            });
-        }
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const reason = result.value;
+                $.ajax({
+                    url: `/client/order/${orderId}/cancel`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ reason: reason, status: 'cancelled' }),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire('Đã hủy đơn', 'Đơn hàng của bạn đã được hủy.', 'success');
+                            window.location.reload();
+                        } else {
+                            Swal.fire('Lỗi', 'Hủy đơn thất bại, vui lòng thử lại.', 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                    }
+                });
+            }
+        });
     });
 });
-

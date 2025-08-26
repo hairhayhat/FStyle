@@ -1,4 +1,4 @@
-$('.btn-show-order').click(function () {
+$(document).on('click', '.btn-show-order', function () {
     var orderCode = $(this).data('order-code');
 
     $.ajax({
@@ -14,16 +14,12 @@ $('.btn-show-order').click(function () {
                 var html = `
 <div class="mb-3 border-bottom pb-2 comment-item" data-order-detail-id="${item.order_detail_id}">
     <div class="d-flex align-items-start">
-        <!-- Thông tin sản phẩm bên trái -->
         <div class="flex-grow-1 pe-3">
             <p><strong>${item.product_name}</strong> ${item.variant_name}</p>
-            <p class="text-muted small">
-                Size: ${item.size ?? 'N/A'} | Màu: ${item.color ?? 'N/A'}
-            </p>
+            <p class="text-muted small">Size: ${item.size ?? 'N/A'} | Màu: ${item.color ?? 'N/A'}</p>
             <p>Số lượng: ${item.quantity}</p>
             <p>Giá: ${priceFormatted}</p>
 
-            <!-- Rating 5 sao -->
             <div class="mb-2">
                 <label class="form-label fw-bold">Đánh giá:</label>
                 <div class="rating-stars" data-id="${item.order_detail_id}">
@@ -37,24 +33,19 @@ $('.btn-show-order').click(function () {
                 </div>
             </div>
         </div>
-
-        <!-- Ảnh sản phẩm bên phải -->
         <div class="flex-shrink-0" style="width: 160px; height: 160px;">
             <img src="${item.image_url}" alt="${item.product_name}" class="img-fluid rounded border">
         </div>
     </div>
 
-    <!-- Textarea, checkbox, upload media bên dưới -->
     <div class="mt-2">
         <div class="mb-2">
             <textarea name="comments[${item.order_detail_id}][content]" class="form-control" rows="2" placeholder="Nhận xét"></textarea>
         </div>
-
         <div class="mb-2 form-check">
             <input type="checkbox" class="form-check-input" name="comments[${item.order_detail_id}][is_accurate]" value="1" id="accurate_${item.order_detail_id}">
             <label class="form-check-label" for="accurate_${item.order_detail_id}">Sản phẩm đúng mô tả</label>
         </div>
-
         <div class="mb-2">
             <input type="file" class="form-control comment-media" name="comments[${item.order_detail_id}][media][]" multiple data-order-detail-id="${item.order_detail_id}">
             <small class="text-muted">Có thể chọn nhiều ảnh/video</small>
@@ -74,7 +65,6 @@ $('.btn-show-order').click(function () {
     });
 });
 
-// Star rating functionality
 $(document).on('mouseenter', '.rating-stars .star', function () {
     var $stars = $(this).parent().find('.star');
     var value = $(this).data('value');
@@ -105,12 +95,14 @@ $('#addComment form').on('submit', function (e) {
         if ($(this).val() == '0') {
             hasError = true;
             $(this).closest('.comment-item').addClass('border-danger');
-            alert('Vui lòng đánh giá sao cho tất cả sản phẩm');
+        } else {
+            $(this).closest('.comment-item').removeClass('border-danger');
         }
     });
 
     if (hasError) {
         e.preventDefault();
+        alert('Vui lòng đánh giá sao cho tất cả sản phẩm');
         return false;
     }
 
