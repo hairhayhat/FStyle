@@ -11,92 +11,55 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive table-desi">
-                                <table class="user-table table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Ảnh</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Danh mục</th>
-                                            <th>Lượt xem</th>
-                                            <th>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($products as $product)
-                                            <tr>
-                                                {{-- Ảnh --}}
-                                                <td>
-                                                    <span>
-                                                        @if ($product->image && file_exists(storage_path('app/public/' . $product->image)))
-                                                            <img src="{{ asset('storage/' . $product->image) }}"
-                                                                alt="product" width="60" height="60">
-                                                        @else
-                                                            <img src="{{ asset('images/default-product.png') }}"
-                                                                alt="no image" width="60" height="60">
-                                                        @endif
-                                                    </span>
-                                                </td>
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                                <form action="" method="GET" id="productFilterForm"
+                                    class="d-flex align-items-center gap-2 flex-wrap">
+                                    <input type="hidden" name="status" value="{{ request('status') }}">
+                                    <select name="sort" class="form-select form-select-sm w-auto">
+                                        <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Mới
+                                            nhất</option>
+                                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Cũ nhất
+                                        </option>
+                                    </select>
 
-                                                {{-- Tên sản phẩm --}}
-                                                <td>
-                                                    <a href="{{ route('admin.product.show', $product->id) }}">
-                                                        <span class="d-block">{{ $product->name }}</span>
-                                                    </a>
-                                                </td>
+                                    <select name="per_page" class="form-select form-select-sm w-auto">
+                                        <option value="5" {{ request('per_page', 10) == 5 ? 'selected' : '' }}>5 /
+                                            trang</option>
+                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 /
+                                            trang</option>
+                                        <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20 / trang
+                                        </option>
+                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / trang
+                                        </option>
+                                    </select>
 
-                                                {{-- Danh mục --}}
-                                                <td>{{ $product->category->name ?? '---' }}</td>
+                                    <select name="category_id" class="form-select form-select-sm w-auto">
+                                        <option value="">Tất cả danh mục</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
 
-                                                {{-- Lượt xem --}}
-                                                <td>{{ number_format($product->views ?? 0) }}</td>
+                                <div class="status-filter d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status"
+                                        data-status="active">
+                                        Có thể cập nhật <span class="badge">{{ $statusCounts['active'] ?? 0 }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status"
+                                        data-status="locked">
+                                        Không thể cập nhật <span class="badge">{{ $statusCounts['locked'] ?? 0 }}</span>
+                                    </button>
+                                </div>
+                            </div>
 
-                                                {{-- Hành động --}}
-                                                <td>
-                                                    <ul>
-                                                        <li>
-                                                            <a href="{{ route('admin.product.show', $product->id) }}">
-                                                                <span class="lnr lnr-eye"></span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route('admin.product.edit', $product->id) }}">
-                                                                <span class="lnr lnr-pencil"></span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <form
-                                                                action="{{ route('admin.product.destroy', $product->id) }}"
-                                                                method="POST" class="delete-form"
-                                                                data-name="{{ $product->name }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    style="background:none;border:none;padding:0;color:#dc3545;">
-                                                                    <span class="lnr lnr-trash"></span>
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="5" class="text-center text-muted py-4">
-                                                    Chưa có sản phẩm nào.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                            <div id="productTableWrapper" data-url="{{ route('admin.product.index') }}">
+                                @include('admin.partials.table-products', ['products' => $products])
                             </div>
                         </div>
-
-                        @if ($products->hasPages())
-                            <div class="pagination-box">
-                                {{ $products->links('pagination::bootstrap-4') }}
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -107,8 +70,9 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
+            document.addEventListener('submit', function(e) {
+                const form = e.target.closest('.delete-form');
+                if (form) {
                     e.preventDefault();
                     const productName = form.dataset.name || 'sản phẩm';
                     Swal.fire({
@@ -125,7 +89,7 @@
                             form.submit();
                         }
                     });
-                });
+                }
             });
         });
     </script>
