@@ -100,7 +100,7 @@
                                         </div>
                                         <div class="box-content">
                                             <h6 class="font-light">Địa chỉ mặc định</h6>
-                                            <h6 class="font-light">{{ $address->address }}</h6>
+                                            <h6 class="font-light">{{ $address->address  ?? null }}</h6>
                                         </div>
                                     </div>
                                 </div>
