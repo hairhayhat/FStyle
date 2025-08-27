@@ -41,8 +41,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
     Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     // Category Routes
+    
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
-
     Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
     Route::post('/category', [CategoryController::class, 'store'])->name('admin.category.store');
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('admin.category.edit');

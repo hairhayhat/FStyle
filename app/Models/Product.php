@@ -58,4 +58,12 @@ class Product extends Model
         return $this->hasMany(Comment::class)->where('status', 1);
     }
 
+    public function inUse()
+    {
+        return $this->variants()->whereHas('cartDetails')
+            ->orWhereHas('orderDetails')
+            ->exists();
+    }
+
+
 }

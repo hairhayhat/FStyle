@@ -17,83 +17,45 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <div>
-                                    <div class="table-responsive table-desi">
-                                        <table class="user-table table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Ảnh đại diện</th>
-                                                    <th>Tên</th>
-                                                    <th>Email</th>
-                                                    <th>Số điện thoại</th>
-                                                    <th>Trạng thái</th>
-                                                    <th>Vai trò</th>
-                                                    <th>Hành động</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($users as $item)
-                                                    <tr>
-                                                        <td>
-                                                            <span>
-                                                                <img src="{{asset('storage/' . $item->avatar)}}" alt="users">
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:void(0)">
-                                                                <span class="d-block ">{{$item->name}}</span>
-                                                            </a>
-                                                        </td>
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                                <form action="" method="GET" id="userFilterForm" class="d-flex align-items-center gap-2 flex-wrap">
+    <input type="hidden" name="status" value="{{ request('status', 'pending') }}">
 
-                                                        <td> {{$item->email}}</td>
+    <select name="sort" class="form-select form-select-sm w-auto">
+        <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Mới nhất</option>
+        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Cũ nhất</option>
+    </select>
 
-                                                        <td>{{$item->phone}}</td>
+    <select name="per_page" class="form-select form-select-sm w-auto">
+        <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5 / trang</option>
+        <option value="10" {{ request('per_page', default: 10) == 10 ? 'selected' : '' }}>10 / trang</option>
+        <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20 / trang</option>
+        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / trang</option>
+    </select>
 
-                                                        <td>
-                                                            @if ($item->email_verified_at == null)
-                                                                <span class="text-danger">Chưa xác minh</span>
-                                                            @else
-                                                                <span class="text-success">Đã xác minh</span>
-                                                            @endif
-                                                        </td>
-
-                                                        <td>
-                                                            @if ($item->role_id == 1)
-                                                                <span class="badge badge-primary">Quản trị viên</span>
-                                                            @elseif ($item->role_id == 2)
-                                                                <span class="badge badge-success">Người dùng</span>
-                                                            @else
-                                                                <span class="badge badge-info">Quản lý</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="{{ route('admin.users.show', $item->id) }}">
-                                                                        <span class="lnr lnr-eye"></span>
-                                                                    </a>
-                                                                </li>
-
-                                                                <li>
-                                                                    <a href="{{ route('admin.users.edit', $item->id) }}">
-                                                                        <span class="lnr lnr-pencil"></span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+    <div class="d-flex align-items-center gap-2">
+        <label>
+            <input type="radio" name="email_verified" value="" {{ request('email_verified') == '' ? 'checked' : '' }}>
+            Tất cả
+        </label>
+        <label>
+            <input type="radio" name="email_verified" value="unverified"
+                {{ request('email_verified') == 'unverified' ? 'checked' : '' }}>
+            Chưa xác minh
+        </label>
+        <label>
+            <input type="radio" name="email_verified" value="verified"
+                {{ request('email_verified') == 'verified' ? 'checked' : '' }}>
+            Đã xác minh
+        </label>
+    </div>
+</form>
                             </div>
 
-                            <div class="pagination-box">
-                                {{ $users->links('pagination::bootstrap-4') }}
+<div id="userTableWrapper" data-url="{{ route('admin.users.index') }}">
+    @include('admin.partials.table-users', ['users' => $users])
+</div>
                             </div>
-                            
-
                         </div>
                     </div>
                 </div>
