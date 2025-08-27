@@ -114,7 +114,7 @@
                     <li
                         class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="box"></i>
+                            <i data-feather="message-circle"></i>
                             <span>Bình luận</span>
                         </a>
                         <ul class="sidebar-submenu"

@@ -129,12 +129,20 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        if ($product->inUse()) {
+            return redirect()
+                ->route('admin.product.index')
+                ->with('error', 'Sản phẩm này đang được sử dụng nên không thể sửa.');
+        }
+
         $categories = Category::all();
         $colors = Color::all();
         $sizes = Size::all();
         $variants = $product->variants()->get();
+
         return view('admin.product.edit', compact('product', 'categories', 'colors', 'sizes', 'variants'));
     }
+
 
     public function update(Request $request, $id)
     {

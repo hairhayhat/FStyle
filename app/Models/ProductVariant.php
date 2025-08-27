@@ -49,4 +49,9 @@ class ProductVariant extends Model
     {
         return $this->hasMany(CartDetail::class);
     }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }
