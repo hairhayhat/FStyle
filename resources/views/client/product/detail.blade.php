@@ -343,6 +343,20 @@
                                     <div class="product-details">
                                         <div class="rating-details">
                                             <span class="font-light grid-content">{{ $item->Category->name }}</span>
+                                            @php
+                                                $avgRating = round($item->activeComments->avg('rating'), 1);
+                                            @endphp
+                                            <ul class="rating mt-0">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= floor($avgRating))
+                                                        <li><i class="fas fa-star theme-color"></i></li>
+                                                    @elseif ($i == ceil($avgRating) && $avgRating - floor($avgRating) >= 0.5)
+                                                        <li><i class="fas fa-star-half-alt theme-color"></i></li>
+                                                    @else
+                                                        <li><i class="fas fa-star"></i></li>
+                                                    @endif
+                                                @endfor
+                                            </ul>
                                         </div>
                                         <div class="main-price d-flex justify-content-between align-items-center">
                                             <a href="{{ route('product.detail', ['slug' => $item->slug]) }}"
