@@ -2,7 +2,7 @@
 @section('content')
     <div class="page-body">
         <div class="title-header">
-            <h5>Order List</h5>
+            <h5>Danh sách đơn hàng</h5>
         </div>
 
         <!-- Table Start -->
@@ -11,103 +11,65 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div>
-                                <div class="table-responsive table-desi">
-                                    <table class="table table-striped all-package">
-                                        <thead>
-                                            <tr>
-                                                <th>Mã Đơn hàng</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Người đặt</th>
-                                                <th>Tổng tiền</th>
-                                                <th>Trạng thái</th>
-                                                <th>Hành động</th>
-                                            </tr>
-                                        </thead>
+                            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                                <form action="" method="GET" id="filterForm" class="d-flex align-items-center gap-2 flex-wrap">
+                                    <input type="hidden" name="status" value="{{ request('status', 'pending') }}">
 
-                                        <tbody>
+                                    <select name="sort" class="form-select form-select-sm w-auto">
+                                        <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Mới nhất</option>
+                                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Cũ nhất</option>
+                                    </select>
 
-                                            @php
-                                                $statusMap = [
-                                                    'pending' => 'Chờ xác nhận',
-                                                    'confirmed' => 'Đã xác nhận',
-                                                    'packaging' => 'Đang đóng gói',
-                                                    'shipped' => 'Đang giao',
-                                                    'delivered' => 'Đã giao',
-                                                    'cancelled' => 'Đã hủy',
-                                                    'returned' => 'Đã trả hàng',
-                                                ];
-                                            @endphp
-                                            @foreach ($orders as $order)
-                                                <tr>
-                                                    <td>
-                                                        <a
-                                                            href="{{ route('admin.order.detail', ['code' => $order->code]) }}">
-                                                            {{ $order->code }}
-                                                        </a>
-                                                    </td>
+                                    <select name="per_page" class="form-select form-select-sm w-auto">
+                                        <option value="5" {{ request('per_page', 5) == 5 ? 'selected' : '' }}>5 / trang</option>
+                                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 / trang</option>
+                                        <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20 / trang</option>
+                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 / trang</option>
+                                    </select>
 
-                                                    <td>Jul 20, 2021</td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <label>
+                                            <input type="radio" name="payment" value="" {{ request('payment') == '' ? 'checked' : '' }}>
+                                            Tất cả
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="payment" value="vnpay"
+                                                {{ request('payment') == 'vnpay' ? 'checked' : '' }}> VNPay
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="payment" value="cod"
+                                                {{ request('payment') == 'cod' ? 'checked' : '' }}> COD
+                                        </label>
+                                    </div>
+                                </form>
 
-                                                    <td>{{ $order->user->name }} - {{ $order->user->email }}</td>
-
-                                                    <td>{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
-
-                                                    <td>
-                                                        <div class="status-container">
-                                                            <!-- Hiển thị ban đầu -->
-                                                            <p class="status-display btn btn-sm
-                                                                @if ($order->status === 'pending') btn-warning
-                                                                @elseif($order->status === 'confirmed') btn-warning
-                                                                @elseif($order->status === 'packaging') btn-primary
-                                                                @elseif($order->status === 'shipped') btn-info
-                                                                @elseif($order->status === 'delivered') btn-success
-                                                                @elseif($order->status === 'cancelled') btn-danger
-                                                                @elseif($order->status === 'returned') btn-dark
-                                                                @else btn-light @endif"
-                                                                data-order-id="{{ $order->id }}">
-                                                                {{ $statusMap[$order->status] ?? $order->status }}
-                                                            </p>
-
-                                                            <!-- Dropdown select (ẩn ban đầu) -->
-                                                            <select class="status-select form-select form-select-sm d-none"
-                                                                data-order-id="{{ $order->id }}">
-                                                                <option value="pending"
-                                                                    @if ($order->status === 'pending') selected @endif>
-                                                                    Chờ xác nhận</option>
-                                                                <option value="confirmed"
-                                                                    @if ($order->status === 'confirmed') selected @endif>
-                                                                    Xác nhận</option>
-                                                                <option value="packaging"
-                                                                    @if ($order->status === 'packaging') selected @endif>
-                                                                    Đóng gói</option>
-                                                                <option value="shipped"
-                                                                    @if ($order->status === 'shipped') selected @endif>
-                                                                    Giao hàng</option>
-                                                                <option value="cancelled"
-                                                                    @if ($order->status === 'cancelled') selected @endif>Hủy
-                                                                    đơn</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <ul>
-                                                            <li>
-                                                                <a href="order-detail.html">
-                                                                    <span class="lnr lnr-eye"></span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                <div class="status-filter d-flex flex-wrap gap-2 mt-3">
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="pending">
+                                        Chờ Xác Nhận <span class="badge">{{ $statusCounts['pending'] }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="confirmed">
+                                        Đã Xác Nhận <span class="badge">{{ $statusCounts['confirmed'] }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="packaging">
+                                        Đang Đóng Gói <span class="badge">{{ $statusCounts['packaging'] }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="shipped">
+                                        Đang Giao <span class="badge">{{ $statusCounts['shipped'] }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="delivered">
+                                        Đã Giao <span class="badge">{{ $statusCounts['delivered'] }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status" data-status="cancelled">
+                                        Đã Hủy <span class="badge">{{ $statusCounts['cancelled'] }}</span>
+                                    </button>
                                 </div>
-                                <div class="mt-3">
-                                    {{ $orders->links('vendor.pagination.bootstrap-5') }}
-                                </div>
+
+                            </div>
+
+                            <div id="orderTableWrapper" data-url="{{ route('admin.order.index') }}">
+                                @include('admin.partials.table-orders', ['orders' => $orders])
+                            </div>
+
                             </div>
                         </div>
 

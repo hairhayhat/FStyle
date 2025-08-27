@@ -2,20 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 class CategoryController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::paginate(10);
+        $sort = $request->get('sort', 'desc');
+        $perPage = $request->get('per_page', 5);
+
+        $query = Category::query();
+
+        $categories = $query->orderBy('created_at', $sort)
+            ->paginate($perPage)
+            ->appends($request->all());
+
+        if ($request->ajax()) {
+            $html = view('admin.partials.table-categories', compact('categories'))->render();
+            return response()->json(['html' => $html]);
+        }
+
         return view('admin.category.index', compact('categories'));
     }
+
 
     public function create()
     {
