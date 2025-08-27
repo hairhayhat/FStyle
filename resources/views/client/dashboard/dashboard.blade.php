@@ -7,7 +7,7 @@
                 <div class="dashboard-right">
                     <div class="dashboard">
                         <div class="page-title title title1 title-effect">
-                            <h2> Trang quản lý </h2>
+                            <h2> Dashboard </h2>
                         </div>
                         <div class="welcome-msg">
                             <h6 class="font-light">
@@ -32,7 +32,7 @@
                                                  alt="">
                                             <div>
                                                 <h5 class="font-light">Tổng số đơn hàng</h5>
-                                                <h3>3648</h3>
+                                                <h3>{{ $totalOrders }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -49,7 +49,7 @@
                                                  alt="">
                                             <div>
                                                 <h5 class="font-light">Đơn hàng chờ xử lý</h5>
-                                                <h3>215</h3>
+                                                <h3>{{ $pendingOrders }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -66,7 +66,7 @@
                                                  alt="">
                                             <div>
                                                 <h5 class="font-light">Danh sách yêu thích</h5>
-                                                <h3>63874</h3>
+                                                <h3>{{ $wishlistCount }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -79,56 +79,35 @@
                                 <h3>Thông tin tài khoản</h3>
                             </div>
                             <div class="row">
+                                <!-- Thông tin liên hệ -->
                                 <div class="col-sm-6">
                                     <div class="box">
-                                        <div class="box-title">
+                                        <div class="box-title d-flex justify-content-between align-items-center">
                                             <h4>Thông tin liên hệ</h4>
-                                            <a href="{{ route('client.profile') }}">Chỉnh sửa</a>
                                         </div>
                                         <div class="box-content">
                                             <h6 class="font-light">{{ Auth::user()->name }}</h6>
                                             <h6 class="font-light">{{ Auth::user()->email }}</h6>
-                                            <a href="{{ route('client.changePassword') }}">Đổi mật khẩu</a>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- Sổ địa chỉ -->
                                 <div class="col-sm-6">
                                     <div class="box">
-                                        <div class="box-title">
-                                            <h4>Bản tin</h4>
-                                            <a href="javascript:void(0)">Chỉnh sửa</a>
+                                        <div class="box-title d-flex justify-content-between align-items-center">
+                                            <h4>Địa chỉ nhận hàng</h4>
                                         </div>
                                         <div class="box-content">
-                                            <h6 class="font-light">Bạn hiện chưa đăng ký bất kỳ bản tin nào.</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="box address-box">
-                                    <div class="box-title">
-                                        <h4>Sổ địa chỉ</h4>
-                                        <a href="javascript:void(0)">Quản lý địa chỉ</a>
-                                    </div>
-                                    <div class="box-content">
-                                        <div class="row g-4">
-                                            <div class="col-sm-6">
-                                                <h6 class="font-light">Địa chỉ thanh toán mặc định</h6>
-                                                <h6 class="font-light">Bạn chưa đặt địa chỉ thanh toán mặc định.</h6>
-                                                <a href="javascript:void(0)">Chỉnh sửa địa chỉ</a>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <h6 class="font-light">Địa chỉ giao hàng mặc định</h6>
-                                                <h6 class="font-light">Bạn chưa đặt địa chỉ giao hàng mặc định.</h6>
-                                                <a href="javascript:void(0)">Chỉnh sửa địa chỉ</a>
-                                            </div>
+                                            <h6 class="font-light">Địa chỉ mặc định</h6>
+                                            <h6 class="font-light">{{ $address->address }}</h6>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
 
                     </div>
                 </div>

@@ -13,7 +13,7 @@
         </li>
 
         <li class="nav-item mb-2">
-            <a href="#" class="nav-link font-light" id="2-tab">
+            <a href="{{ route('client.wishlist') }}" class="nav-link font-light" id="2-tab">
                 <i class="fas fa-angle-right"></i>Danh sách yêu thích
             </a>
         </li>

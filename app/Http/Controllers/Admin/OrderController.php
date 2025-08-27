@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\Auth;
+
 class OrderController extends Controller
 {
 
@@ -15,17 +17,46 @@ class OrderController extends Controller
 
     }
 
-public function index()
-{
-    $orders = Order::with('orderDetails.productVariant.product', 'payment')
-        ->whereHas('payment', function($query) {
-            $query->where('status', '!=', 'failed');
-        })
-        ->orderByDesc('created_at')
-        ->paginate(10);
+    public function index(Request $request)
+    {
+        $sort = $request->get('sort', 'desc');
+        $perPage = $request->get('per_page', 5);
+        $status = $request->get('status', 'pending');
+        $payment = $request->get('payment');
 
-    return view('admin.order.index', compact('orders'));
-}
+        $statusCounts = [
+            'pending'    => Order::where('status', 'pending')->count(),
+            'confirmed'  => Order::where('status', 'confirmed')->count(),
+            'packaging'  => Order::where('status', 'packaging')->count(),
+            'shipped'    => Order::where('status', 'shipped')->count(),
+            'delivered'  => Order::where('status', 'delivered')->count(),
+            'cancelled'  => Order::where('status', 'cancelled')->count(),
+            'returned'   => Order::where('status', 'returned')->count(),
+        ];
+
+        $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment']);
+
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        if (!empty($payment) && $payment !== 'all') {
+            $query->whereHas('payment', function ($q) use ($payment) {
+                $q->where('method', $payment);
+            });
+        }
+
+        $orders = $query->orderBy('updated_at', $sort)
+            ->paginate($perPage)
+            ->appends($request->all());
+
+        if ($request->ajax()) {
+            $html = view('admin.partials.table-orders', compact('orders'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('admin.order.index', compact('orders', 'statusCounts', 'status', 'payment'));
+    }
 
 
     public function updateStatus(Order $order, Request $request)

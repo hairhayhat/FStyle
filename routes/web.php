@@ -120,12 +120,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
     Route::get('/welcome', [HomeController::class, 'index'])->name('client.welcome');
 
-    Route::get('dashboard', function () {
-        return view("client.dashboard.dashboard");
-    })->name('client.dashboard');
+    Route::get('dashboard', [ClientProfileController::class, 'dashboard'])->name('client.dashboard');
     // routes/web.php
-    Route::get('/change-password', [ProfileController::class, 'changePassword'])->name('client.changePassword');
-    Route::post('/change-password', [ProfileController::class, 'updatePassword'])->name('client.updatePassword');
+    Route::get('/change-password', [ClientProfileController::class, 'changePassword'])->name('client.changePassword');
+    Route::post('/change-password', [ClientProfileController::class, 'updatePassword'])->name('client.updatePassword');
 
 
     Route::get('/profile', [ClientProfileController::class, 'renderProfile'])->name('client.profile');

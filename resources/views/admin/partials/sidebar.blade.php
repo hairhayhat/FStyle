@@ -55,12 +55,6 @@
                             <li>
                                 <a href="{{ route('admin.order.index') }}">Danh sách đơn hàng</a>
                             </li>
-                            <li>
-                                <a href="order-detail.html">Order Detail</a>
-                            </li>
-                            <li>
-                                <a href="order-tracking.html">Order Tracking</a>
-                            </li>
                         </ul>
                     </li>
                     <li

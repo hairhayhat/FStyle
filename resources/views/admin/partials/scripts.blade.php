@@ -30,6 +30,7 @@
 <script src="{{ asset('admin/assets/js/chart/apex-chart/stock-prices.js') }}"></script>
 <script src="{{ asset('admin/assets/js/chart/apex-chart/chart-custom1.js') }}"></script>
 <script src="{{ asset('admin/assets/js/chart/apex-chart/chart-custom.js') }}"></script>
+<script src="{{ asset('admin/assets/js/filter-orders.js') }}"></script>
 <!-- customizer js -->
 <script src="{{ asset('admin/assets/js/customizer.js') }}"></script>
 <script src="{{ asset('admin/assets/js/update_status_realtime.js') }}"></script>

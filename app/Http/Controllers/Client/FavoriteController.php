@@ -132,15 +132,15 @@ class FavoriteController extends Controller
                     // Lấy giá thấp nhất và tổng số lượng
                     $minPrice = $product->variants->min('price') ?? 0;
                     $totalStock = $product->variants->sum('quantity') ?? 0;
-                    
+
                     $product->min_price = $minPrice;
                     $product->total_stock = $totalStock;
-                    
+
                     return $product;
                 });
-            
-            return view('client.wishlist', compact('products'));
-            
+
+            return view('client.dashboard.wishlist', compact('products'));
+
         } catch (Exception $e) {
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
