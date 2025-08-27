@@ -13,7 +13,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $newProducts = Product::with(['category', 'variants', 'galleries'])
+        $newProducts = Product::with(['category', 'variants', 'galleries', 'activeComments'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -28,6 +28,7 @@ class HomeController extends Controller
         }
         return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories', 'products'));
     }
+
 
     public function show($slug)
     {
