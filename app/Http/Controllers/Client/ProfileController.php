@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Client;
+use App\Models\Address;
+use App\Models\Favorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 
@@ -74,4 +78,25 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Mật khẩu đã được thay đổi thành công!');
     }
+    public function dashboard(){
+        $userId = Auth::id();
+
+        // Tổng đơn hàng
+        $totalOrders = Order::where('user_id', $userId)->count();
+
+        // Đơn hàng đang chờ xử lý
+        $pendingOrders = Order::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
+
+        // Wishlist
+        $wishlistCount = Favorite::where('user_id', $userId)->count();
+        $address = Address::where('user_id', $userId)->where('is_default', 1)->first();
+
+        // Truyền sang view
+        return view('client.dashboard.dashboard', compact('totalOrders', 'pendingOrders', 'wishlistCount', 'address'));
+    }
+
+
+
 }

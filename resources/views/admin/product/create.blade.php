@@ -382,63 +382,6 @@
                     }
                 });
             }
-
-            // === THƯ VIỆN ẢNH ===
-            const dropArea = document.getElementById('drop-area');
-            const imageInput = document.getElementById('imageInput');
-            const previewContainer = document.getElementById('preview-container');
-            let suppressNextGalleryChange = false;
-            let galleryTimer = null;
-
-            function handleGalleryFiles(files) {
-                previewContainer.innerHTML = '';
-                Array.from(files).forEach(file => {
-                    if (!file.type.startsWith('image/')) return;
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.style.maxHeight = '100px';
-                        img.classList.add('me-2', 'mb-2');
-                        previewContainer.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            function safeHandleGalleryFiles(files) {
-                clearTimeout(galleryTimer);
-                galleryTimer = setTimeout(() => handleGalleryFiles(files), 50);
-            }
-
-            if (dropArea && imageInput) {
-                dropArea.addEventListener('click', () => imageInput.click());
-
-                imageInput.addEventListener('change', function() {
-                    if (suppressNextGalleryChange) {
-                        suppressNextGalleryChange = false;
-                        return;
-                    }
-                    safeHandleGalleryFiles(this.files);
-                });
-
-                dropArea.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    dropArea.classList.add('bg-light');
-                });
-
-                dropArea.addEventListener('dragleave', () => dropArea.classList.remove('bg-light'));
-
-                dropArea.addEventListener('drop', e => {
-                    e.preventDefault();
-                    dropArea.classList.remove('bg-light');
-                    if (e.dataTransfer.files.length > 0) {
-                        suppressNextGalleryChange = true;
-                        imageInput.files = e.dataTransfer.files;
-                        safeHandleGalleryFiles(e.dataTransfer.files);
-                    }
-                });
-            }
         });
     </script>
 @endsection

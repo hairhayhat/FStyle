@@ -41,8 +41,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
     Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     // Category Routes
+    
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
-
     Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
     Route::post('/category', [CategoryController::class, 'store'])->name('admin.category.store');
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('admin.category.edit');
@@ -120,9 +120,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
     Route::get('/welcome', [HomeController::class, 'index'])->name('client.welcome');
 
-    Route::get('dashboard', function () {
-        return view("client.dashboard.dashboard");
-    })->name('client.dashboard');
+    Route::get('dashboard', [ClientProfileController::class, 'dashboard'])->name('client.dashboard');
+    // routes/web.php
+    Route::get('/change-password', [ClientProfileController::class, 'changePassword'])->name('client.changePassword');
+    Route::post('/change-password', [ClientProfileController::class, 'updatePassword'])->name('client.updatePassword');
+
 
     Route::get('/profile', [ClientProfileController::class, 'renderProfile'])->name('client.profile');
     Route::post('/profile', [ClientProfileController::class, 'updateProfile'])->name('client.profile.update');

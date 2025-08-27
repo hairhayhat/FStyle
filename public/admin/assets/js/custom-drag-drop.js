@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const dropArea = document.getElementById("drop-area");
     const input = document.getElementById("imageInput");
-    const previewImg = document.getElementById("preview");
+    const previewContainer = document.getElementById("preview-container");
 
     dropArea.addEventListener("click", () => input.click());
 
@@ -21,24 +21,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             input.files = files;
-            showPreview(files[0]);
+            showPreviews(files);
         }
     });
 
     input.addEventListener("change", function () {
         if (this.files.length > 0) {
-            showPreview(this.files[0]);
+            showPreviews(this.files);
         }
     });
 
-    function showPreview(file) {
-        const reader = new FileReader();
+    function showPreviews(files) {
+        previewContainer.innerHTML = ""; // Xoá preview cũ
+        Array.from(files).forEach(file => {
+            if (!file.type.startsWith("image/")) return;
 
-        reader.onload = function (e) {
-            previewImg.src = e.target.result;
-            previewImg.classList.remove("d-none");
-        };
-
-        reader.readAsDataURL(file);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.classList.add("img-preview", "m-1");
+                img.style.maxHeight = "100px";
+                img.style.borderRadius = "5px";
+                img.style.border = "1px solid #ddd";
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
     }
 });

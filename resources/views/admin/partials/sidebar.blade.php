@@ -55,12 +55,6 @@
                             <li>
                                 <a href="{{ route('admin.order.index') }}">Danh sách đơn hàng</a>
                             </li>
-                            <li>
-                                <a href="order-detail.html">Order Detail</a>
-                            </li>
-                            <li>
-                                <a href="order-tracking.html">Order Tracking</a>
-                            </li>
                         </ul>
                     </li>
                     <li
@@ -114,7 +108,7 @@
                     <li
                         class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i data-feather="box"></i>
+                            <i data-feather="message-circle"></i>
                             <span>Bình luận</span>
                         </a>
                         <ul class="sidebar-submenu"

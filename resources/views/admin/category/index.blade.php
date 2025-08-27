@@ -4,6 +4,7 @@
     <!-- Page Body Start -->
     <div class="page-body-wrapper">
         <div class="page-body">
+
             <div class="title-header title-header-1">
                 <h5>Danh mục</h5>
             </div>
@@ -14,67 +15,33 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="table-responsive table-desi">
-                                    <table class="user-table table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Ảnh</th>
-                                                <th>Tên</th>
-                                                <th>Slug</th>
-                                                <th>Hành động</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($categories as $category)
-                                                <tr>
-                                                    <td>
-                                                        <span>
-                                                            @if ($category->image)
-                                                                <img src="{{ asset('storage/' . $category->image) }}"
-                                                                    alt="{{ $category->name }}"
-                                                                    style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
-                                                            @else
-                                                                <span class="text-muted">Không có ảnh</span>
-                                                            @endif
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:void(0)">
-                                                            <span class="d-block">{{ $category->name }}</span>
-                                                        </a>
-                                                    </td>
-                                                    <td>{{ $category->slug }}</td>
-                                                    <td>
-                                                        <ul>
-                                                            <li>
-                                                                <a href="{{ route('admin.category.edit', $category->id) }}">
-                                                                    <span class="lnr lnr-pencil"></span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <form
-                                                                    action="{{ route('admin.category.destroy', $category->id) }}"
-                                                                    method="POST" class="delete-form d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit"
-                                                                        style="background:none;border:none;padding:0;color:#dc3545;">
-                                                                        <span class="lnr lnr-trash"></span>
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                                    <form action="" method="GET" id="filterForm"
+                                        class="d-flex align-items-center gap-2 flex-wrap">
+                                        <input type="hidden" name="status" value="{{ request('status', 'pending') }}">
 
-                            <!-- Pagination -->
-                            <div class="pagination-box">
-                                {{ $categories->links('pagination::bootstrap-4') }}
+                                        <select name="sort" class="form-select form-select-sm w-auto">
+                                            <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Mới
+                                                nhất</option>
+                                            <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Cũ nhất
+                                            </option>
+                                        </select>
+
+                                        <select name="per_page" class="form-select form-select-sm w-auto">
+                                            <option value="5" {{ request('per_page', 5) == 5 ? 'selected' : '' }}>5 /
+                                                trang</option>
+                                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 /
+                                                trang</option>
+                                            <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20 /
+                                                trang</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 /
+                                                trang</option>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div id="orderTableWrapper" data-url="{{ route('admin.category.index') }}">
+                                    @include('admin.partials.table-categories', ['categories' => $categories])
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,9 +54,9 @@
 
 @section('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', function (e) {
                     e.preventDefault();
                     Swal.fire({
                         title: 'Bạn có chắc muốn xoá?',
@@ -127,6 +94,6 @@
                     showConfirmButton: false
                 });
             @endif
-        });
+            });
     </script>
 @endsection
