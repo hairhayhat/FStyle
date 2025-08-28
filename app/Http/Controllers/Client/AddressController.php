@@ -59,8 +59,20 @@ class AddressController extends Controller
     public function edit($id)
     {
         $address = Address::findOrFail($id);
-        return response()->json($address);
+        if ($address->orders()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Địa chỉ này đang được sử dụng, không thể chỉnh sửa.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $address
+        ]);
     }
+
+
 
     public function update(Request $request, $id)
     {
@@ -88,4 +100,30 @@ class AddressController extends Controller
 
         return back()->with('success', 'Cập nhật địa chỉ thành công');
     }
+
+    public function destroy($id)
+    {
+        $address = Address::findOrFail($id);
+        $user_id = Auth::id();
+
+        $isUsed = $address->orders()->exists();
+        if ($isUsed) {
+            return back()->with('error', 'Địa chỉ này đang được sử dụng, không thể xóa.');
+        }
+
+        $wasDefault = $address->is_default;
+
+        $address->delete();
+
+        if ($wasDefault) {
+            $latestAddress = Address::where('user_id', $user_id)->latest()->first();
+            if ($latestAddress) {
+                $latestAddress->is_default = 1;
+                $latestAddress->save();
+            }
+        }
+
+        return back()->with('success', 'Đã xóa địa chỉ thành công.');
+    }
+
 }

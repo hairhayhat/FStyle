@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,8 @@ class DashboardController extends Controller
             : Carbon::now()->endOfDay();
 
         $totalBooking = Order::whereBetween('created_at', [$fromDate, $toDate])->count();
+
+        $totalComments = Comment::whereBetween('created_at', [$fromDate, $toDate])->where('status', 1)->count();
 
         $totalEarnings = Order::whereBetween('created_at', [$fromDate, $toDate])->sum('total_amount');
 
@@ -83,6 +86,7 @@ class DashboardController extends Controller
             'deliveryData',
             'cancelData',
             'totalPercen',
+            'totalComments'
         ));
     }
 }

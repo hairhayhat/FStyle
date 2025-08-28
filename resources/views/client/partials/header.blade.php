@@ -6,7 +6,7 @@
                     <div class="main-menu">
                         <div class="menu-left">
                             <div class="brand-logo">
-                                <a href="{{ route('client.welcome') }}">
+                                <a href="{{ route('welcome') }}">
                                     <svg class="svg-icon">
                                         <use class="fill-color" xlink:href="client/assets/assets/svg/icons.svg#logo">
                                         </use>
@@ -31,35 +31,8 @@
                                                 </span>
                                             </div>
                                         </li>
-                                        <li class="mega-menu dropdown home-menu">
-                                            <a href="javascript:void(0)" class="nav-link menu-title">home</a>
-
-                                            <div class="mega-menu-container menu-content">
-                                                <div class="container-fluid">
-                                                    <div class="row">
-                                                        <div class="col mega-box">
-                                                            <div class="link-section">
-                                                                <div class="opensubmegamenu">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <a href="index.html" class="megamenu-image">
-                                                                                <img src="client/assets/assets/images/demo-image/fashion.jpg"
-                                                                                    class="img-fluid blur-up lazyload"
-                                                                                    alt="">
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-
-                                                                <div class="megamenu-image-title pb-0">
-                                                                    <h5 class="mb-0">Fashion Demo</h5>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <li class="mega-menu home-menu">
+                                            <a href="{{ route('welcome') }}" class="nav-link menu-title">Trang chủ</a>
                                         </li>
 
                                         <li class="dropdown">
@@ -72,22 +45,6 @@
                                                     </li>
                                                 @endforeach
 
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a href="javascript:void(0)" class="nav-link menu-title">product</a>
-                                            <ul class="nav-submenu menu-content">
-                                                <li>
-                                                    <a href="product-4-image.html">Product 4 Images</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a href="javascript:void(0)" class="nav-link menu-title">pages</a>
-                                            <ul class="nav-submenu menu-content">
-                                                <li>
-                                                    <a href="log-in.html">Log In</a>
-                                                </li>
                                             </ul>
                                         </li>
                                         <li class="mobile-poster d-flex d-xl-none">

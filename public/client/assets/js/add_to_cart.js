@@ -60,8 +60,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    showErrorToast('Đã có lỗi xảy ra: ' +
-                        (xhr.responseJSON?.message || 'Vui lòng thử lại sau'));
+                    showErrorToast('Đã có lỗi xảy ra' );
                 }
             });
         }
@@ -85,8 +84,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    showErrorToast('Đã có lỗi xảy ra: ' +
-                        (xhr.responseJSON?.message || 'Vui lòng thử lại sau'));
+                    showErrorToast('Đã có lỗi xảy ra')
                 }
             });
         }

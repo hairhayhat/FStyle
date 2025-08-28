@@ -86,17 +86,17 @@ class CheckoutController extends Controller
     {
         $sort = $request->get('sort', 'desc');
         $perPage = $request->get('per_page', 5);
-        $status = $request->get('status');
+        $status = $request->get('status', 'pending');
         $payment = $request->get('payment');
 
         $statusCounts = [
-            'pending'    => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
-            'confirmed'  => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
-            'packaging'  => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
-            'shipped'    => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
-            'delivered'  => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
-            'cancelled'  => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
-            'returned'   => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
+            'pending' => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
+            'confirmed' => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
+            'packaging' => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
+            'shipped' => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
+            'delivered' => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
+            'cancelled' => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+            'returned' => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
         ];
 
         $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment'])
@@ -153,6 +153,7 @@ class CheckoutController extends Controller
                 return [
                     'order_detail_id' => $detail->id,
                     'product_id' => $product->id,
+                    'product_variant_id' => $detail->product_variant_id,
                     'product_name' => $product->name ?? 'Sản phẩm không tồn tại',
                     'variant_name' => $detail->productVariant->name ?? '',
                     'quantity' => $detail->quantity,
@@ -313,8 +314,16 @@ class CheckoutController extends Controller
 
             DB::commit();
 
+
             if ($method === 'vnpay') {
                 return $this->processVNPayPayment($order, $payment);
+            } else {
+                $this->notificationService->notifyAdmins(
+                    'Đơn hàng mới',
+                    " Tài khoản {$order->user?->name} đã đặt đơn {$order->code}",
+                    '/admin/orders/' . $order->code,
+                    $order->id
+                );
             }
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Đặt hàng thành công!');
@@ -415,6 +424,13 @@ class CheckoutController extends Controller
 
             if ($method === 'vnpay') {
                 return $this->processVNPayPayment($order, $order->payment);
+            } else {
+                $this->notificationService->notifyAdmins(
+                    'Đơn hàng mới',
+                    " Tài khoản {$order->user?->name} đã đặt đơn {$order->code}",
+                    '/admin/orders/' . $order->code,
+                    $order->id
+                );
             }
 
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
@@ -454,7 +470,7 @@ class CheckoutController extends Controller
 
         $this->notificationService->notifyAdmins(
             "Đơn hàng đã bị huỷ",
-            "Tài khoản {$order->user->name} đã huỷ đơn hàng #{$order->code}",
+            "Tài khoản {$order->user->name} đã huỷ đơn #{$order->code}",
             "/admin/orders/{$order->code}",
             $order->id
         );

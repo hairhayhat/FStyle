@@ -482,3 +482,11 @@ header .search-suggestion .product-info a {
     color: #ffc107;
     /* màu vàng */
 }
+
+.grid-content, .product-details h6 {
+    display: block;         /* hoặc inline-block nếu cần */
+    white-space: nowrap;    /* không xuống dòng */
+    overflow: hidden;       /* ẩn phần tràn */
+    text-overflow: ellipsis;/* hiển thị ... */
+    max-width: 120px;       /* hoặc width tùy ý */
+}

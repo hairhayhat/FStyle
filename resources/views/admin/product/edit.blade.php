@@ -243,6 +243,7 @@
 
 
                     {{-- THƯ VIỆN ẢNH --}}
+
                     <div class="col-12">
                         <div class="card mb-4">
                             <div class="card-body">
@@ -254,8 +255,8 @@
                                     <input type="file" id="imageInput" name="gallery[]" accept="image/*"
                                         class="d-none @error('gallery') is-invalid @enderror" multiple>
                                     <div id="preview-container" class="preview-grid mt-3">
-                                        @if ($product->gallery)
-                                            @foreach ($product->gallery as $img)
+                                        @if ($product->galleries)
+                                            @foreach ($product->galleries as $img)
                                                 <img src="{{ asset('storage/' . $img->image) }}" style="max-height:100px"
                                                     class="me-2 mb-2">
                                             @endforeach
@@ -379,53 +380,5 @@
                 });
             }
 
-            // Thư viện ảnh
-            const dropArea = document.getElementById('drop-area');
-            const imageInput = document.getElementById('imageInput');
-            const previewContainer = document.getElementById('preview-container');
-            let suppressNextGalleryChange = false;
-
-            function handleGalleryFiles(files) {
-                previewContainer.innerHTML = '';
-                Array.from(files).forEach(file => {
-                    if (!file.type.startsWith('image/')) return;
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.style.maxHeight = '100px';
-                        img.classList.add('me-2', 'mb-2');
-                        previewContainer.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            if (dropArea && imageInput) {
-                dropArea.addEventListener('click', () => imageInput.click());
-                imageInput.addEventListener('change', function() {
-                    if (suppressNextGalleryChange) {
-                        suppressNextGalleryChange = false;
-                        return;
-                    }
-                    handleGalleryFiles(this.files);
-                });
-
-                dropArea.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    dropArea.classList.add('bg-light');
-                });
-                dropArea.addEventListener('dragleave', () => dropArea.classList.remove('bg-light'));
-                dropArea.addEventListener('drop', e => {
-                    e.preventDefault();
-                    dropArea.classList.remove('bg-light');
-                    if (e.dataTransfer.files.length > 0) {
-                        suppressNextGalleryChange = true;
-                        imageInput.files = e.dataTransfer.files;
-                        handleGalleryFiles(e.dataTransfer.files);
-                    }
-                });
-            }
-        });
     </script>
 @endsection

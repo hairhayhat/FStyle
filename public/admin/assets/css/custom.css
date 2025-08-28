@@ -115,3 +115,21 @@
     /* hover nhẹ */
     color: #e22454;
 }
+
+.status-filter .btn-status {
+    transition: all 0.2s ease;
+}
+
+.status-filter .btn-status:hover {
+    background-color: #0d6efd;
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.status-filter .btn-status.active {
+    background-color: #198754 !important;
+    /* xanh lá */
+    color: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
