@@ -385,6 +385,9 @@
                                     <div class="product-details">
                                         <div class="rating-details">
                                             <span class="font-light grid-content">{{ $item->Category->name }}</span>
+                                            @php
+                                                $avgRating = round($item->activeComments->avg('rating'), 1);
+                                            @endphp
                                             <ul class="rating mt-0">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     @if ($i <= floor($avgRating))

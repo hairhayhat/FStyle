@@ -203,8 +203,6 @@ var options = {
     labels: [
         "COD",
         "VNPay",
-        "Momo",
-        "ZaloPay",
     ],
     chart: {
         height: 320,

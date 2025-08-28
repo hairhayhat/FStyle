@@ -64,10 +64,8 @@
                         <div class=" custome-3-bg b-r-4 card-body">
                             <div class="media static-top-widget">
                                 <div class="media-body p-0">
-                                    <span class="m-0">Reviews</span>
-                                    <h4 class="mb-0 counter">893
-                                        <span class="badge badge-light-secondary grow ">
-                                            <i data-feather="trending-up"></i>8.5%</span>
+                                    <span class="m-0">Tổng bình luận</span>
+                                    <h4 class="mb-0 counter">{{ $totalComments }}
                                     </h4>
                                 </div>
 

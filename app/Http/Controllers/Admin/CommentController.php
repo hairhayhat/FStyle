@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Product;
+use App\Services\NotificationService;
 
 class CommentController extends Controller
 {
+    public function __construct(
+        private NotificationService $notificationService,
+    ) {
+    }
     public function index(Request $request)
     {
         $sort = $request->get('sort', 'desc');
@@ -55,11 +60,32 @@ class CommentController extends Controller
         $comment->status = $request->status;
         $comment->save();
 
+        if ($comment->status) {
+            $title = 'Bình luận đã được hiển thị';
+            $message = 'Bình luận của bạn trên sản phẩm "' . ($comment->product->name ?? 'Đã xóa') . '" đã được hiển thị lại.';
+        } else {
+            $title = 'Bình luận đã bị ẩn';
+            $message = 'Bình luận của bạn trên sản phẩm "' . ($comment->product->name ?? 'Đã xóa') . '" đã bị ẩn vì không phù hợp.';
+        }
+
+        $this->notificationService->notifyUser(
+            $comment->user,
+            $title,
+            $message,
+            '/product/' . $comment->product->slug,
+            $comment->id
+        );
+
         return response()->json([
             'success' => true,
-            'status' => $comment->status
+            'status' => (int) $comment->status,
+            'title' => $title
         ]);
     }
 
+    public function show(Comment $comment)
+    {
+        return view('admin.comment.detail', compact('comment'));
+    }
 
 }

@@ -61,9 +61,6 @@ function fetchNotifications() {
             // Giữ nguyên phần header và footer của dropdown
             // (chúng đã được định nghĩa trong HTML gốc)
         },
-        error: function (err) {
-            console.error("Error fetching notifications", err);
-        },
     });
 }
 
@@ -86,8 +83,5 @@ $(document).on('click', '.check-notification', function (e) {
                 window.location.href = res.link;
             }
         },
-        error: function (err) {
-            console.error('Error marking notification as read', err);
-        }
     });
 });

@@ -77,9 +77,7 @@ class DashboardService
 
         $paymentMethodsOrder = [
             'COD',
-            'VNPay',
-            'MoMo',
-            'ZaloPay'
+            'VNPay'
         ];
 
         $totalPayments = Payment::where('status', 'success')
