@@ -90,14 +90,17 @@ class CheckoutController extends Controller
         $payment = $request->get('payment');
 
         $statusCounts = [
-            'pending' => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
-            'confirmed' => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
-            'packaging' => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
-            'shipped' => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
-            'delivered' => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
-            'cancelled' => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
-            'returned' => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
-        ];
+
+    'pending'    => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
+    'confirmed'  => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
+    'packaging'  => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
+    'shipped'    => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
+    'delivered'  => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
+    'rated'      => Order::where('user_id', Auth::id())->where('status', 'rated')->count(), 
+    'cancelled'  => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+    'returned'   => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
+];
+
 
         $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment'])
             ->where('user_id', Auth::id());
