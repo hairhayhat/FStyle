@@ -99,10 +99,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     // Apply voucher (test hoặc checkout)
     Route::post('voucher/apply', [VoucherController::class, 'apply'])->name('admin.voucher.apply');
 
-    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-    Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');

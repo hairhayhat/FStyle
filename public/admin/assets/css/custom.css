@@ -115,3 +115,56 @@
     /* hover nhẹ */
     color: #e22454;
 }
+ 
+.card {
+        border-radius: 8px;
+        border: 1px solid #e5e5e5;
+    }
+
+    .table th {
+        background: #f9f9f9;
+        font-weight: 600;
+    }
+
+    h5.fw-bold {
+        margin-bottom: 1.5rem;
+    }
+
+    h6.fw-bold {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .list-group-item {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+
+     .page-title {
+        font-size: 1.75rem; /* to hơn h5 mặc định */
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e5e5;
+        padding-bottom: 0.5rem;
+    }
+
+    .card {
+        border-radius: 8px;
+        border: 1px solid #e5e5e5;
+    }
+
+    .table th {
+        background: #f9f9f9;
+        font-weight: 600;
+    }
+
+    h6.fw-bold {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .list-group-item {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
