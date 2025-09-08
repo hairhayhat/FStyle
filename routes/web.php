@@ -22,6 +22,7 @@ use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Client\ChatController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
@@ -170,5 +171,8 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 
     Route::post('/comment/store', [CommentController::class, 'store'])->name('client.comment.store');
+
+    Route::get('/chat/{user}', [ChatController::class, 'index']);
+    Route::post('/chat/send/{user}', [ChatController::class, 'store']);
 });
 require __DIR__ . '/auth.php';

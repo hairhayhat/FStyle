@@ -47,3 +47,4 @@
     <script src="{{ asset('client/assets/js/add_comment.js') }}"></script>
     <script src="{{ asset('client/assets/js/filter-order.js') }}"></script>
     <script src="{{ asset('client/assets/js/filter-comments.js') }}"></script>
+    <script src="{{ asset('client/assets/js/chat_realtime.js') }}"></script>

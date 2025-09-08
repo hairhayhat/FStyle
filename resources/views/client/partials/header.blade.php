@@ -107,6 +107,32 @@
                                     </div>
                                 </li>
 
+                                <li class="message-dropdown">
+                                    <div class="cart-media">
+                                        <a href="#" id="messageToggle" class="message-icon">
+                                            <i data-feather="message-circle"></i>
+                                            <span class="label label-theme rounded-pill message-badge">0</span>
+                                        </a>
+                                    </div>
+                                    <div class="message-menu" id="messageMenu">
+                                        <div class="message-header">
+                                            <h6>Tin nhắn</h6>
+                                        </div>
+                                        <div class="message-list">
+                                            @foreach ($adminUsers as $item)
+                                                <div class="media user-item" data-id="{{ $item->id }}"
+                                                    data-name="{{ $item->name }}">
+                                                    <img class="img-fluid rounded-circle me-3"
+                                                        src="{{ $item->avatar ?? '/default.png' }}" alt="user">
+                                                    <div class="media-body">
+                                                        <span>{{ $item->name }}</span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </li>
+
                                 <li class="onhover-dropdown notification-dropdown">
                                     <div class="cart-media">
                                         <a href="#" class="notification-icon">
@@ -122,11 +148,14 @@
                                         <div class="notification-list">
                                         </div>
                                         <div class="notification-footer">
-                                            <a href="/admin/notifications" class="btn btn-solid-default w-100">Kiểm tra toàn
+                                            <a href="/admin/notifications" class="btn btn-solid-default w-100">Kiểm
+                                                tra
+                                                toàn
                                                 bộ thông báo</a>
                                         </div>
                                     </div>
                                 </li>
+
                                 <li class="onhover-dropdown cart-dropdown">
                                     <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">
                                         <i data-feather="shopping-cart"></i>
@@ -156,6 +185,8 @@
                     </div>
                 </div>
             </div>
+
+            <div id="chat-container"></div>
         </div>
     </div>
 </header>

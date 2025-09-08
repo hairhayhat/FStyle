@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use App\Models\NotificationUser;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share categories
         View::share('categories', Cache::remember('categories', 3600, fn() => Category::all()));
+        View::share('adminUsers', Cache::remember(
+            'adminUsers',
+            3600,
+            fn() =>
+            User::where('role_id', 1)->get()
+        ));
+
 
         $userId = Auth::id() ?? 0;
 
