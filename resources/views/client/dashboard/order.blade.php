@@ -38,12 +38,11 @@
                         Tất cả
                     </label>
                     <label>
-                        <input type="radio" name="payment" value="vnpay"
-                            {{ request('payment') == 'vnpay' ? 'checked' : '' }}> VNPay
+                        <input type="radio" name="payment" value="vnpay" {{ request('payment') == 'vnpay' ? 'checked' : '' }}>
+                        VNPay
                     </label>
                     <label>
-                        <input type="radio" name="payment" value="cod"
-                            {{ request('payment') == 'cod' ? 'checked' : '' }}> COD
+                        <input type="radio" name="payment" value="cod" {{ request('payment') == 'cod' ? 'checked' : '' }}> COD
                     </label>
                 </div>
             </form>
@@ -64,10 +63,14 @@
                 <button type="button" class="btn btn-solid-default btn-status" data-status="delivered">
                     Đã Giao <span class="badge">{{ $statusCounts['delivered'] }}</span>
                 </button>
+                <button type="button" class="btn btn-solid-default btn-status" data-status="rated">
+                    Đã Đánh Giá <span class="badge">{{ $statusCounts['rated'] ?? 0 }}</span>
+                </button>
                 <button type="button" class="btn btn-solid-default btn-status" data-status="cancelled">
                     Đã Hủy <span class="badge">{{ $statusCounts['cancelled'] }}</span>
                 </button>
             </div>
+
 
         </div>
 
