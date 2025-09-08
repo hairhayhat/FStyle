@@ -78,7 +78,7 @@
                                 @elseif ($order->status === 'delivered')
                                     <button class="btn btn-solid-default btn-sm fw-bold ms-auto btn-show-order"
                                         data-order-code="{{ $order->code }}">Đánh giá ngay</button>
-                                @elseif($order->status === 'cancelled')
+                                @elseif($order->status === 'cancelled' || $order->status == 'rated')
                                     <form action="{{ route('client.checkout.rebuy', ['order' => $order->id]) }}"
                                         method="POST">
                                         @csrf

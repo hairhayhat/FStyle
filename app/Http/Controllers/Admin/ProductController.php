@@ -15,10 +15,53 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->latest()->paginate(10);
-        return view('admin.product.index', compact('products'));
+        $sort = $request->get('sort', 'desc');
+        $perPage = $request->get('per_page', 10);
+        $status = $request->get('status');
+
+        $query = Product::with('category');
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($status === 'active') {
+            $query->whereDoesntHave('variants', function ($q) {
+                $q->whereHas('cartDetails')
+                    ->orWhereHas('orderDetails');
+            });
+        } elseif ($status === 'locked') {
+            $query->whereHas('variants', function ($q) {
+                $q->whereHas('cartDetails')
+                    ->orWhereHas('orderDetails');
+            });
+        }
+
+        $products = $query->orderBy('created_at', $sort)
+            ->paginate($perPage)
+            ->appends($request->all());
+
+        $statusCounts = [
+            'active' => Product::whereDoesntHave('variants', function ($q) {
+                $q->whereHas('cartDetails')
+                    ->orWhereHas('orderDetails');
+            })->count(),
+            'locked' => Product::whereHas('variants', function ($q) {
+                $q->whereHas('cartDetails')
+                    ->orWhereHas('orderDetails');
+            })->count(),
+        ];
+
+        $categories = Category::all();
+
+        if ($request->ajax()) {
+            $html = view('admin.partials.table-products', compact('products'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('admin.product.index', compact('products', 'categories', 'statusCounts'));
     }
 
     public function create()
@@ -59,7 +102,6 @@ class ProductController extends Controller
             'name' => 'Tên sản phẩm',
             'category_id' => 'Danh mục',
             'description' => 'Mô tả sản phẩm',
-            'image' => 'Ảnh chính',
             'gallery' => 'Thư viện ảnh',
             'gallery.*' => 'Ảnh trong thư viện',
             'variants' => 'Biến thể sản phẩm',
@@ -228,6 +270,11 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        if ($product->inUse() == true) {
+            return redirect()
+                ->route('admin.product.index')
+                ->with('error', 'Sản phẩm này đang được sử dụng nên không thể xóa.');
+        }
         $product->delete();
         return back()->with('success', 'Xoá sản phẩm thành công!');
     }

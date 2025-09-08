@@ -34,7 +34,8 @@
                                         data-url="{{ route('client.address.update', ['id' => $item->id]) }}"
                                         class="btn btn-sm edit-address">Sửa</a>
 
-                                    <a href="javascript:void(0)" class="btn btn-sm">Xóa</a>
+                                    <a href="javascript:void(0)" class="btn btn-sm delete-address"
+                                        data-url="{{ route('client.address.destroy', $item->id) }}">Xóa</a>
                                 </div>
                             </div>
                         </div>
@@ -163,9 +164,24 @@
         $(document).ready(function() {
             $('.edit-address').on('click', function() {
                 const addressId = $(this).data('addressid');
-                const url = $(this).data('url')
+                const url = $(this).data('url');
 
-                $.get(`api/address/${addressId}/edit`, function(data) {
+                if (!addressId) {
+                    console.error('addressId undefined');
+                    return;
+                }
+
+                $.get(`/client/api/address/${addressId}/edit`, function(response) {
+                    if (!response.success) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message
+                        });
+                        return;
+                    }
+
+                    let data = response.data;
                     let modal = $('#editAddress');
 
                     modal.find('input[name="full_name"]').val(data.full_name);
@@ -177,6 +193,42 @@
                     $('#editAddressForm').attr('action', url);
 
                     modal.modal('show');
+                });
+            });
+
+            $('.delete-address').on('click', function(e) {
+                e.preventDefault();
+                const url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Bạn có chắc muốn xóa địa chỉ này?',
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = $('<form>', {
+                            'method': 'POST',
+                            'action': url
+                        });
+                        let token = $('<input>', {
+                            'type': 'hidden',
+                            'name': '_token',
+                            'value': '{{ csrf_token() }}'
+                        });
+                        let method = $('<input>', {
+                            'type': 'hidden',
+                            'name': '_method',
+                            'value': 'DELETE'
+                        });
+                        form.append(token, method);
+                        $('body').append(form);
+                        form.submit();
+                    }
                 });
             });
         });

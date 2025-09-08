@@ -13,7 +13,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $newProducts = Product::with(['category', 'variants', 'galleries'])
+        $newProducts = Product::with(['category', 'variants', 'galleries', 'activeComments'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -28,6 +28,7 @@ class HomeController extends Controller
         }
         return view('client.welcome', compact('newProducts', 'favoriteProductIds', 'categories', 'products'));
     }
+
 
     public function show($slug)
     {
@@ -74,7 +75,7 @@ class HomeController extends Controller
     public function detailProduct($slug)
     {
         try {
-            $product = Product::with(['category', 'variants', 'galleries', 'comments.user']) // eager load comments với user
+            $product = Product::with(['category', 'variants', 'galleries', 'comments.user'])
                 ->where('slug', $slug)
                 ->firstOrFail();
 
@@ -95,14 +96,15 @@ class HomeController extends Controller
                 $favoriteProductIds = Auth::user()->favorites->pluck('product_id')->toArray();
             }
 
-            $comments = $product->ActiveComments;
+            $comments = $product->ActiveComments()->paginate(3);
+            $allComments = $product->activeComments;
 
-            $totalRatings = $comments->count();
-            $averageRating = $totalRatings ? round($comments->avg('rating'), 1) : 0;
+            $totalRatings = $allComments->count();
+            $averageRating = $totalRatings ? round($allComments->avg('rating'), 1) : 0;
 
             $ratingCounts = [];
             for ($i = 1; $i <= 5; $i++) {
-                $ratingCounts[$i] = $comments->where('rating', $i)->count();
+                $ratingCounts[$i] = $allComments->where('rating', $i)->count();
             }
 
             $ratingPercentages = [];

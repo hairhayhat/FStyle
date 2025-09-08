@@ -67,14 +67,17 @@
                                     </p>
 
                                     {{-- Hiển thị ảnh nếu có --}}
-                                    @if(!empty($comment->media->file_path))
+                                    
                                         <div class="mb-2">
-                                            <img src="{{ asset('pu/' . $comment->media->file_path) }}" 
+                                            @foreach ($comment->media as $item)
+                                                <img src="{{ asset( 'stogare/' . $item->file_path) }}" 
                                                 alt="Ảnh đánh giá" 
                                                 class="img-fluid rounded"
                                                 style="max-height:150px; object-fit:cover;">
+                                            @endforeach
+                                            
                                         </div>
-                                    @endif
+                                    
 
                                     <small class="text-muted">
                                         Viết lúc: {{ $comment->created_at->format('d/m/Y H:i') }}
@@ -111,34 +114,7 @@
             @endif
 
 
-            <!-- Các đơn đã giao -->
-            <h6 class="fw-bold mt-4">Các đơn đã giao thành công</h6>
-            @if($completedOrders->isEmpty())
-                <p class="text-muted">Chưa có đơn thành công nào.</p>
-            @else
-                <div class="row">
-                    @foreach($completedOrders as $order)
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <strong>Mã đơn:</strong> #{{ $order->code }}
-                                    </h6>
-                                    <p class="card-text mb-1">
-                                        <strong>Tổng tiền:</strong> 
-                                        {{ number_format($order->total_amount, 0, ',', '.') }} đ
-                                    </p>
-                                    <p class="card-text mb-1">
-                                        <strong>Ngày giao:</strong> 
-                                        {{ $order->updated_at->format('d/m/Y') }}
-                                    </p>
-                                    <span class="badge bg-success">Đã giao thành công</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+            
 
 
             <div class="mt-4">

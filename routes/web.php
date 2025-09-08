@@ -26,12 +26,13 @@ use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
 
-Route::get('/', [HomeController::class, 'index'])->name('client.welcome');
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
 Route::get('/product/{slug}', [HomeController::class, 'detailProduct'])->name('product.detail');
 Route::get('/search/ajax', [SearchController::class, 'ajaxSearchProducts'])->name('search.ajax.products');
 Route::get('/category/{slug}', [SearchController::class, 'searchCategory'])->name('search.category');
 Route::get('/filter-products', [SearchController::class, 'filter'])->name('products.filter');
+Route::get('/product/{slug}/comments', [CommentController::class, 'ajaxComments'])->name('product.ajaxComments');
 
 
 
@@ -41,7 +42,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
     Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     // Category Routes
-    
+
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
     Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
     Route::post('/category', [CategoryController::class, 'store'])->name('admin.category.store');
@@ -115,6 +116,7 @@ Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.user
 
     Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
     Route::post('/comments/toggle-status/{comment}', [AdminCommentController::class, 'toggleStatus'])->name('admin.comments.toggleStatus');
+    Route::get('/comment/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
 
 });
 
@@ -135,6 +137,7 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::post('/address', [AddressController::class, 'store'])->name('client.address.create');
     Route::put('/address/{id}', [AddressController::class, 'update'])->name('client.address.update');
     Route::get('/api/address/{id}/edit', [AddressController::class, 'edit'])->name('api.address.edit');
+    Route::delete('/address/destroy/{id}', [AddressController::class, 'destroy'])->name('client.address.destroy');
 
     Route::post('/products/{product}/favorite', [FavoriteController::class, 'favorite'])->name('client.products.favorite');
     Route::get('/wishlist', [FavoriteController::class, 'wishlist'])->name('client.wishlist');
@@ -168,6 +171,5 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 
     Route::post('/comment/store', [CommentController::class, 'store'])->name('client.comment.store');
-
 });
 require __DIR__ . '/auth.php';

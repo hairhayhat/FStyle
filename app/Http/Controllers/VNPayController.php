@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 
 class VNPayController extends Controller
 {
+
+    public function __construct
+    (
+        private NotificationService $notificationService,
+    ) {
+
+    }
 
     public function return(Request $request)
     {
@@ -26,6 +34,13 @@ class VNPayController extends Controller
                 'gateway_data' => json_encode($request->all()),
             ]);
 
+            $this->notificationService->notifyAdmins(
+                'Đơn hàng mới',
+                " Tài khoản {$order->user?->name} đã đặt {$order->code}",
+                '/admin/orders/' . $order->code,
+                $order->id
+            );
+
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Thanh toán thành công!');
         } elseif ($request->vnp_ResponseCode == '24') {
@@ -40,10 +55,6 @@ class VNPayController extends Controller
                 ->with('error', 'Thanh toán VNPay thất bại. Mã lỗi: ' . $request->vnp_ResponseCode);
         }
     }
-
-
-
-
     public function ipn(Request $request)
     {
         $inputData = $request->all();

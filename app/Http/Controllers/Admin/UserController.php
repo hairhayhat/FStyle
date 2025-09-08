@@ -58,12 +58,7 @@ class UserController extends Controller
         ->take(5)
         ->get();
 
-    // Lấy 5 đơn hàng đã giao thành công
-$completedOrders = $user->orders()
-    ->where('status', 'delivered') // sửa lại đúng trạng thái trong DB
-    ->latest()
-    ->take(5)
-    ->get();
+
 
 
     // Lấy 5 comment gần đây
@@ -75,7 +70,6 @@ $completedOrders = $user->orders()
     return view('admin.user.show', compact(
         'user',
         'recentOrders',
-        'completedOrders',
         'recentComments'
     ));
 }

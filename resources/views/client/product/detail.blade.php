@@ -186,7 +186,6 @@
 
                             <div class="tab-pane fade" id="review">
                                 <div class="row g-4">
-
                                     <div class="col-lg-4">
                                         <div class="customer-rating">
                                             <h2>Đánh giá của khách hàng</h2>
@@ -200,14 +199,27 @@
                                                 @endfor
                                             </ul>
 
-                                            <div class="global-rating">
+                                            <div class="global-rating mb-3">
                                                 <h5 class="font-light">{{ $totalRatings }} Đánh giá</h5>
                                             </div>
 
-                                            <!-- % phân bố từng sao -->
+                                            <div class="review-filters mb-3 d-flex gap-2 align-items-center">
+                                                <select id="commentOrder" class="form-select form-select-sm">
+                                                    <option value="newest">Mới nhất</option>
+                                                    <option value="oldest">Cũ nhất</option>
+                                                </select>
+
+                                                <select id="commentMedia" class="form-select form-select-sm">
+                                                    <option value="">Tất cả</option>
+                                                    <option value="has_image">Có ảnh</option>
+                                                    <option value="no_image">Không ảnh</option>
+                                                </select>
+                                            </div>
+
                                             <ul class="rating-progess">
                                                 @for ($i = 5; $i >= 1; $i--)
-                                                    <li>
+                                                    <li class="rating-filter" data-rating="{{ $i }}"
+                                                        style="cursor:pointer;">
                                                         <h5 class="me-3">{{ $i }} Star</h5>
                                                         <div class="progress">
                                                             <div class="progress-bar" role="progressbar"
@@ -220,68 +232,22 @@
                                                     </li>
                                                 @endfor
                                             </ul>
+
                                         </div>
                                     </div>
 
                                     <div class="col-lg-8">
                                         <div class="customer-review-box">
                                             <h4>Bình luận của khách hàng</h4>
-
-                                            @forelse($comments as $comment)
-                                                <div class="customer-section mb-4">
-                                                    <div class="customer-profile">
-                                                        <img src="{{ $comment->user->avatar ?? 'assets/images/default-avatar.jpg' }}"
-                                                            class="img-fluid blur-up lazyload" alt="">
-                                                    </div>
-
-                                                    <div class="customer-details">
-                                                        <h5>{{ $comment->user->name ?? $comment->name }}</h5>
-
-                                                        <ul class="rating my-2 d-inline-block">
-                                                            @for ($i = 1; $i <= 5; $i++)
-                                                                <li>
-                                                                    <i
-                                                                        class="fas fa-star {{ $i <= $comment->rating ? 'theme-color' : '' }}"></i>
-                                                                </li>
-                                                            @endfor
-                                                        </ul>
-
-                                                        <p class="font-light">{{ $comment->content }}</p>
-
-                                                        <!-- Hiển thị ảnh/video của comment -->
-                                                        @if ($comment->media->count())
-                                                            <div class="comment-media d-flex flex-wrap mt-2">
-                                                                @foreach ($comment->media as $media)
-                                                                    @if (Str::endsWith($media->file_path, ['.mp4', '.webm', '.ogg']))
-                                                                        <video width="120" height="80" controls
-                                                                            class="me-2 mb-2">
-                                                                            <source src="{{ asset($media->file_path) }}"
-                                                                                type="video/mp4">
-                                                                            Your browser does not support the video tag.
-                                                                        </video>
-                                                                    @else
-                                                                        <img src="{{ asset($media->file_path) }}"
-                                                                            class="img-fluid me-2 mb-2"
-                                                                            style="width:120px; height:80px; object-fit:cover;"
-                                                                            alt="">
-                                                                    @endif
-                                                                @endforeach
-                                                            </div>
-                                                        @endif
-
-                                                        <p class="date-custo font-light">-
-                                                            {{ $comment->created_at->format('M d, Y') }}</p>
-                                                    </div>
-                                                </div>
-                                            @empty
-                                                <p>Chưa có đánh giá nào.</p>
-                                            @endforelse
+                                            <div class="list-comments" data-slug="{{ $product->slug }}">
+                                                @include('client.partials.list-comments', [
+                                                    'comments' => $comments,
+                                                ])
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -343,6 +309,20 @@
                                     <div class="product-details">
                                         <div class="rating-details">
                                             <span class="font-light grid-content">{{ $item->Category->name }}</span>
+                                            @php
+                                                $avgRating = round($item->activeComments->avg('rating'), 1);
+                                            @endphp
+                                            <ul class="rating mt-0">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= floor($avgRating))
+                                                        <li><i class="fas fa-star theme-color"></i></li>
+                                                    @elseif ($i == ceil($avgRating) && $avgRating - floor($avgRating) >= 0.5)
+                                                        <li><i class="fas fa-star-half-alt theme-color"></i></li>
+                                                    @else
+                                                        <li><i class="fas fa-star"></i></li>
+                                                    @endif
+                                                @endfor
+                                            </ul>
                                         </div>
                                         <div class="main-price d-flex justify-content-between align-items-center">
                                             <a href="{{ route('product.detail', ['slug' => $item->slug]) }}"
@@ -370,46 +350,6 @@
             </div>
         </div>
     </section>
-
-    {{-- <div class="sticky-bottom-cart" id="stickyCart">
-        <div class="container">
-            <div class="cart-content">
-                <div class="product-image">
-                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid blur-up lazyload"
-                        alt="{{ $product->name }}">
-                    <div class="content">
-                        <h5>{{ $product->name }}</h5>
-                        <h6>
-                            <span class="current-price">0₫</span>
-                            <del class="original-price font-light d-none">0₫</del>
-                            <span class="discount d-none">0% off</span>
-                        </h6>
-                    </div>
-                </div>
-                <div class="selection-section">
-                    <div class="form-group mb-0">
-                        <select id="inputState" class="form-control form-select">
-                            <option disabled selected>Chọn màu...</option>
-                            @foreach ($product->variants->unique('color_id') as $variant)
-                                <option value="{{ $variant->color_id }}">{{ $variant->color->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group mb-0">
-                        <select id="input-state" class="form-control form-select">
-                            <option selected disabled>Chọn size...</option>
-                            <!-- Không hiển thị options ở đây, sẽ được cập nhật bằng JS -->
-                        </select>
-                    </div>
-                </div>
-                <div class="add-btn">
-                    <button class="btn default-light-theme default-theme default-theme-2 outline-button add-to-cart-btn">
-                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 @endsection
 
 @section('scripts')

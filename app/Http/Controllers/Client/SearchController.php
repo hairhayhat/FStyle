@@ -58,14 +58,14 @@ class SearchController extends Controller
 
         $products = Product::with(['category', 'variants', 'galleries'])
             ->where('category_id', $category->id)
-            ->get();
+            ->paginate(12);
 
-        return view('client.search', compact('products', 'categories', 'colors', 'sizes'));
+        return view('client.search', compact('products', 'categories', 'colors', 'sizes', 'category'));
     }
 
     public function filter(Request $request)
     {
-        $query = Product::with('variants', 'category');
+        $query = Product::with(['variants', 'category', 'galleries']);
 
         if ($request->categories) {
             $query->whereHas('category', function ($q) use ($request) {
@@ -85,15 +85,37 @@ class SearchController extends Controller
             });
         }
 
-        if ($request->price_from && $request->price_to) {
-            $query->whereHas('variants', function ($q) use ($request) {
-                $q->whereBetween('price', [$request->price_from, $request->price_to]);
+        if ($request->has(['price_from', 'price_to'])) {
+            $from = (float) $request->price_from;
+            $to = (float) $request->price_to;
+
+            $query->whereHas('variants', function ($q) use ($from, $to) {
+                $q->whereBetween('sale_price', [$from, $to]);
             });
         }
 
-        $products = $query->get();
+        if ($request->sort) {
+            switch ($request->sort) {
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+            }
+        }
 
-        return view('client.partials.product', compact('products'));
+        $perPage = $request->per_page ?? 12;
+
+        $products = $query->paginate($perPage)->withQueryString();
+
+        if ($request->ajax()) {
+            return view('client.partials.product', compact('products'))->render();
+        }
+
+        return view('client.search', compact('products'));
     }
+
+
 
 }
