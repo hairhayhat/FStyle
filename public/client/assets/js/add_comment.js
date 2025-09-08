@@ -30,6 +30,7 @@ $(document).on('click', '.btn-show-order', function () {
                     <span class="star" data-value="5">&#9733;</span>
                     <input type="hidden" name="comments[${item.order_detail_id}][rating]" value="0" class="rating-value" required>
                     <input type="hidden" name="comments[${item.order_detail_id}][product_id]" value="${item.product_id}">
+                    <input type="hidden" name="comments[${item.order_detail_id}][variant_id]" value="${item.product_variant_id}">
                 </div>
             </div>
         </div>

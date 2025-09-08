@@ -60,10 +60,12 @@ class Product extends Model
 
     public function inUse()
     {
-        return $this->variants()->whereHas('cartDetails')
-            ->orWhereHas('orderDetails')
+        return $this->variants()
+            ->where(function ($q) {
+                $q->whereHas('cartDetails')
+                    ->orWhereHas('orderDetails');
+            })
             ->exists();
     }
-
 
 }

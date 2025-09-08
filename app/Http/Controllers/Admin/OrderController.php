@@ -25,13 +25,13 @@ class OrderController extends Controller
         $payment = $request->get('payment');
 
         $statusCounts = [
-            'pending'    => Order::where('status', 'pending')->count(),
-            'confirmed'  => Order::where('status', 'confirmed')->count(),
-            'packaging'  => Order::where('status', 'packaging')->count(),
-            'shipped'    => Order::where('status', 'shipped')->count(),
-            'delivered'  => Order::where('status', 'delivered')->count(),
-            'cancelled'  => Order::where('status', 'cancelled')->count(),
-            'returned'   => Order::where('status', 'returned')->count(),
+            'pending' => Order::where('status', 'pending')->count(),
+            'confirmed' => Order::where('status', 'confirmed')->count(),
+            'packaging' => Order::where('status', 'packaging')->count(),
+            'shipped' => Order::where('status', 'shipped')->count(),
+            'delivered' => Order::where('status', 'delivered')->count(),
+            'cancelled' => Order::where('status', 'cancelled')->count(),
+            'returned' => Order::where('status', 'returned')->count(),
         ];
 
         $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment']);
@@ -106,7 +106,6 @@ class OrderController extends Controller
                     $user,
                     'Cập nhật đơn hàng',
                     $statusMessages[$newStatus],
-                    'order',
                     "/client/checkout/{$order->code}"
                 );
             }

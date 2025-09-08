@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
             v.size_id == selectedSizeId
         );
 
-        console.log(matchedVariant);
-
         if (matchedVariant && matchedVariant.quantity > 0) {
             // Thay đổi từ price sang sale_price ở đây
             priceDisplay.textContent = Number(matchedVariant.sale_price).toLocaleString('vi-VN') + '₫';
