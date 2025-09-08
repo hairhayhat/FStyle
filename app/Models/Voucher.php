@@ -81,4 +81,14 @@ class Voucher extends Model
         // Không để giảm vượt quá giá trị đơn hàng
         return min($discount, $orderAmount);
     }
+    public function isUsed(): bool
+    {
+        return $this->orderVouchers()->exists();
+    }
+
+    public function orderVouchers()
+    {
+        return $this->hasMany(OrderVoucher::class);
+    }
+
 }
