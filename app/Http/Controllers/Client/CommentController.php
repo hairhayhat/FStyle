@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Comment;
@@ -60,46 +61,51 @@ class CommentController extends Controller
 
         foreach ($comments as $orderDetailId => $data) {
 
-            // Lưu comment
             $comment = Comment::create([
-                'user_id'    => Auth::id(),
+                'user_id' => Auth::id(),
                 'product_id' => $data['product_id'],
-
-                'content'    => $data['content'] ?? '',
-                'status'     => true,
-                'rating'     => $data['rating'] ?? 0,
+                'product_variant_id' => $data['variant_id'] ?? null,
+                'content' => $data['content'] ?? '',
+                'status' => true,
+                'rating' => $data['rating'] ?? 0,
+                'is_accurate' => isset($data['is_accurate']) ? 1 : 0,
             ]);
 
-            // Lưu media (nếu có)
             if ($request->hasFile("comments.$orderDetailId.media")) {
                 foreach ($request->file("comments.$orderDetailId.media") as $file) {
                     if ($file && $file->isValid()) {
-                        $path = $file->store('uploads/comments', 'public');
-                        $type = in_array($file->extension(), ['mp4', 'mov', 'avi']) ? 'video' : 'image';
+                        if (!in_array($file->extension(), ['mp4', 'mov', 'avi', 'webm', 'ogg'])) {
+                            $path = $file->store('comments', 'public');
 
-                        CommentMedia::create([
-                            'comment_id' => $comment->id,
-                            'file_path'  => $path,
-                            'type'       => $type,
-                        ]);
+                            CommentMedia::create([
+                                'comment_id' => $comment->id,
+                                'file_path' => $path,
+                                'type' => 'image',
+                            ]);
+                        }
                     }
                 }
             }
 
-            //  Đổi trạng thái đơn hàng sang 'rated'
+            $this->notificationService->notifyAdmins(
+                'Bình luận mới',
+                "Tài khoản {$comment->user->name} đã để lại bình luận",
+                '/admin/comment/' . $comment->id,
+                $comment->id
+            );
+
             $orderDetail = OrderDetail::find($orderDetailId);
             if ($orderDetail && $orderDetail->order) {
                 $order = $orderDetail->order;
 
-                // Chỉ update khi đơn hàng đã "delivered"
                 if ($order->status === 'delivered') {
                     $order->update(['status' => 'rated']);
                 }
             }
-
         }
 
         return redirect()->back()->with('success', 'Đánh giá đã được gửi thành công!');
     }
+
 
 }
