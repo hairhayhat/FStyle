@@ -70,6 +70,9 @@
                             <option value="shipped"
                                     @if ($order->status === 'shipped') selected @endif>
                                 Giao hàng</option>
+                            <option value="delivered"
+                                    @if ($order->status === 'delivered') selected @endif>
+                                Đã giao</option>
                             <option value="cancelled"
                                     @if ($order->status === 'cancelled') selected @endif>Hủy
                                 đơn</option>

@@ -7,9 +7,10 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\CommentMedia;
+use App\Models\OrderDetail;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Product;
+
 
 class CommentController extends Controller
 {
@@ -52,7 +53,6 @@ class CommentController extends Controller
         return view('client.partials.list-comments', compact('comments'));
     }
 
-
     public function store(Request $request)
     {
         $comments = $request->input('comments', []);
@@ -68,7 +68,6 @@ class CommentController extends Controller
                 'rating' => $data['rating'] ?? 0,
                 'is_accurate' => isset($data['is_accurate']) ? 1 : 0,
             ]);
-
 
             if ($request->hasFile("comments.$orderDetailId.media")) {
                 foreach ($request->file("comments.$orderDetailId.media") as $file) {
@@ -92,6 +91,15 @@ class CommentController extends Controller
                 '/admin/comment/' . $comment->id,
                 $comment->id
             );
+
+            $orderDetail = OrderDetail::find($orderDetailId);
+            if ($orderDetail && $orderDetail->order) {
+                $order = $orderDetail->order;
+
+                if ($order->status === 'delivered') {
+                    $order->update(['status' => 'rated']);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Đánh giá đã được gửi thành công!');
