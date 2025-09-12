@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class VoucherController extends Controller
 {
@@ -31,17 +32,51 @@ class VoucherController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'code' => 'required|unique:vouchers,code',
-            'type' => 'required|in:fixed,percent',
-            'value' => 'required|numeric|min:0',
-            'max_discount_amount' => 'nullable|numeric|min:0',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date|after_or_equal:starts_at',
-            'usage_limit' => 'nullable|integer|min:0',
-            'active' => 'required|boolean',
+        // Chuẩn hoá input
+        $request->merge([
+            'code' => Str::upper(trim((string) $request->input('code'))),
+            'active' => $request->boolean('active'),
         ]);
+
+        $request->validate([
+            'code' => ['required', 'max:50', 'unique:vouchers,code'],
+            'type' => ['required', 'in:fixed,percent'],
+            'value' => ['required', 'numeric', 'min:0'],
+            'max_discount_amount' => ['nullable', 'numeric', 'min:0'],
+            'min_order_amount' => ['nullable', 'numeric', 'min:0'],
+            'starts_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'usage_limit' => ['nullable', 'integer', 'min:0'],
+            // 'active' đã convert bằng boolean(), không cần required
+        ], [
+            'code.required' => 'Mã voucher không được để trống.',
+            'code.unique' => 'Mã voucher đã tồn tại.',
+            'type.required' => 'Loại voucher không được để trống.',
+            'type.in' => 'Loại voucher phải là cố định hoặc phần trăm.',
+            'value.required' => 'Giá trị giảm không được để trống.',
+            'value.numeric' => 'Giá trị giảm phải là số.',
+            'value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 0.',
+            'max_discount_amount.numeric' => 'Giảm tối đa phải là số.',
+            'max_discount_amount.min' => 'Giảm tối đa phải lớn hơn hoặc bằng 0.',
+            'min_order_amount.numeric' => 'Giá trị đơn hàng tối thiểu phải là số.',
+            'min_order_amount.min' => 'Giá trị đơn hàng tối thiểu phải lớn hơn hoặc bằng 0.',
+            'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
+            'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
+            'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày bắt đầu.',
+            'usage_limit.integer' => 'Số lần sử dụng phải là số nguyên.',
+            'usage_limit.min' => 'Số lần sử dụng phải lớn hơn hoặc bằng 0.',
+        ]);
+
+        // Ràng buộc theo type
+        if ($request->type === 'percent') {
+            if ($request->value <= 0 || $request->value > 100) {
+                return back()->withInput()->with('error', 'Voucher phần trăm phải trong khoảng 1–100%.');
+            }
+        } elseif ($request->type === 'fixed') {
+            if (!is_null($request->min_order_amount) && $request->value >= $request->min_order_amount) {
+                return back()->withInput()->with('error', 'Giá trị voucher cố định phải nhỏ hơn giá trị đơn hàng tối thiểu.');
+            }
+        }
 
         Voucher::create($request->only([
             'code',
@@ -79,17 +114,49 @@ class VoucherController extends Controller
      */
     public function update(Request $request, Voucher $voucher)
     {
-        $request->validate([
-            'code' => 'required|unique:vouchers,code,' . $voucher->id,
-            'type' => 'required|in:fixed,percent',
-            'value' => 'required|numeric|min:0',
-            'max_discount_amount' => 'nullable|numeric|min:0',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date|after_or_equal:starts_at',
-            'usage_limit' => 'nullable|integer|min:0',
-            'active' => 'required|boolean',
+        // Chuẩn hoá input
+        $request->merge([
+            'code' => Str::upper(trim((string) $request->input('code'))),
+            'active' => $request->boolean('active'),
         ]);
+
+        $request->validate([
+            'code' => ['required', 'max:50', Rule::unique('vouchers', 'code')->ignore($voucher->id)],
+            'type' => ['required', 'in:fixed,percent'],
+            'value' => ['required', 'numeric', 'min:0'],
+            'max_discount_amount' => ['nullable', 'numeric', 'min:0'],
+            'min_order_amount' => ['nullable', 'numeric', 'min:0'],
+            'starts_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'usage_limit' => ['nullable', 'integer', 'min:0'],
+        ], [
+            'code.required' => 'Mã voucher không được để trống.',
+            'code.unique' => 'Mã voucher đã tồn tại.',
+            'type.required' => 'Loại voucher không được để trống.',
+            'type.in' => 'Loại voucher phải là cố định hoặc phần trăm.',
+            'value.required' => 'Giá trị giảm không được để trống.',
+            'value.numeric' => 'Giá trị giảm phải là số.',
+            'value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 0.',
+            'max_discount_amount.numeric' => 'Giảm tối đa phải là số.',
+            'max_discount_amount.min' => 'Giảm tối đa phải lớn hơn hoặc bằng 0.',
+            'min_order_amount.numeric' => 'Giá trị đơn hàng tối thiểu phải là số.',
+            'min_order_amount.min' => 'Giá trị đơn hàng tối thiểu phải lớn hơn hoặc bằng 0.',
+            'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
+            'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
+            'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày bắt đầu.',
+            'usage_limit.integer' => 'Số lần sử dụng phải là số nguyên.',
+            'usage_limit.min' => 'Số lần sử dụng phải lớn hơn hoặc bằng 0.',
+        ]);
+
+        if ($request->type === 'percent') {
+            if ($request->value <= 0 || $request->value > 100) {
+                return back()->withInput()->with('error', 'Voucher phần trăm phải trong khoảng 1–100%.');
+            }
+        } elseif ($request->type === 'fixed') {
+            if (!is_null($request->min_order_amount) && $request->value >= $request->min_order_amount) {
+                return back()->withInput()->with('error', 'Giá trị voucher cố định phải nhỏ hơn giá trị đơn hàng tối thiểu.');
+            }
+        }
 
         $voucher->update($request->only([
             'code',
@@ -111,58 +178,13 @@ class VoucherController extends Controller
      */
     public function destroy(Voucher $voucher)
     {
+        if ((int) $voucher->used_count > 0) {
+            return back()->with('error', 'Không thể xóa voucher đã được sử dụng (đã dùng '
+                . (int) $voucher->used_count . ' lần). Bạn có thể tắt voucher thay vì xóa.');
+        }
+
         $voucher->delete();
 
         return redirect()->route('admin.vouchers.index')->with('success', 'Xóa voucher thành công.');
-    }
-
-    /**
-     * Áp dụng voucher (test trong admin hoặc dùng cho checkout)
-     */
-    public function apply(Request $request)
-    {
-        $request->validate([
-            'code' => 'required|string',
-            'order_amount' => 'required|numeric|min:0',
-        ], [
-            'code.required' => 'Vui lòng nhập mã voucher.',
-            'order_amount.required' => 'Vui lòng nhập giá trị đơn hàng.',
-            'order_amount.numeric' => 'Giá trị đơn hàng phải là số.',
-        ]);
-
-        $code = strtoupper($request->code);
-        $orderAmount = (float) $request->order_amount;
-
-        $voucher = Voucher::where('code', $code)->first();
-
-        if (!$voucher) {
-            throw ValidationException::withMessages([
-                'code' => 'Mã voucher không tồn tại.'
-            ]);
-        }
-
-        if (!$voucher->isValidForAmount($orderAmount)) {
-            throw ValidationException::withMessages([
-                'code' => 'Voucher không hợp lệ hoặc không đủ điều kiện áp dụng.'
-            ]);
-        }
-
-        // Tính giảm giá
-        if ($voucher->type === 'fixed') {
-            // Giảm cố định, không vượt quá tổng tiền
-            $discount = min((float) $voucher->value, $orderAmount);
-        } else {
-            // Giảm phần trăm
-            $discount = round($orderAmount * ((float) $voucher->value / 100), 2);
-
-            // Áp giới hạn max_discount_amount nếu có
-            if ($voucher->max_discount_amount !== null) {
-                $discount = min($discount, (float) $voucher->max_discount_amount);
-            }
-        }
-
-        $newTotal = max(0, $orderAmount - $discount);
-
-        return back()->with('success', "Voucher hợp lệ! Giảm: " . number_format($discount) . "₫. Tổng mới: " . number_format($newTotal) . "₫");
     }
 }
