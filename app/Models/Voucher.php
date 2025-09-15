@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Voucher extends Model
 {
@@ -15,20 +14,29 @@ class Voucher extends Model
         'min_order_amount',
         'starts_at',
         'expires_at',
-        'usage_limit',
-        'used_count',
-        'active',
+        'usage_limit',        // null = không giới hạn
+        'used_count',         // default 0
+        'active',             // boolean
     ];
 
     protected $casts = [
         'starts_at' => 'datetime',
         'expires_at' => 'datetime',
+        'active' => 'boolean',
+        'used_count' => 'integer',
+        'usage_limit' => 'integer',
+        'value' => 'float',
+        'max_discount_amount' => 'float',
+        'min_order_amount' => 'float',
     ];
 
-    protected $dates = [
-        'starts_at',
-        'expires_at',
-    ];
+    /**
+     * Scope: chỉ voucher đang bật
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
 
     /**
      * Kiểm tra voucher có hợp lệ với giá trị đơn hàng không
@@ -39,7 +47,7 @@ class Voucher extends Model
             return false;
         }
 
-        $now = Carbon::now();
+        $now = now();
 
         if ($this->starts_at && $now->lt($this->starts_at)) {
             return false; // chưa đến ngày bắt đầu
@@ -49,11 +57,12 @@ class Voucher extends Model
             return false; // đã hết hạn
         }
 
-        if ($this->usage_limit !== null && $this->used_count >= $this->usage_limit) {
+        // usage_limit: null = không giới hạn; 0 = hết lượt (tuỳ quy ước: khuyến nghị null = không giới hạn)
+        if (!is_null($this->usage_limit) && $this->used_count >= $this->usage_limit) {
             return false; // vượt quá số lượt sử dụng
         }
 
-        if ($this->min_order_amount !== null && $orderAmount < $this->min_order_amount) {
+        if (!is_null($this->min_order_amount) && $orderAmount < $this->min_order_amount) {
             return false; // đơn hàng nhỏ hơn đơn tối thiểu
         }
 
@@ -65,21 +74,30 @@ class Voucher extends Model
      */
     public function calculateDiscount(float $orderAmount): float
     {
-        $discount = 0;
+        $discount = 0.0;
 
         if ($this->type === 'percent') {
-            $discount = $orderAmount * ($this->value / 100);
+            // Clamp phần trăm phòng thủ
+            $rate = max(0.0, min(100.0, (float) $this->value));
+            $discount = $orderAmount * ($rate / 100.0);
 
-            // Nếu có giới hạn giảm tối đa thì áp dụng
-            if ($this->max_discount_amount !== null) {
-                $discount = min($discount, $this->max_discount_amount);
+            if (!is_null($this->max_discount_amount)) {
+                $discount = min($discount, (float) $this->max_discount_amount);
             }
         } elseif ($this->type === 'fixed') {
-            $discount = $this->value;
+            $discount = max(0.0, (float) $this->value);
         }
 
         // Không để giảm vượt quá giá trị đơn hàng
-        return min($discount, $orderAmount);
+        return round(min($discount, $orderAmount), 2);
+    }
+
+    /**
+     * Gọi khi redeem voucher thành công (tăng used_count an toàn)
+     */
+    public function incrementUsage(): void
+    {
+        $this->increment('used_count');
     }
     public function isUsed(): bool
     {
