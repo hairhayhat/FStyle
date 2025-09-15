@@ -3,12 +3,12 @@
 namespace App\Events;
 
 use App\Models\ChatMessages;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
+use Illuminate\Broadcasting\Channel;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -24,9 +24,7 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel("chat"),
-        ];
+        return [new Channel("chat." . $this->chatMessage->receiver_id)];
     }
 
     public function broadcastWith()
@@ -38,8 +36,11 @@ class MessageSent implements ShouldBroadcast
             ],
             'message' => [
                 'id' => $this->chatMessage->id,
-                'text' => $this->chatMessage->message,
-                'status' => $this->chatMessage->status,
+                'sender_id' => $this->chatMessage->sender_id,
+                'receiver_id' => $this->chatMessage->receiver_id,
+                'message' => $this->chatMessage->message,
+                'is_read' => $this->chatMessage->is_read,
+                'is_sent' => $this->chatMessage->is_send,
                 'created_at' => $this->chatMessage->created_at->toDateTimeString(),
                 'media' => $this->chatMessage->media->map(function ($m) {
                     return [
@@ -51,4 +52,5 @@ class MessageSent implements ShouldBroadcast
             ],
         ];
     }
+
 }

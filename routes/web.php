@@ -26,6 +26,9 @@ use App\Http\Controllers\Client\ChatController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => []]);
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -102,9 +105,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::post('voucher/apply', [VoucherController::class, 'apply'])->name('admin.voucher.apply');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-    Route::post('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order/{order}/update-status', [OrderController::class, 'updateStatus'])->name('admin.order.updateStatus');
@@ -174,5 +178,6 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
 
     Route::get('/chat/{user}', [ChatController::class, 'index']);
     Route::post('/chat/send/{user}', [ChatController::class, 'store']);
+    Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
 });
 require __DIR__ . '/auth.php';

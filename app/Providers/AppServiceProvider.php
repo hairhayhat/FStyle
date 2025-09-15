@@ -20,10 +20,11 @@ class AppServiceProvider extends ServiceProvider
         // Share categories
         View::share('categories', Cache::remember('categories', 3600, fn() => Category::all()));
         View::share('adminUsers', Cache::remember(
-            'adminUsers',
+            'adminUsers_' . Auth::id(),
             3600,
             fn() =>
-            User::where('role_id', 1)->get()
+            User::where('id', '!=', Auth::id())
+                ->get()
         ));
 
 

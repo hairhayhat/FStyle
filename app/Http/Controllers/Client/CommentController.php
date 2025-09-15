@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Comment;
@@ -104,5 +105,6 @@ class CommentController extends Controller
 
         return redirect()->back()->with('success', 'Đánh giá đã được gửi thành công!');
     }
+
 
 }

@@ -51,8 +51,28 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công');
     }
     public function show(User $user)
-    {
-        return view('admin.user.show', compact('user'));
-    }
+{
+    // Lấy 5 đơn hàng gần đây
+    $recentOrders = $user->orders()
+        ->latest()
+        ->take(5)
+        ->get();
+
+
+
+
+    // Lấy 5 comment gần đây
+    $recentComments = $user->comments()
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return view('admin.user.show', compact(
+        'user',
+        'recentOrders',
+        'recentComments'
+    ));
+}
+
 
 }

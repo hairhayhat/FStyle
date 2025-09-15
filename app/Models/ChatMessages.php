@@ -11,7 +11,7 @@ class ChatMessages extends Model
 
     protected $table = 'messages';
 
-    protected $fillable = ['sender_id', 'receiver_id', 'message', 'status'];
+    protected $fillable = ['sender_id', 'receiver_id', 'message', 'status', 'is_read', 'is_sent'];
 
     public function sender()
     {
