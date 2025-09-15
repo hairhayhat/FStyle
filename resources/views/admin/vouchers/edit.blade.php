@@ -32,7 +32,6 @@
                                         @error('code')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small class="text-muted">Mã sẽ tự chuyển thành IN HOA và loại bỏ khoảng trắng.</small>
                                     </div>
                                 </div>
 
@@ -40,7 +39,8 @@
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Loại voucher</label>
                                     <div class="col-sm-10">
-                                        <select name="type" id="type" class="form-control @error('type') is-invalid @enderror">
+                                        <select name="type" id="type"
+                                            class="form-control @error('type') is-invalid @enderror">
                                             <option value="fixed"
                                                 {{ old('type', $voucher->type) === 'fixed' ? 'selected' : '' }}>
                                                 Giảm số tiền cố định
@@ -67,9 +67,6 @@
                                         @error('value')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small id="valueHelp" class="text-muted d-block">
-                                            Với loại <b>phần trăm</b>, giá trị hợp lệ là 1–100.
-                                        </small>
                                     </div>
                                 </div>
 
@@ -84,9 +81,6 @@
                                         @error('min_order_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small class="text-muted">
-                                            Với loại <b>cố định</b>, giá trị giảm phải <b>nhỏ hơn</b> đơn hàng tối thiểu (nếu có).
-                                        </small>
                                     </div>
                                 </div>
 
@@ -94,11 +88,11 @@
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Giảm tối đa</label>
                                     <div class="col-sm-10">
-                                        <input type="number" step="1000" min="0" name="max_discount_amount" id="max_discount_amount"
+                                        <input type="number" step="1000" min="0" name="max_discount_amount"
+                                            id="max_discount_amount"
                                             class="form-control @error('max_discount_amount') is-invalid @enderror"
                                             value="{{ old('max_discount_amount', $voucher->max_discount_amount) }}"
                                             placeholder="Ví dụ: 500000" inputmode="decimal">
-                                        <small id="maxHelp" class="text-muted d-block">Áp dụng chủ yếu cho voucher <b>%</b>.</small>
                                         @error('max_discount_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
@@ -135,10 +129,10 @@
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Số lượt sử dụng</label>
                                     <div class="col-sm-10">
-                                        <input type="number" name="usage_limit" min="0" step="1" inputmode="numeric"
+                                        <input type="number" name="usage_limit" min="0" step="1"
+                                            inputmode="numeric"
                                             class="form-control @error('usage_limit') is-invalid @enderror"
-                                            value="{{ old('usage_limit', $voucher->usage_limit) }}"
-                                            placeholder="Để trống nếu không giới hạn">
+                                            value="{{ old('usage_limit', $voucher->usage_limit) }}" placeholder="0">
                                         @error('usage_limit')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
@@ -150,10 +144,12 @@
                                     <label class="form-label-title col-sm-2 mb-0">Trạng thái</label>
                                     <div class="col-sm-10">
                                         <select name="active" class="form-control @error('active') is-invalid @enderror">
-                                            <option value="1" {{ old('active', $voucher->active) == 1 ? 'selected' : '' }}>
+                                            <option value="1"
+                                                {{ old('active', $voucher->active) == 1 ? 'selected' : '' }}>
                                                 Hoạt động
                                             </option>
-                                            <option value="0" {{ old('active', $voucher->active) == 0 ? 'selected' : '' }}>
+                                            <option value="0"
+                                                {{ old('active', $voucher->active) == 0 ? 'selected' : '' }}>
                                                 Tắt
                                             </option>
                                         </select>
@@ -183,63 +179,63 @@
 @endsection
 
 @section('scripts')
-<script>
-(function() {
-    const codeEl  = document.getElementById('code');
-    const typeEl  = document.getElementById('type');
-    const valueEl = document.getElementById('value');
-    const maxEl   = document.getElementById('max_discount_amount');
-    const valueHelp = document.getElementById('valueHelp');
-    const maxHelp   = document.getElementById('maxHelp');
+    <script>
+        (function() {
+            const codeEl = document.getElementById('code');
+            const typeEl = document.getElementById('type');
+            const valueEl = document.getElementById('value');
+            const maxEl = document.getElementById('max_discount_amount');
+            const valueHelp = document.getElementById('valueHelp');
+            const maxHelp = document.getElementById('maxHelp');
 
-    // Auto uppercase mã voucher + loại bỏ khoảng trắng
-    if (codeEl) {
-        codeEl.addEventListener('input', () => {
-            const caret = codeEl.selectionStart;
-            codeEl.value = codeEl.value.toUpperCase().replace(/\s+/g, '').trim();
-            codeEl.setSelectionRange(caret, caret);
-        });
-    }
-
-    function applyTypeUI() {
-        const type = typeEl?.value || 'fixed';
-        if (type === 'percent') {
-            valueEl.min = '1';
-            valueEl.max = '100';
-            valueEl.step = '1';
-            valueEl.placeholder = 'Nhập % (1–100)';
-            if (maxHelp) maxHelp.classList.remove('text-muted');
-            if (maxEl)   maxEl.disabled = false;
-        } else {
-            valueEl.min = '0';
-            valueEl.removeAttribute('max');
-            valueEl.step = '1000';
-            valueEl.placeholder = 'Nhập số tiền giảm';
-            if (maxHelp) maxHelp.classList.add('text-muted');
-            // vẫn cho nhập max giảm, không bắt buộc
-        }
-    }
-
-    function clampNumberInputs(e) {
-        const el = e.target;
-        if (el.type === 'number') {
-            const min = el.min !== '' ? parseFloat(el.min) : null;
-            const max = el.max !== '' ? parseFloat(el.max) : null;
-            let val = el.value === '' ? '' : parseFloat(el.value);
-            if (val !== '' && !Number.isNaN(val)) {
-                if (min !== null && val < min) val = min;
-                if (max !== null && val > max) val = max;
-                el.value = val;
+            // Auto uppercase mã voucher + loại bỏ khoảng trắng
+            if (codeEl) {
+                codeEl.addEventListener('input', () => {
+                    const caret = codeEl.selectionStart;
+                    codeEl.value = codeEl.value.toUpperCase().replace(/\s+/g, '').trim();
+                    codeEl.setSelectionRange(caret, caret);
+                });
             }
-        }
-    }
 
-    typeEl?.addEventListener('change', applyTypeUI);
-    valueEl?.addEventListener('blur', clampNumberInputs);
-    maxEl?.addEventListener('blur', clampNumberInputs);
+            function applyTypeUI() {
+                const type = typeEl?.value || 'fixed';
+                if (type === 'percent') {
+                    valueEl.min = '1';
+                    valueEl.max = '100';
+                    valueEl.step = '1';
+                    valueEl.placeholder = 'Nhập % (1–100)';
+                    if (maxHelp) maxHelp.classList.remove('text-muted');
+                    if (maxEl) maxEl.disabled = false;
+                } else {
+                    valueEl.min = '0';
+                    valueEl.removeAttribute('max');
+                    valueEl.step = '1000';
+                    valueEl.placeholder = 'Nhập số tiền giảm';
+                    if (maxHelp) maxHelp.classList.add('text-muted');
+                    // vẫn cho nhập max giảm, không bắt buộc
+                }
+            }
 
-    // Khởi tạo theo old('type') / giá trị hiện có
-    applyTypeUI();
-})();
-</script>
+            function clampNumberInputs(e) {
+                const el = e.target;
+                if (el.type === 'number') {
+                    const min = el.min !== '' ? parseFloat(el.min) : null;
+                    const max = el.max !== '' ? parseFloat(el.max) : null;
+                    let val = el.value === '' ? '' : parseFloat(el.value);
+                    if (val !== '' && !Number.isNaN(val)) {
+                        if (min !== null && val < min) val = min;
+                        if (max !== null && val > max) val = max;
+                        el.value = val;
+                    }
+                }
+            }
+
+            typeEl?.addEventListener('change', applyTypeUI);
+            valueEl?.addEventListener('blur', clampNumberInputs);
+            maxEl?.addEventListener('blur', clampNumberInputs);
+
+            // Khởi tạo theo old('type') / giá trị hiện có
+            applyTypeUI();
+        })();
+    </script>
 @endsection
