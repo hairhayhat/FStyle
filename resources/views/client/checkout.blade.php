@@ -134,34 +134,68 @@
                             </li>
                         </ul>
 
-                        <form class="card border-0">
-                            <div class="input-group custome-imput-group">
-                                <select class="form-control" id="voucher-select">
-                                    <option value="">Chọn mã khuyến mãi</option>
-                                    @foreach ($vouchers as $item)
-                                        @if ($item->type == 'percent')
-                                            <option value="{{ $item->code }}" data-type="percent"
-                                                data-value="{{ (int) $item->value }}"
-                                                data-max="{{ $item->max_discount_amount }}"
-                                                data-min="{{ $item->min_order_amount }}">
-                                                Giảm {{ (int) $item->value }}%. Tối đa
-                                                {{ number_format($item->max_discount_amount) }}đ
-                                                cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
-                                            </option>
-                                        @else
-                                            <option value="{{ $item->code }}" data-type="fixed"
-                                                data-value="{{ $item->value }}"
-                                                data-max="{{ $item->max_discount_amount }}"
-                                                data-min="{{ $item->min_order_amount }}">
-                                                Giảm {{ number_format($item->value, 0) }}đ. Tối đa
-                                                {{ number_format($item->max_discount_amount) }}đ
-                                                cho đơn hàng trên {{ number_format($item->min_order_amount) }}đ
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </form>
+                        <div class="voucher-dropdown dropdown">
+                            <button class="btn btn-outline-primary w-100 dropdown-toggle" id="voucherDropdown"
+                                data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                Chọn voucher
+                            </button>
+
+                            <!-- Dropdown list -->
+                            <ul class="dropdown-menu w-100" aria-labelledby="voucherDropdown">
+                                @foreach ($vouchers as $v)
+                                    @php
+                                        $isPercent = $v->type === 'percent';
+                                        $minOrder = (int) ($v->min_order_amount ?? 0);
+
+                                        $maxStr = $v->max_discount_amount
+                                            ? ' (tối đa ' . number_format($v->max_discount_amount, 0, ',', '.') . 'đ)'
+                                            : '';
+
+                                        $titleStr = $isPercent
+                                            ? 'Giảm ' . (int) $v->value . '%' . $maxStr
+                                            : 'Giảm cố định ' . number_format($v->value, 0, ',', '.') . 'đ';
+
+                                        // Tính % đã dùng
+                                        $usedPct = $v->usage_limit
+                                            ? round(($v->used_count / $v->usage_limit) * 100)
+                                            : 0;
+
+                                        // Ngày hết hạn
+                                        $timeLeft = $v->expires_at
+                                            ? 'Hết hạn: ' . \Carbon\Carbon::parse($v->expires_at)->format('d/m/Y')
+                                            : 'Không giới hạn';
+                                    @endphp
+
+                                    <li>
+                                        <a class="dropdown-item voucher-option" href="#"
+                                            data-code="{{ $v->code }}" data-type="{{ $v->type }}"
+                                            data-value="{{ (int) $v->value }}"
+                                            data-max="{{ (int) ($v->max_discount_amount ?? 0) }}"
+                                            data-min="{{ (int) $v->min_order_amount }}">
+
+                                            <div class="voucher-card d-flex align-items-center">
+                                                <!-- ảnh -->
+                                                <div class="v-left me-2">
+                                                    <img src="{{ asset('client/assets/images/voucher/' . ($v->type === 'fixed' ? 'Fixed.png' : 'Percent.png')) }}"
+                                                        alt="voucher {{ $v->type }}" width="50" height="50">
+                                                </div>
+                                                <!-- info -->
+                                                <div class="v-right">
+                                                    <div class="fw-bold">{{ $titleStr }}</div>
+                                                    <div class="small">Đơn tối thiểu
+                                                        {{ number_format($minOrder, 0, ',', '.') }}đ</div>
+                                                    <div class="small text-muted">Đã dùng {{ $usedPct }}% •
+                                                        {{ $timeLeft }}</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            <!-- input ẩn để submit -->
+                            <input type="hidden" name="voucher_pick" id="voucherInput">
+                        </div>
                     </div>
                 </div>
             </div>
