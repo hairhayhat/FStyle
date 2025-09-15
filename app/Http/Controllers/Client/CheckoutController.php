@@ -37,7 +37,10 @@ class CheckoutController extends Controller
 
             $variant = ProductVariant::with('product', 'color', 'size')
                 ->find($buyNow['product_variant_id']);
-
+            if ($variant->quantity < $buyNow['quantity']) {
+                return redirect()->back()
+                    ->with('error', 'Sản phẩm không đủ số lượng để mua ngay.');
+            }
             $cartItems = collect([
                 (object) [
                     'productVariant' => $variant,
@@ -68,6 +71,12 @@ class CheckoutController extends Controller
                         'size' => $item->size
                     ];
                 });
+            foreach ($cartItems as $item) {
+                if ($item->productVariant->quantity < $item->quantity) {
+                    return redirect()->back()
+                        ->with('error', 'Sản phẩm ' . $item->productVariant->product->name . ' không đủ số lượng để mua.');
+                }
+            }
         } else {
             return redirect()->route('client.welcome');
         }
@@ -91,15 +100,15 @@ class CheckoutController extends Controller
 
         $statusCounts = [
 
-    'pending'    => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
-    'confirmed'  => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
-    'packaging'  => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
-    'shipped'    => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
-    'delivered'  => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
-    'rated'      => Order::where('user_id', Auth::id())->where('status', 'rated')->count(), 
-    'cancelled'  => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
-    'returned'   => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
-];
+            'pending' => Order::where('user_id', Auth::id())->where('status', 'pending')->count(),
+            'confirmed' => Order::where('user_id', Auth::id())->where('status', 'confirmed')->count(),
+            'packaging' => Order::where('user_id', Auth::id())->where('status', 'packaging')->count(),
+            'shipped' => Order::where('user_id', Auth::id())->where('status', 'shipped')->count(),
+            'delivered' => Order::where('user_id', Auth::id())->where('status', 'delivered')->count(),
+            'rated' => Order::where('user_id', Auth::id())->where('status', 'rated')->count(),
+            'cancelled' => Order::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+            'returned' => Order::where('user_id', Auth::id())->where('status', 'returned')->count(),
+        ];
 
 
         $query = Order::with(['orderDetails.productVariant.product', 'orderVoucher', 'payment'])
@@ -275,7 +284,7 @@ class CheckoutController extends Controller
                     'price' => $item->price,
                 ]);
                 $totalPrice += $item->price * $item->quantity;
-                ProductVariant::find($item->product_variant_id)->decrement('quantity', $item->quantity);
+                
             }
 
             [$total, $discount] = $this->calculateTotal($items, $request->voucher_code);
@@ -466,6 +475,13 @@ class CheckoutController extends Controller
         $order->status = 'cancelled';
         $order->note = $request->reason;
         $order->save();
+
+        foreach ($order->orderDetails as $detail) {
+            $variant = ProductVariant::find($detail->product_variant_id);
+            if ($variant) {
+                $variant->increment('quantity', $detail->quantity);
+            }
+        }
 
         if ($order->payment) {
             $order->payment->update(['status' => 'failed']);
