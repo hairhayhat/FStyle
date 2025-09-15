@@ -31,19 +31,22 @@ class CartController extends Controller
 
     public function addToCart(Request $request): JsonResponse
     {
-        if ($request->product_variant_id == 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sản phẩm không tồn tại hoặc đã hết hàng. Vui lòng chọn sản phẩm khác',
-            ], 400);
-        }
-
-        $userId = Auth::user()->id;
+        $userId = Auth::id();
 
         $request->validate([
             'product_variant_id' => 'required|exists:product_variants,id',
             'quantity' => 'required|integer|min:1',
         ]);
+
+        $variant = ProductVariant::with('product', 'color', 'size')
+            ->find($request->product_variant_id);
+
+        if (!$variant || $variant->quantity <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại hoặc đã hết hàng.',
+            ], 400);
+        }
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId],
@@ -51,16 +54,22 @@ class CartController extends Controller
         );
 
         $existingItem = CartDetail::where('cart_id', $cart->id)
-            ->where('product_variant_id', $request->product_variant_id)
+            ->where('product_variant_id', $variant->id)
             ->first();
+
+        $totalRequested = $request->quantity + ($existingItem->quantity ?? 0);
+
+        if ($totalRequested > $variant->quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chỉ còn ' . $variant->quantity . ' sản phẩm trong kho.',
+            ], 200);
+        }
 
         if ($existingItem) {
             $existingItem->quantity += $request->quantity;
             $existingItem->save();
         } else {
-            $variant = ProductVariant::with('product', 'color', 'size')
-                ->find($request->product_variant_id);
-
             CartDetail::create([
                 'cart_id' => $cart->id,
                 'product_variant_id' => $variant->id,
@@ -73,7 +82,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Đã thêm vào giỏ hàng thành công',
+            'message' => 'Đã thêm vào giỏ hàng thành công.',
         ]);
     }
 
