@@ -5,7 +5,7 @@
     <div class="page-body-wrapper">
         <div class="page-body">
             <div class="title-header title-header-1">
-                <h5>Danh sách bình luận</h5>
+                <h5>Danh sách đánh giá</h5>
             </div>
 
             <!-- Comment List Start -->

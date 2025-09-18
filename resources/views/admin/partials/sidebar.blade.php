@@ -109,12 +109,12 @@
                         class="sidebar-list {{ request()->is('admin/product') || request()->is('admin/product/*') ? 'active' : '' }}">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i data-feather="message-circle"></i>
-                            <span>Bình luận</span>
+                            <span>Đánh giá</span>
                         </a>
                         <ul class="sidebar-submenu"
                             style="{{ request()->is('admin/product') || request()->is('admin/product/*') ? 'display: block;' : '' }}">
                             <li class="{{ request()->routeIs('admin.product.index') ? 'active' : '' }}">
-                                <a href="{{ route('admin.comments.index') }}">Danh sách bình luận</a>
+                                <a href="{{ route('admin.comments.index') }}">Danh sách đánh giá</a>
                             </li>
                         </ul>
                     </li>

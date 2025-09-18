@@ -168,7 +168,7 @@
                                     data-bs-target="#desc" type="button">Mô tả</button>
 
                                 <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
-                                    data-bs-target="#review" type="button">Bình luận</button>
+                                    data-bs-target="#review" type="button">Đánh giá</button>
                             </div>
                         </nav>
 
@@ -238,7 +238,7 @@
 
                                     <div class="col-lg-8">
                                         <div class="customer-review-box">
-                                            <h4>Bình luận của khách hàng</h4>
+                                            <h4>Đánh giá của khách hàng</h4>
                                             <div class="list-comments" data-slug="{{ $product->slug }}">
                                                 @include('client.partials.list-comments', [
                                                     'comments' => $comments,
