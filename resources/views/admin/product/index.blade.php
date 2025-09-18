@@ -42,20 +42,8 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                </form>
-
-                                <div class="status-filter d-flex flex-wrap gap-2">
-                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status"
-                                        data-status="active">
-                                        Có thể cập nhật <span class="badge">{{ $statusCounts['active'] ?? 0 }}</span>
-                                    </button>
-                                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold btn-status"
-                                        data-status="locked">
-                                        Không thể cập nhật <span class="badge">{{ $statusCounts['locked'] ?? 0 }}</span>
-                                    </button>
-                                </div>
+                                </form>                        
                             </div>
-
                             <div id="productTableWrapper" data-url="{{ route('admin.product.index') }}">
                                 @include('admin.partials.table-products', ['products' => $products])
                             </div>
