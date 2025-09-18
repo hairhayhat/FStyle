@@ -60,7 +60,14 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    showErrorToast('Đã có lỗi xảy ra' );
+                    if (xhr.status === 403) {
+                        const msg = (xhr.responseJSON && xhr.responseJSON.message)
+                            ? xhr.responseJSON.message
+                            : 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.';
+                        showErrorToast(msg);
+                    } else {
+                        showErrorToast('Đã có lỗi xảy ra');
+                    }
                 }
             });
         }
@@ -84,7 +91,14 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    showErrorToast('Đã có lỗi xảy ra')
+                    if (xhr.status === 403) {
+                        const msg = (xhr.responseJSON && xhr.responseJSON.message)
+                            ? xhr.responseJSON.message
+                            : 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.';
+                        showErrorToast(msg);
+                    } else {
+                        showErrorToast('Đã có lỗi xảy ra');
+                    }
                 }
             });
         }

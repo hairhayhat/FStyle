@@ -9,7 +9,7 @@ if (!function_exists('getStatusName')) {
             'packaging' => 'Đang đóng gói',
             'shipped' => 'Đang giao hàng',
             'delivered' => 'Đã giao hàng',
-            'cancelled' => 'Đã hủy',
+            'cancelled' => 'Đã bị hủy',
             'returned' => 'Đã trả hàng'
         ];
 

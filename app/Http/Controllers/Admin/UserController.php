@@ -2,10 +2,18 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Services\NotificationService;
 class UserController extends Controller
 {
+    
+    public function __construct(
+        private NotificationService $notificationService
+    ) {
+    }
     public function index(Request $request)
     {
         $sort = $request->get('sort', 'desc');
@@ -74,5 +82,60 @@ class UserController extends Controller
     ));
 }
 
+public function lock(User $user)
+{
+    // Không cho phép khóa admin
+    if ($user->role_id == 1) {
+        return redirect()->back()->with('error', 'Không thể khóa tài khoản quản trị viên!');
+    }
+
+    DB::transaction(function () use ($user) {
+        $user->lock();
+
+        // Hủy các đơn đang hoạt động và hoàn kho
+        $orders = Order::with('orderDetails.productVariant')
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'confirmed', 'packaging'])
+            ->get();
+
+        foreach ($orders as $order) {
+            // Nếu đơn đang ở trạng thái confirmed, packaging, shipped… đã trừ kho trước đó -> hoàn kho
+            if (in_array($order->status, ['confirmed', 'packaging', 'pending'])) {
+                foreach ($order->orderDetails as $item) {
+                     
+                    $variant = $item->productVariant;
+                    if ($variant) {
+                        $variant->quantity += $item->quantity;
+                        $variant->save();
+                    }
+                }
+            }
+
+            // Đưa đơn về cancelled
+            $order->status = 'cancelled';
+            $order->note = 'Đã hủy đơn hàng vì tài khoản đã bị khóa';
+            $order->save();
+
+            $user = $order->user;
+            
+                $this->notificationService->notifyUser(
+                    $user,
+                    'Cập nhật đơn hàng',
+                  "Đã hủy đơn hàng vì tài khoản đã bị khóa",
+                    "/client/checkout/{$order->code}"
+                );
+            
+        }
+    });
+
+    return redirect()->back()->with('success', 'Đã khóa tài khoản và hủy các đơn đang xử lý, hoàn kho thành công!');
+}
+
+public function unlock(User $user)
+{
+    $user->unlock();
+    
+    return redirect()->back()->with('success', 'Đã mở khóa tài khoản người dùng thành công!');
+}
 
 }
