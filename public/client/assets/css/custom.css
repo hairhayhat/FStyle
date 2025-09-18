@@ -97,7 +97,7 @@ header .search-suggestion .product-info a {
     position: absolute;
 }
 
-.color-radio+label {
+.color-radio + label {
     display: block;
     width: 100%;
     height: 100%;
@@ -108,12 +108,12 @@ header .search-suggestion .product-info a {
     transition: all 0.3s ease;
 }
 
-.color-radio:checked+label {
+.color-radio:checked + label {
     border: 2px solid #000;
     transform: scale(1.1);
 }
 
-.color-radio+label i {
+.color-radio + label i {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -124,7 +124,7 @@ header .search-suggestion .product-info a {
     transition: opacity 0.3s ease;
 }
 
-.color-radio:checked+label i {
+.color-radio:checked + label i {
     opacity: 1;
 }
 
@@ -145,7 +145,7 @@ header .search-suggestion .product-info a {
     position: absolute;
 }
 
-.size-radio+label {
+.size-radio + label {
     display: inline-block;
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -156,13 +156,13 @@ header .search-suggestion .product-info a {
     text-align: center;
 }
 
-.size-radio:checked+label {
+.size-radio:checked + label {
     background-color: #000;
     color: #fff;
     border-color: #000;
 }
 
-.size-radio:focus+label {
+.size-radio:focus + label {
     outline: 2px solid #005fcc;
 }
 
@@ -1034,4 +1034,148 @@ header .search-suggestion .product-info a {
 
 .image-modal .close:hover {
     color: #ddd;
+    display: block; /* hoặc inline-block nếu cần */
+    white-space: nowrap; /* không xuống dòng */
+    overflow: hidden; /* ẩn phần tràn */
+    text-overflow: ellipsis; /* hiển thị ... */
+    max-width: 120px; /* hoặc width tùy ý */
+}
+/* ============== FStyle Voucher ============== */
+.voucher-dropdown {
+    --fs-primary: #e22454; /* màu chủ đạo FStyle */
+    --fs-muted: #64748b; /* slate-500 */
+    --fs-border: #e2e8f0; /* slate-200 */
+    --fs-soft: #f8fafc; /* slate-50 */
+    --fs-radius: 16px;
+    --fs-shadow: 0 10px 34px rgba(15, 23, 42, 0.1);
+}
+
+/* Nút chọn voucher (đẹp & nổi bật) */
+.voucher-dropdown .btn {
+    width: 100%;
+    border-radius: var(--fs-radius);
+    font-weight: 800;
+    padding: 12px 16px;
+    color: #fff;
+    text-transform: uppercase; /* chữ in hoa toàn bộ */
+    border: 0;
+    background: linear-gradient(180deg, #e83c66, var(--fs-primary));
+    box-shadow: 0 8px 22px rgba(226, 36, 84, 0.25);
+    transition: filter 0.15s ease, transform 0.06s ease, box-shadow 0.15s ease;
+}
+.voucher-dropdown .btn:hover {
+    filter: brightness(0.98);
+    box-shadow: 0 10px 28px rgba(226, 36, 84, 0.28);
+}
+.voucher-dropdown .btn:active {
+    transform: translateY(1px);
+}
+.voucher-dropdown .btn:focus {
+    box-shadow: 0 0 0 3px rgba(226, 36, 84, 0.28);
+}
+
+/* Dropdown luôn mở xuống (không flip) + khung đẹp */
+.voucher-dropdown .dropdown-menu {
+    inset: auto auto auto 0; /* neo bên dưới */
+    top: calc(100% + 8px) !important; /* mở xuống */
+    bottom: auto !important;
+    transform: translate3d(0, 0, 0) !important;
+
+    width: 100%;
+    max-height: 340px;
+    overflow: hidden auto;
+
+    border: 1px solid var(--fs-border);
+    border-radius: calc(var(--fs-radius) + 2px);
+    padding: 8px;
+    box-shadow: var(--fs-shadow);
+    background: #fff;
+}
+
+/* Scrollbar gọn */
+.voucher-dropdown .dropdown-menu::-webkit-scrollbar {
+    width: 8px;
+}
+.voucher-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+.voucher-dropdown .dropdown-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ====== Thẻ voucher: cao bằng nhau & canh thẳng ====== */
+.voucher-dropdown .dropdown-item {
+    position: relative;
+    display: block;
+    background: #fff;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    padding: 14px 16px; /* cố định -> không lệch giữa các trạng thái */
+    transition: background 0.15s ease, border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.voucher-dropdown li + li .dropdown-item {
+    margin-top: 10px;
+}
+
+/* layout cố định: 56px | 1fr */
+.voucher-dropdown .voucher-card {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    column-gap: 12px;
+    align-items: center;
+    min-height: 92px; /* ==> chiều cao đều nhau */
+}
+
+/* ảnh cùng size */
+.voucher-dropdown .v-left img {
+    width: 56px !important;
+    height: 56px !important;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--fs-soft);
+    border: 1px solid var(--fs-border);
+}
+
+/* nội dung xếp dọc, không “đội” chiều cao */
+.voucher-dropdown .v-right {
+    display: grid;
+    row-gap: 4px;
+    align-content: center;
+    min-width: 0;
+}
+.voucher-dropdown .v-right .fw-bold {
+    margin: 0;
+    line-height: 1.3;
+    font-weight: 800;
+}
+.voucher-dropdown .v-right .small {
+    margin: 0;
+    color: var(--fs-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Hover/Active: chỉ đổi màu, không đổi kích thước -> luôn bằng nhau */
+.voucher-dropdown .dropdown-item:hover {
+    background: rgba(226, 36, 84, 0.06);
+    border-color: rgba(226, 36, 84, 0.22);
+}
+.voucher-dropdown .dropdown-item.active {
+    background: rgba(226, 36, 84, 0.1);
+    border-color: rgba(226, 36, 84, 0.35);
+    box-shadow: inset 0 0 0 1.5px rgba(226, 36, 84, 0.35);
+}
+
+/* Mobile tinh chỉnh */
+@media (max-width: 576px) {
+    .voucher-dropdown .voucher-card {
+        min-height: 84px;
+    }
+    .voucher-dropdown .v-left img {
+        width: 50px !important;
+        height: 50px !important;
+    }
 }

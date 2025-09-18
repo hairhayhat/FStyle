@@ -76,8 +76,10 @@ class VoucherController extends Controller
             if (!is_null($request->min_order_amount) && $request->value >= $request->min_order_amount) {
                 return back()->withInput()->with('error', 'Giá trị voucher cố định phải nhỏ hơn giá trị đơn hàng tối thiểu.');
             }
+            if ($request->max_discount_amount > $request->value) {
+                return back()->withInput()->with('error', 'Giá trị giảm tối đa không lớn hơn giá trị voucher.');
+            }
         }
-
         Voucher::create($request->only([
             'code',
             'type',

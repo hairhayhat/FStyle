@@ -38,7 +38,6 @@
                                         @error('code')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small class="text-muted">Mã sẽ được chuyển thành chữ in hoa tự động.</small>
                                     </div>
                                 </div>
 
@@ -78,9 +77,6 @@
                                         @error('value')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small id="valueHelp" class="text-muted d-block">
-                                            Với loại <b>phần trăm</b>, giá trị hợp lệ là 1–100.
-                                        </small>
                                     </div>
                                 </div>
 
@@ -101,9 +97,6 @@
                                         @error('min_order_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small class="text-muted">
-                                            Với loại <b>cố định</b>, giá trị giảm phải <b>nhỏ hơn</b> đơn hàng tối thiểu (nếu có).
-                                        </small>
                                     </div>
                                 </div>
 
@@ -125,9 +118,6 @@
                                         @error('max_discount_amount')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
-                                        <small id="maxHelp" class="text-muted d-block">
-                                            Áp dụng chủ yếu cho voucher <b>%</b> để giới hạn số tiền giảm.
-                                        </small>
                                     </div>
                                 </div>
 
@@ -172,7 +162,7 @@
                                             name="usage_limit"
                                             class="form-control @error('usage_limit') is-invalid @enderror"
                                             value="{{ old('usage_limit') }}"
-                                            placeholder="Để trống nếu không giới hạn"
+                                            placeholder="0"
                                             min="0"
                                             step="1"
                                             inputmode="numeric"
