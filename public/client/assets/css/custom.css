@@ -719,9 +719,27 @@ header .search-suggestion .product-info a {
 }
 
 .chat-input .send-btn {
-    padding: 6px 12px;
+    padding: 4px 8px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
+    background: #e91e63;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-input .update-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    background: #e91e63;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-input .cancel-edit {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
     background: #e91e63;
     color: white;
     cursor: pointer;
@@ -820,17 +838,20 @@ header .search-suggestion .product-info a {
     transition: opacity 0.2s ease-in-out;
 }
 
-/* Chỉ hiện khi hover own-message */
-.chat-bubble.own-message:hover .chat-actions {
+/* Hover để hiện nút hành động cho tin nhắn của mình (bình thường hoặc đã chỉnh sửa) */
+.chat-bubble.own-message:hover .chat-actions,
+.chat-bubble.own-message-edit:hover .chat-actions {
     opacity: 1;
     pointer-events: auto;
     /* bật lại khi hiện */
 }
 
-/* Đảm bảo other-message ko bao giờ hiện */
-.chat-bubble.other-message .chat-actions {
+/* Tin nhắn của người khác (dù bình thường hay đã chỉnh sửa) thì luôn ẩn nút hành động */
+.chat-bubble.other-message .chat-actions,
+.chat-bubble.other-message-edit .chat-actions {
     display: none !important;
 }
+
 
 .chat-actions button {
     background: #fff;
@@ -847,6 +868,85 @@ header .search-suggestion .product-info a {
 }
 
 /** =========end====== **/
+
+/** =========Delete message========== **/
+/* Tin nhắn của mình (đã xoá) */
+.own-message-delete {
+    background: #f0f0f0;
+    color: #888;
+    font-style: italic;
+    border: 1px dashed #ccc;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    float: right;
+    /* giữ bên phải */
+    margin-left: auto;
+    /* đẩy sang phải */
+    border-bottom-right-radius: 5px;
+    text-align: right;
+}
+
+/* Tin nhắn của người khác (đã xoá) */
+.other-message-delete {
+    background: #f9f9f9;
+    color: #888;
+    font-style: italic;
+    border: 1px dashed #ccc;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    float: left;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+    text-align: left;
+}
+
+.own-message-delete::after,
+.other-message-delete::after {
+    content: "Tin nhắn đã bị xoá";
+}
+
+/** end **/
+
+/** =========Edit message========== **/
+.own-message-edit {
+    background: #e91e63;
+    color: #fff;
+    border: 1px solid #e91e63;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    float: right;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+    text-align: left;
+    font-style: italic;
+    position: relative;
+}
+
+.other-message-edit {
+    background: #eee;
+    border: 1px solid #eee;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    float: left;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+    text-align: left;
+    position: relative;
+}
+
+.own-message-edit::after,
+.other-message-edit::after {
+    content: " (Đã chỉnh sửa)";
+    font-size: 12px;
+    font-style: italic;
+    margin-left: 5px;
+}
+
+/** end **/
 
 .chat-bubble {
     margin: 8px 0;

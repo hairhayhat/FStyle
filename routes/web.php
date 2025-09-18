@@ -122,6 +122,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::post('/comments/toggle-status/{comment}', [AdminCommentController::class, 'toggleStatus'])->name('admin.comments.toggleStatus');
     Route::get('/comment/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
 
+    Route::get('/chat/{user}', [ChatController::class, 'index']);
+    Route::post('/chat/send/{user}', [ChatController::class, 'store']);
+    Route::post('/chat/edit/{chatMessage}', [ChatController::class, 'edit']);
+    Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
+    Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
+
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
@@ -178,6 +184,8 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
 
     Route::get('/chat/{user}', [ChatController::class, 'index']);
     Route::post('/chat/send/{user}', [ChatController::class, 'store']);
+    Route::post('/chat/edit/{chatMessage}', [ChatController::class, 'edit']);
     Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
+    Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
 });
 require __DIR__ . '/auth.php';

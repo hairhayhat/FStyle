@@ -1,20 +1,10 @@
 $(document).ready(function () {
-    const currentUserId = $("#chat-container").data("user-id");
+    const currentUserId = $("#chatPreviewDropdown").data("user-id");
+    let totalNewMessages = parseInt($('#chatBadge').text()) || 0;
 
-    $("#messageToggle").on("click", function (e) {
-        e.preventDefault();
-        $("#messageMenu").toggleClass("show");
-    });
-
-    $(document).on("click", function (e) {
-        if (!$(e.target).closest("#messageMenu, #messageToggle").length) {
-            $("#messageMenu").removeClass("show");
-        }
-    });
-
-    $(".user-item").on("click", function () {
-        let userId = $(this).data("id");
-        let userName = $(this).data("name");
+    $(".media").on("click", function () {
+        let userId = $(this).data("user");
+        let userName = $(this).data("user-name");
 
         if ($("#chatbox-" + userId).length) return;
 
@@ -77,6 +67,22 @@ $(document).ready(function () {
         $(this).closest(".preview-item").remove();
     });
 
+    $(document).on("click", ".chat-img", function () {
+        let src = $(this).attr("src");
+        $("#modalImg").attr("src", src);
+        $("#imageModal").fadeIn(200);
+    });
+
+    $(document).on("click", ".image-modal .close", function () {
+        $("#imageModal").fadeOut(200);
+    });
+
+    $(document).on("click", "#imageModal", function (e) {
+        if (e.target.id === "imageModal") {
+            $("#imageModal").fadeOut(200);
+        }
+    });
+
     function openChatBox(userId, userName) {
         let chatHtml = `
     <div id="chatbox-${userId}" class="chatbox">
@@ -106,26 +112,9 @@ $(document).ready(function () {
         $("#chat-container").append(chatHtml);
     }
 
-    $(document).on("click", ".chat-img", function () {
-        let src = $(this).attr("src");
-        $("#modalImg").attr("src", src);
-        $("#imageModal").fadeIn(200);
-    });
-
-    $(document).on("click", ".image-modal .close", function () {
-        $("#imageModal").fadeOut(200);
-    });
-
-    $(document).on("click", "#imageModal", function (e) {
-        if (e.target.id === "imageModal") {
-            $("#imageModal").fadeOut(200);
-        }
-    });
-
-
     function loadMessages(userId) {
         $.ajax({
-            url: `/client/chat/${userId}`,
+            url: `/admin/chat/${userId}`,
             method: "GET",
             success: function (data) {
                 let box = $("#messagesBox-" + userId);
@@ -136,7 +125,6 @@ $(document).ready(function () {
             }
         });
     }
-
     function sendMessage(userId) {
         let input = $("#newMessage-" + userId);
         let message = input.val().trim();
@@ -152,7 +140,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: `/client/chat/send/${userId}`,
+            url: `/admin/chat/send/${userId}`,
             method: "POST",
             headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
             data: formData,
@@ -237,7 +225,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/client/chat/delete/${id}`,
+                    url: `/admin/chat/delete/${id}`,
                     method: "POST",
                     headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
                     success: function (res) {
@@ -332,7 +320,7 @@ $(document).ready(function () {
         let newText = input.val().trim();
         if (!newText) return;
         $.ajax({
-            url: `/client/chat/edit/${msgId}`,
+            url: `/admin/chat/edit/${msgId}`,
             method: "POST",
             headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
             data: { message: newText },
@@ -370,19 +358,68 @@ $(document).ready(function () {
         }
     });
 
-    if (typeof window.Echo === "undefined") {
-        window.Echo = new window.Echo({
-            broadcaster: 'pusher',
-            key: '777b3c737a36e1ea77c8',
-            cluster: 'ap1',
-            forceTLS: true,
-            auth: {
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    window.Echo = new window.Echo({
+        broadcaster: 'pusher',
+        key: '777b3c737a36e1ea77c8',
+        cluster: 'ap1',
+        forceTLS: true,
+        auth: {
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        }
+    });
+
+    window.Echo.channel(`chat.${currentUserId}`)
+        .listen("MessageSent", (e) => {
+            if (!e.user) return;
+
+            let sender = e.user;
+
+
+            let existing = $("#chatPreviewDropdown .media[data-user='" + sender.id + "']");
+
+            if (existing.length === 0) {
+
+                $('#chatPreviewDropdown').prepend(`
+                    <li>
+                        <div class="media" data-user="${sender.id}">
+                            <img class="img-fluid rounded-circle me-3" src="${sender.avatar || 'assets/images/default-avatar.png'}" alt="${sender.name}">
+                            <div class="status-circle online"></div>
+                            <div class="media-body">
+                                <span>${sender.name}</span>
+                                <p class="f-12 font-success">+1 tin nhắn mới</p>
+                                <p class="f-12 font-success time-ago">${e.time_ago}</p>
+                            </div>
+                        </div>
+                    </li>
+                `);
+            } else {
+                let p = existing.find('.media-body p');
+                let text = p.text();
+                let match = text.match(/\+(\d+)/);
+                let newCount = match ? parseInt(match[1]) + 1 : 1;
+                p.text(`+${newCount} tin nhắn mới`);
+
+                existing.find('.status-circle').removeClass('offline').addClass('online');
+            }
+            totalNewMessages++;
+            $('#chatBadge').text(totalNewMessages).show();
+        });
+
+    window.Echo.channel(`chat.${currentUserId}`)
+        .listen("MessageDeleted", (e) => {
+            let msg = e.message;
+            let bubble = $(`.chat-bubble[data-id="${msg.id}"]`);
+            if (bubble.length) {
+                bubble.find(".chat-text, .chat-media, .chat-actions").remove();
+                if (bubble.hasClass("own-message") || bubble.hasClass("own-message-edit")) {
+                    bubble.removeClass("own-message own-message-edit").addClass("own-message-delete");
+                } else {
+                    bubble.removeClass("other-message other-message-edit").addClass("other-message-delete");
                 }
             }
         });
-    }
 
     window.Echo.channel(`chat.${currentUserId}`)
         .listen("MessageSent", (e) => {
@@ -399,26 +436,12 @@ $(document).ready(function () {
 
             if ($(`#chatbox-${sender.id}`).is(":visible")) {
                 $.ajax({
-                    url: `/client/chat/mark-as-read/${msg.id}`,
+                    url: `/admin/chat/mark-as-read/${msg.id}`,
                     method: "POST",
                     headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") }
                 });
             }
 
-        });
-
-    window.Echo.channel(`chat.${currentUserId}`)
-        .listen("MessageDeleted", (e) => {
-            let msg = e.message;
-            let bubble = $(`.chat-bubble[data-id="${msg.id}"]`);
-            if (bubble.length) {
-                bubble.find(".chat-text, .chat-media, .chat-actions").remove();
-                if (bubble.hasClass("own-message") || bubble.hasClass("own-message-edit")) {
-                    bubble.removeClass("own-message own-message-edit").addClass("own-message-delete");
-                } else {
-                    bubble.removeClass("other-message other-message-edit").addClass("other-message-delete");
-                }
-            }
         });
 
     window.Echo.channel(`chat.${currentUserId}`)
@@ -446,5 +469,4 @@ $(document).ready(function () {
                 bubble.find(".chat-time").append(`<span class="msg-status read">Đã xem</span>`);
             }
         });
-
 });

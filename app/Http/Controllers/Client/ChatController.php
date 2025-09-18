@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\ChatMessages;
-use App\Models\ChatMessagesMedia;
-use App\Events\MessageSent;
 use App\Models\User;
+use App\Events\MessageSent;
+use App\Models\ChatMessages;
+use Illuminate\Http\Request;
+use App\Events\MessageDeleted;
+use App\Events\MessageEdited;
+use App\Events\MessageReaded;
+use App\Models\ChatMessagesMedia;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class ChatController extends Controller
@@ -20,10 +23,19 @@ class ChatController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        ChatMessages::where('sender_id', $user->id)
+        $unreadMessages = ChatMessages::where('sender_id', $user->id)
             ->where('receiver_id', auth()->id())
             ->where('is_read', false)
-            ->update(['is_read' => true]);
+            ->get();
+
+        if ($unreadMessages->count()) {
+            ChatMessages::whereIn('id', $unreadMessages->pluck('id'))
+                ->update(['is_read' => true]);
+
+            foreach ($unreadMessages as $msg) {
+                broadcast(new MessageReaded($msg))->toOthers();
+            }
+        }
 
         return response()->json($messages);
     }
@@ -54,9 +66,24 @@ class ChatController extends Controller
         return response()->json($chatMessage->load('media'));
     }
 
+    public function edit(ChatMessages $chatMessage, Request $request)
+    {
+        $chatMessage->message = $request->message;
+        $chatMessage->status = 2;
+        $chatMessage->save();
+
+        broadcast(new MessageEdited($chatMessage->load('media')))->toOthers();
+
+        return response()->json([
+            'id' => $chatMessage->id,
+            'new_message' => $chatMessage->message,
+        ]);
+    }
+
     public function destroy(ChatMessages $chatMessage)
     {
-        $chatMessage->message = "Tin nhắn đã bị thu hồi";
+        $chatMessage->message = "Tin nhắn đã bị xóa";
+        $chatMessage->status = 1;
         $chatMessage->save();
 
         if ($chatMessage->has('media')) {
@@ -68,7 +95,7 @@ class ChatController extends Controller
             }
         }
 
-        broadcast(new MessageSent(auth()->user(), $chatMessage))->toOthers();
+        broadcast(new MessageDeleted($chatMessage))->toOthers();
 
         return response()->json([
             'message' => 'Xóa tin nhắn thành công.',
@@ -76,6 +103,19 @@ class ChatController extends Controller
             'new_message' => $chatMessage->message,
         ]);
 
+    }
+
+    public function markAsRead(ChatMessages $chatMessage)
+    {
+        if ($chatMessage->receiver_id === auth()->id() && !$chatMessage->is_read) {
+            $chatMessage->update(['is_read' => true]);
+            broadcast(new MessageReaded($chatMessage))->toOthers();
+        }
+
+        return response()->json([
+            'id' => $chatMessage->id,
+            'is_read' => $chatMessage->is_read,
+        ]);
     }
 
 }

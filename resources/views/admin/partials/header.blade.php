@@ -36,6 +36,35 @@
                     </span>
                 </li>
                 <li class="onhover-dropdown">
+                    <span class="lnr lnr-bubble"></span>
+                    <span id="chatBadge" class="badge bg-danger">{{ $chatUsers->sum('new_count') }}</span>
+                    <ul class="chat-dropdown onhover-show-div" id="chatPreviewDropdown"
+                        data-user-id="{{ auth()->id() }}">
+                        <li>
+                            <span class="lnr lnr-bubble"></span>
+                            <h6 class="f-18 mb-0">Tin nhắn</h6>
+                        </li>
+                        @foreach ($chatUsers as $item)
+                            <li>
+                                <div class="media" data-user="{{ $item['user']->id }}" data-user-name="{{ $item['user']->name }}">
+                                    <img class="img-fluid rounded-circle me-3" src="{{ $item['user']->avatar }}"
+                                        alt="{{ $item['user']->name }}">
+                                    <div class="media-body">
+                                        <span>{{ $item['user']->name }}</span>
+                                        <p class="f-12 font-success">
+                                            @if ($item['new_count'] > 0)
+                                                +{{ $item['new_count'] }} tin nhắn mới
+                                            @else
+                                                Không có tin nhắn mới
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+                <li class="onhover-dropdown">
                     <div class="notification-box">
                         <span class="lnr lnr-alarm"></span>
                         <span class="badge rounded-pill badge-theme"></span>
@@ -60,7 +89,7 @@
                     <div class="media profile-media">
                         <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}" alt="Avatar">
                         <div class="user-name-hide media-body">
-                            <span>{{Auth::user()->name}}</span>
+                            <span>{{ Auth::user()->name }}</span>
                             <p class="mb-0 font-roboto">Admin</p>
                         </div>
                     </div>
@@ -68,4 +97,5 @@
             </ul>
         </div>
     </div>
+    <div id="chat-container"></div>
 </div>

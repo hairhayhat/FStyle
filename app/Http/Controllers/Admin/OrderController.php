@@ -88,6 +88,21 @@ class OrderController extends Controller
         }
 
         try {
+            if ($newStatus === 'confirmed') {
+                foreach ($order->orderDetails as $item) {
+                    $productVariant = $item->productVariant;
+                    $productVariant->quantity -= $item->quantity;
+                    $productVariant->save();
+                }
+            }
+            if ($newStatus === 'cancelled') {
+                foreach ($order->orderDetails as $item) {
+                    $productVariant = $item->productVariant;
+                    $productVariant->quantity += $item->quantity;
+                    $productVariant->save();
+                }
+            }
+
             $order->status = $newStatus;
             $order->save();
 

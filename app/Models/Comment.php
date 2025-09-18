@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Comment extends Model
 {
@@ -15,6 +16,8 @@ class Comment extends Model
         'rating',
         'is_accurate',
     ];
+
+    protected $appends = ['time_ago'];
 
     public function user()
     {
@@ -39,5 +42,10 @@ class Comment extends Model
     public function getIsAccurateTextAttribute()
     {
         return $this->is_accurate ? 'Có' : 'Không';
+    }
+
+    public function getTimeAgoAttribute()
+    {
+        return Carbon::parse($this->created_at)->diffForHumans();
     }
 }

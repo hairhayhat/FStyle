@@ -37,7 +37,10 @@ class CheckoutController extends Controller
 
             $variant = ProductVariant::with('product', 'color', 'size')
                 ->find($buyNow['product_variant_id']);
-
+            if ($variant->quantity < $buyNow['quantity']) {
+                return redirect()->back()
+                    ->with('error', 'Sản phẩm không đủ số lượng để mua ngay.');
+            }
             $cartItems = collect([
                 (object) [
                     'productVariant' => $variant,
@@ -68,6 +71,12 @@ class CheckoutController extends Controller
                         'size' => $item->size
                     ];
                 });
+            foreach ($cartItems as $item) {
+                if ($item->productVariant->quantity < $item->quantity) {
+                    return redirect()->back()
+                        ->with('error', 'Sản phẩm ' . $item->productVariant->product->name . ' không đủ số lượng để mua.');
+                }
+            }
         } else {
             return redirect()->route('client.welcome');
         }
@@ -275,7 +284,7 @@ class CheckoutController extends Controller
                     'price' => $item->price,
                 ]);
                 $totalPrice += $item->price * $item->quantity;
-                ProductVariant::find($item->product_variant_id)->decrement('quantity', $item->quantity);
+                
             }
 
             [$total, $discount] = $this->calculateTotal($items, $request->voucher_code);
@@ -466,6 +475,13 @@ class CheckoutController extends Controller
         $order->status = 'cancelled';
         $order->note = $request->reason;
         $order->save();
+
+        foreach ($order->orderDetails as $detail) {
+            $variant = ProductVariant::find($detail->product_variant_id);
+            if ($variant) {
+                $variant->increment('quantity', $detail->quantity);
+            }
+        }
 
         if ($order->payment) {
             $order->payment->update(['status' => 'failed']);
