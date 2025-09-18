@@ -2,15 +2,28 @@ $(document).ready(function () {
     const currentUserId = $("#chatPreviewDropdown").data("user-id");
     let totalNewMessages = parseInt($('#chatBadge').text()) || 0;
 
-    $(".media").on("click", function () {
+    $(document).on("click", "#chatPreviewDropdown .media", function () {
         let userId = $(this).data("user");
         let userName = $(this).data("user-name");
 
-        if ($("#chatbox-" + userId).length) return;
+        if ($("#chatbox-" + userId).length === 0) {
+            openChatBox(userId, userName);
+            loadMessages(userId);
+        }
 
-        openChatBox(userId, userName);
-        loadMessages(userId);
+        let p = $(this).find('.media-body p');
+        let text = p.text();
+        let match = text.match(/\+(\d+)/);
+        if (match) {
+            let count = parseInt(match[1]);
+            totalNewMessages -= count;
+            if (totalNewMessages < 0) totalNewMessages = 0;
+            $('#chatBadge').text(totalNewMessages);
+        }
+
+        p.text("Không có tin nhắn mới");
     });
+
 
     $(document).on("click", ".chatbox-close", function () {
         let userId = $(this).data("id");
@@ -373,39 +386,52 @@ $(document).ready(function () {
     window.Echo.channel(`chat.${currentUserId}`)
         .listen("MessageSent", (e) => {
             if (!e.user) return;
-
             let sender = e.user;
+            let msg = e.message;
 
+            if ($(`#chatbox-${sender.id}`).is(":visible")) {
+                let box = $("#messagesBox-" + sender.id);
+                renderMessage(box, msg);
+                box.scrollTop(box[0].scrollHeight);
 
-            let existing = $("#chatPreviewDropdown .media[data-user='" + sender.id + "']");
+                $.ajax({
+                    url: `/admin/chat/mark-as-read/${msg.id}`,
+                    method: "POST",
+                    headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") }
+                });
+            } else {
+                let existing = $("#chatPreviewDropdown .media[data-user='" + sender.id + "']");
 
-            if (existing.length === 0) {
-
-                $('#chatPreviewDropdown').prepend(`
+                if (existing.length === 0) {
+                    let newItem = `
                     <li>
-                        <div class="media" data-user="${sender.id}">
-                            <img class="img-fluid rounded-circle me-3" src="${sender.avatar || 'assets/images/default-avatar.png'}" alt="${sender.name}">
+                        <div class="media" data-user="${sender.id}" data-user-name="${sender.name}">
+                            <img class="img-fluid rounded-circle me-3"
+                                src="${sender.avatar || 'assets/images/default-avatar.png'}"
+                                alt="${sender.name}">
                             <div class="status-circle online"></div>
                             <div class="media-body">
                                 <span>${sender.name}</span>
                                 <p class="f-12 font-success">+1 tin nhắn mới</p>
-                                <p class="f-12 font-success time-ago">${e.time_ago}</p>
                             </div>
                         </div>
-                    </li>
-                `);
-            } else {
-                let p = existing.find('.media-body p');
-                let text = p.text();
-                let match = text.match(/\+(\d+)/);
-                let newCount = match ? parseInt(match[1]) + 1 : 1;
-                p.text(`+${newCount} tin nhắn mới`);
+                    </li>`;
+                    $('#chatPreviewDropdown .chat-title').after(newItem);
+                } else {
+                    let p = existing.find('.media-body p');
+                    let text = p.text();
+                    let match = text.match(/\+(\d+)/);
+                    let newCount = match ? parseInt(match[1]) + 1 : 1;
+                    p.text(`+${newCount} tin nhắn mới`);
 
-                existing.find('.status-circle').removeClass('offline').addClass('online');
+                    existing.find('.status-circle').removeClass('offline').addClass('online');
+                }
+
+                totalNewMessages++;
+                $('#chatBadge').text(totalNewMessages).show();
             }
-            totalNewMessages++;
-            $('#chatBadge').text(totalNewMessages).show();
         });
+
 
     window.Echo.channel(`chat.${currentUserId}`)
         .listen("MessageDeleted", (e) => {
@@ -419,29 +445,6 @@ $(document).ready(function () {
                     bubble.removeClass("other-message other-message-edit").addClass("other-message-delete");
                 }
             }
-        });
-
-    window.Echo.channel(`chat.${currentUserId}`)
-        .listen("MessageSent", (e) => {
-            let sender = e.user;
-            let msg = e.message;
-
-            if ($("#chatbox-" + sender.id).length === 0) {
-                openChatBox(sender.id, sender.name);
-            }
-
-            let box = $("#messagesBox-" + sender.id);
-            renderMessage(box, msg);
-            box.scrollTop(box[0].scrollHeight);
-
-            if ($(`#chatbox-${sender.id}`).is(":visible")) {
-                $.ajax({
-                    url: `/admin/chat/mark-as-read/${msg.id}`,
-                    method: "POST",
-                    headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") }
-                });
-            }
-
         });
 
     window.Echo.channel(`chat.${currentUserId}`)

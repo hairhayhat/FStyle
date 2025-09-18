@@ -1,5 +1,6 @@
 $(document).ready(function () {
     const currentUserId = $("#chat-container").data("user-id");
+    let totalNewMessages = 0;
 
     $("#messageToggle").on("click", function (e) {
         e.preventDefault();
@@ -20,7 +21,11 @@ $(document).ready(function () {
 
         openChatBox(userId, userName);
         loadMessages(userId);
+
+        totalNewMessages = 0;
+        $(".message-badge").text(totalNewMessages);
     });
+
 
     $(document).on("click", ".chatbox-close", function () {
         let userId = $(this).data("id");
@@ -388,24 +393,24 @@ $(document).ready(function () {
         .listen("MessageSent", (e) => {
             let sender = e.user;
             let msg = e.message;
+            let chatbox = $(`#chatbox-${sender.id}`);
 
-            if ($("#chatbox-" + sender.id).length === 0) {
-                openChatBox(sender.id, sender.name);
-            }
+            if (chatbox.length === 0 || !chatbox.is(":visible")) {
+                totalNewMessages++;
+                $(".message-badge").text(totalNewMessages);
+            } else {
+                let box = $("#messagesBox-" + sender.id);
+                renderMessage(box, msg);
+                box.scrollTop(box[0].scrollHeight);
 
-            let box = $("#messagesBox-" + sender.id);
-            renderMessage(box, msg);
-            box.scrollTop(box[0].scrollHeight);
-
-            if ($(`#chatbox-${sender.id}`).is(":visible")) {
                 $.ajax({
                     url: `/client/chat/mark-as-read/${msg.id}`,
                     method: "POST",
                     headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") }
                 });
             }
-
         });
+
 
     window.Echo.channel(`chat.${currentUserId}`)
         .listen("MessageDeleted", (e) => {

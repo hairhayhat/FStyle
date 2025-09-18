@@ -40,13 +40,14 @@
                     <span id="chatBadge" class="badge bg-danger">{{ $chatUsers->sum('new_count') }}</span>
                     <ul class="chat-dropdown onhover-show-div" id="chatPreviewDropdown"
                         data-user-id="{{ auth()->id() }}">
-                        <li>
+                        <li class="chat-title">
                             <span class="lnr lnr-bubble"></span>
                             <h6 class="f-18 mb-0">Tin nhắn</h6>
                         </li>
                         @foreach ($chatUsers as $item)
                             <li>
-                                <div class="media" data-user="{{ $item['user']->id }}" data-user-name="{{ $item['user']->name }}">
+                                <div class="media" data-user="{{ $item['user']->id }}"
+                                    data-user-name="{{ $item['user']->name }}">
                                     <img class="img-fluid rounded-circle me-3" src="{{ $item['user']->avatar }}"
                                         alt="{{ $item['user']->name }}">
                                     <div class="media-body">
@@ -87,7 +88,8 @@
                 </li>
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
-                        <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}" alt="Avatar">
+                        <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}"
+                            alt="Avatar">
                         <div class="user-name-hide media-body">
                             <span>{{ Auth::user()->name }}</span>
                             <p class="mb-0 font-roboto">Admin</p>
@@ -98,4 +100,8 @@
         </div>
     </div>
     <div id="chat-container"></div>
+    <div id="imageModal" class="image-modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
 </div>
