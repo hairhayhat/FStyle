@@ -54,10 +54,11 @@
 
     @include('client.partials.scripts')
 
+    @vite(['resources/js/app.js'])
+
     @yield('scripts')
 
 </body>
-
 
 <!-- Mirrored from themes.pixelstrap.com/voxo/front-end/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Nov 2024 03:40:32 GMT -->
 

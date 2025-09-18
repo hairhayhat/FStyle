@@ -54,7 +54,6 @@ class CommentController extends Controller
         return view('client.partials.list-comments', compact('comments'));
     }
 
-
     public function store(Request $request)
     {
         $comments = $request->input('comments', []);

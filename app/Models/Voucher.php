@@ -99,4 +99,14 @@ class Voucher extends Model
     {
         $this->increment('used_count');
     }
+    public function isUsed(): bool
+    {
+        return $this->orderVouchers()->exists();
+    }
+
+    public function orderVouchers()
+    {
+        return $this->hasMany(OrderVoucher::class);
+    }
+
 }

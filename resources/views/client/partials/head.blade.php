@@ -21,7 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- bootstrap css -->
-    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('client/assets/css/vendors/bootstrap.css') }}">
+    <link id="rtl-link" rel="stylesheet" type="text/css"
+        href="{{ asset('client/assets/css/vendors/bootstrap.css') }}">
 
     <!-- font-awesome css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/assets/css/vendors/font-awesome.css') }}">

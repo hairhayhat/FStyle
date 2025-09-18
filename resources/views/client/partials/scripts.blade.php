@@ -1,8 +1,7 @@
     <script src="{{ asset('client/assets/js/jquery-3.5.1.min.js') }}"></script>
-    <!-- Bootstrap js -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.min.js"></script>
     <script src="{{ asset('client/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- feather icon js -->
     <script src="{{ asset('client/assets/js/feather/feather.min.js') }}"></script>
 
     <!-- lazyload js -->
@@ -47,3 +46,4 @@
     <script src="{{ asset('client/assets/js/add_comment.js') }}"></script>
     <script src="{{ asset('client/assets/js/filter-order.js') }}"></script>
     <script src="{{ asset('client/assets/js/filter-comments.js') }}"></script>
+    <script src="{{ asset('client/assets/js/chat_realtime.js') }}"></script>

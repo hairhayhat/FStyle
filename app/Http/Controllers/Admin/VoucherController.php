@@ -108,8 +108,14 @@ class VoucherController extends Controller
      */
     public function edit(Voucher $voucher)
     {
+        if ($voucher->isUsed()) {
+            return redirect()->route('admin.vouchers.index')
+                ->with('error', 'Voucher này đang được sử dụng, không thể sửa.');
+        }
+
         return view('admin.vouchers.edit', compact('voucher'));
     }
+
 
     /**
      * Cập nhật voucher

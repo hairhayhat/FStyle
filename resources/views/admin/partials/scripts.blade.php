@@ -1,5 +1,7 @@
 <!-- jQuery -->
 <script src="{{ asset('admin/assets/js/jquery-3.6.0.min.js') }}"></script>
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.min.js"></script>
 
 <!-- Bootstrap js -->
 <script src="{{ asset('admin/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
@@ -49,3 +51,4 @@
 <script src="{{ asset('admin/assets/js/hidden-active.js') }}"></script>
 <script src="{{ asset('admin/assets/js/create-product.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('admin/assets/js/chat-realtime.js') }}"></script>

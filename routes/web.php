@@ -22,9 +22,13 @@ use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Client\ChatController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => []]);
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/api/product/{slug}', [HomeController::class, 'show'])->name('product.detail.api');
@@ -100,12 +104,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     // Apply voucher (test hoặc checkout)
     Route::post('voucher/apply', [VoucherController::class, 'apply'])->name('admin.voucher.apply');
 
-Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
-Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-Route::post('/users/{user}/lock', [UserController::class, 'lock'])->name('admin.users.lock');
-Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('admin.users.unlock');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::post('/users/{user}/lock', [UserController::class, 'lock'])->name('admin.users.lock');
+    Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('admin.users.unlock');
 
 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
@@ -119,6 +123,12 @@ Route::post('/users/{user}/unlock', [UserController::class, 'unlock'])->name('ad
     Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
     Route::post('/comments/toggle-status/{comment}', [AdminCommentController::class, 'toggleStatus'])->name('admin.comments.toggleStatus');
     Route::get('/comment/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
+
+    Route::get('/chat/{user}', [ChatController::class, 'index']);
+    Route::post('/chat/send/{user}', [ChatController::class, 'store']);
+    Route::post('/chat/edit/{chatMessage}', [ChatController::class, 'edit']);
+    Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
+    Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
 
 });
 
@@ -173,5 +183,11 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 
     Route::post('/comment/store', [CommentController::class, 'store'])->name('client.comment.store');
+
+    Route::get('/chat/{user}', [ChatController::class, 'index']);
+    Route::post('/chat/send/{user}', [ChatController::class, 'store']);
+    Route::post('/chat/edit/{chatMessage}', [ChatController::class, 'edit']);
+    Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
+    Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
 });
 require __DIR__ . '/auth.php';

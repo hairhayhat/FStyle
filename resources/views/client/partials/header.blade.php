@@ -107,26 +107,59 @@
                                     </div>
                                 </li>
 
-                                <li class="onhover-dropdown notification-dropdown">
-                                    <div class="cart-media">
-                                        <a href="#" class="notification-icon">
-                                            <i data-feather="bell"></i>
-                                            <span class="label label-theme rounded-pill notification-badge">0</span>
-                                        </a>
-                                    </div>
-                                    <div class="onhover-div notification-menu">
-                                        <div class="notification-header">
-                                            <i class="lnr lnr-alarm"></i>
-                                            <h6>Thông báo</h6>
+                                @auth
+
+                                    <li class="message-dropdown">
+                                        <div class="cart-media">
+                                            <a href="#" id="messageToggle" class="message-icon">
+                                                <i data-feather="message-circle"></i>
+                                                <span class="label label-theme rounded-pill message-badge">0</span>
+                                            </a>
                                         </div>
-                                        <div class="notification-list">
+                                        <div class="message-menu" id="messageMenu">
+                                            <div class="message-header">
+                                                <h6>Tin nhắn</h6>
+                                            </div>
+                                            <div class="message-list">
+                                                @foreach ($adminUsers as $item)
+                                                    <div class="media user-item" data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->name }}">
+                                                        <img class="img-fluid rounded-circle me-3"
+                                                            src="{{ $item->avatar ?? '/default.png' }}" alt="user">
+                                                        <div class="media-body">
+                                                            <span>{{ $item->name }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                        <div class="notification-footer">
-                                            <a href="/admin/notifications" class="btn btn-solid-default w-100">Kiểm tra toàn
-                                                bộ thông báo</a>
+                                    </li>
+
+                                    <li class="onhover-dropdown notification-dropdown">
+                                        <div class="cart-media">
+                                            <a href="#" class="notification-icon">
+                                                <i data-feather="bell"></i>
+                                                <span class="label label-theme rounded-pill notification-badge"></span>
+                                            </a>
                                         </div>
-                                    </div>
-                                </li>
+                                        <div class="onhover-div notification-menu">
+                                            <div class="notification-header">
+                                                <i class="lnr lnr-alarm"></i>
+                                                <h6>Thông báo</h6>
+                                            </div>
+                                            <div class="notification-list">
+                                            </div>
+                                            <div class="notification-footer">
+                                                <a href="/admin/notifications" class="btn btn-solid-default w-100">Kiểm
+                                                    tra
+                                                    toàn
+                                                    bộ thông báo</a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                @endauth
+
                                 <li class="onhover-dropdown cart-dropdown">
                                     <a href="{{ route('client.cart') }}" class="btn btn-solid-default btn-spacing">
                                         <i data-feather="shopping-cart"></i>
@@ -155,6 +188,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="chat-container" data-user-id="{{ auth()->id() }}"></div>
+
+            <div id="imageModal" class="image-modal">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="modalImg">
             </div>
         </div>
     </div>

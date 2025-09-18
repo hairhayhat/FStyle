@@ -7,7 +7,7 @@
                     <div class="footer-contact">
                         <div class="brand-logo">
                             <a href="index.html" class="footer-logo">
-                                <img src="{{ asset('client/assets/images/logo/Logo.jpg') }}" 
+                                <img src="{{ asset('client/assets/images/logo/Logo.jpg') }}"
                                      class="img-fluid blur-up lazyload" alt="logo">
                             </a>
                         </div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <!-- Cột 4: Nhận trợ giúp -->
                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
@@ -75,25 +75,6 @@
                             <p class="font-dark mb-0">Cập nhật tin tức mới nhất và các ưu đãi đặc biệt của chúng tôi.</p>
                         </form>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Sub footer giữ nguyên -->
-    <div class="sub-footer">
-        <div class="container">
-            <div class="row gy-3">
-                <div class="col-md-6">
-                    <ul>
-                        <li class="font-dark">We accept:</li>
-                        <li><a href="#"><img src="assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload" alt="payment"></a></li>
-                        <li><a href="#"><img src="assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload" alt="payment"></a></li>
-                        <li><a href="#"><img src="assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload" alt="payment"></a></li>
-                        <li><a href="#"><img src="assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload" alt="payment"></a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <p class="mb-0 font-dark">© 2025, FStyle Theme. Made with heart by Pixelstrap</p>
                 </div>
             </div>
         </div>
