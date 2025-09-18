@@ -31,7 +31,15 @@ class CartController extends Controller
 
     public function addToCart(Request $request): JsonResponse
     {
-        $userId = Auth::id();
+        $user = Auth::user();
+        
+        // Kiểm tra tài khoản bị khóa
+        if (!$user->canPurchase()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.',
+            ], 403);
+        }
 
         $request->validate([
             'product_variant_id' => 'required|exists:product_variants,id',
@@ -49,7 +57,7 @@ class CartController extends Controller
         }
 
         $cart = Cart::firstOrCreate(
-            ['user_id' => $userId],
+            ['user_id' => $user->id],
             ['created_at' => now(), 'updated_at' => now()]
         );
 
@@ -88,6 +96,16 @@ class CartController extends Controller
 
     public function buyNow(Request $request)
     {
+        $user = Auth::user();
+        
+        // Kiểm tra tài khoản bị khóa
+        if (!$user->canPurchase()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.',
+            ], 403);
+        }
+
         $request->validate([
             'product_variant_id' => 'required|exists:product_variants,id',
             'quantity' => 'required|integer|min:1'

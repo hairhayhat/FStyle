@@ -10,16 +10,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Collection;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function boot(): void
     {
         // Share categories
-        View::share('categories', Cache::remember('categories', 3600, fn() => Category::all()));
+        try {
+            View::share('categories', Cache::remember('categories', 3600, fn() => Category::all()));
+        } catch (\Throwable $e) {
+            View::share('categories', collect());
+        }
+
+        // Share admin users (chỉ admin khác mình)
         View::share('adminUsers', Cache::remember(
             'adminUsers_' . Auth::id(),
             3600,
@@ -29,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
                 ->get()
         ));
 
+        // Share chat users
         View::composer('*', function ($view) {
             $currentUserId = Auth::id();
 
@@ -60,15 +65,18 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // Share notifications
+        try {
+            $userId = Auth::id() ?? 0;
 
-
-        $userId = Auth::id() ?? 0;
-
-        View::share('notifications', Cache::remember("notifications_user_{$userId}", 3600, function () use ($userId) {
-            return NotificationUser::with('notification')
-                ->where('user_id', $userId)
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }));
+            View::share('notifications', Cache::remember("notifications_user_{$userId}", 3600, function () use ($userId) {
+                return NotificationUser::with('notification')
+                    ->where('user_id', $userId)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }));
+        } catch (\Throwable $e) {
+            View::share('notifications', collect());
+        }
     }
 }
