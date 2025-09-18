@@ -30,5 +30,11 @@
             </a>
         </li>
 
+        <li class="nav-item mb-2">
+            <a href="{{ route('client.comments') }}" class="nav-link font-light" id="5-tab">
+                <i class="fas fa-angle-right"></i>Đánh giá gần đây
+            </a>
+        </li>
+
     </ul>
 </div>
