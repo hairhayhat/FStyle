@@ -428,7 +428,7 @@
             <div class="col-xl-6 mb-4">
                 <div class="card shadow">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Bình Luận Mới</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Đánh Giá Mới</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

@@ -183,6 +183,7 @@ Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(funct
     Route::get('/payment/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 
     Route::post('/comment/store', [CommentController::class, 'store'])->name('client.comment.store');
+    Route::get('/comments', [CommentController::class, 'index'])->name('client.comments');
 
     Route::get('/chat/{user}', [ChatController::class, 'index']);
     Route::post('/chat/send/{user}', [ChatController::class, 'store']);

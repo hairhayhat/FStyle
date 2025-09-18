@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-body">
         <div class="title-header d-flex justify-content-between align-items-center">
-            <h5>Chi tiết bình luận #{{ $comment->id }}</h5>
+            <h5>Chi tiết đánh giá #{{ $comment->id }}</h5>
             <ul style="list-style:none; padding:0; display:flex; gap:10px;">
 
                 <div class="form-check form-switch mt-2">

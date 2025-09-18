@@ -106,5 +106,19 @@ class CommentController extends Controller
         return redirect()->back()->with('success', 'Đánh giá đã được gửi thành công!');
     }
 
+     public function index(Request $request)
+    {
+        // Lấy option sắp xếp từ query string (default mới nhất)
+        $sort = $request->get('sort', 'desc'); // asc = cũ nhất, desc = mới nhất
 
+        // Lấy comments theo user hiện tại + join product
+        $comments = auth()->user()
+            ->comments()
+            ->with('product')
+            ->orderBy('created_at', $sort)
+            ->paginate(5) // 5 đánh giá / trang
+            ->appends(['sort' => $sort]); // giữ tham số sort khi chuyển trang
+
+        return view('client.dashboard.comments', compact('comments', 'sort'));
+    }
 }
