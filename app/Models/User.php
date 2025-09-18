@@ -21,7 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
         'phone',
         'email_verified_at',
-        'role_id'
+        'role_id',
+        'is_locked'
     ];
 
     protected $hidden = [
@@ -34,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_locked' => 'boolean',
         ];
     }
 
@@ -88,6 +90,25 @@ class User extends Authenticatable implements MustVerifyEmail
     return $this->hasMany(Order::class);
 }
 
+// Helper methods for account locking
+public function isLocked()
+{
+    return $this->is_locked;
+}
 
+public function lock()
+{
+    $this->update(['is_locked' => true]);
+}
+
+public function unlock()
+{
+    $this->update(['is_locked' => false]);
+}
+
+public function canPurchase()
+{
+    return !$this->is_locked;
+}
 
 }

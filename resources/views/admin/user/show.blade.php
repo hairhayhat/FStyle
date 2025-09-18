@@ -44,6 +44,16 @@
                         <th>Cập nhật gần nhất</th>
                         <td>{{ $user->updated_at->format('d/m/Y H:i') }}</td>
                     </tr>
+                    <tr>
+                        <th>Trạng thái tài khoản</th>
+                        <td>
+                            @if ($user->is_locked)
+                                <span class="badge badge-danger">Tài khoản bị khóa</span>
+                            @else
+                                <span class="badge badge-success">Tài khoản hoạt động bình thường</span>
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -121,7 +131,55 @@
                 <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Quay lại
                 </a>
+                
+                @if ($user->role_id != 1) {{-- Không cho phép khóa admin --}}
+                    @if ($user->is_locked)
+                        <form action="{{ route('admin.users.unlock', $user->id) }}" method="POST" class="js-lock-form" data-action="unlock" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-unlock"></i> Mở khóa tài khoản
+                            </button>
+                        </form>
+                    @else
+                        <form action="{{ route('admin.users.lock', $user->id) }}" method="POST" class="js-lock-form" data-action="lock" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-lock"></i> Khóa tài khoản
+                            </button>
+                        </form>
+                    @endif
+                @endif
             </div>
+
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-lock-form').forEach(function(form){
+                    form.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        var action = form.getAttribute('data-action');
+                        var isLock = action === 'lock';
+                        if (typeof Swal === 'undefined') {
+                            if (confirm(isLock ? 'Bạn có chắc chắn muốn khóa tài khoản này?' : 'Bạn có chắc chắn muốn mở khóa tài khoản này?')) {
+                                form.submit();
+                            }
+                            return;
+                        }
+                        Swal.fire({
+                            title: isLock ? 'Khóa tài khoản?' : 'Mở khóa tài khoản?',
+                            text: isLock ? 'Tài khoản sẽ không thể mua hàng hoặc thêm giỏ.' : 'Tài khoản sẽ có thể mua hàng bình thường.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: isLock ? 'Khóa' : 'Mở khóa',
+                            cancelButtonText: 'Hủy',
+                        }).then(function(result){
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+            });
+            </script>
 
         </div>
     </div>

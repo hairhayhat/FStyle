@@ -257,6 +257,12 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
+        
+        // Kiểm tra tài khoản bị khóa
+        if (!$user->canPurchase()) {
+            return redirect()->back()->withErrors('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
+        }
+        
         $items = $this->getOrderItems($request, $user);
 
         if ($items->isEmpty()) {
@@ -362,6 +368,13 @@ class CheckoutController extends Controller
             'payment_method' => 'nullable|string|in:cod,vnpay,momo,zalopay',
             'voucher_code' => 'nullable|string|exists:vouchers,code',
         ]);
+
+        $user = Auth::user();
+        
+        // Kiểm tra tài khoản bị khóa
+        if (!$user->canPurchase()) {
+            return redirect()->back()->withErrors('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
+        }
 
         $order = Order::with(['orderDetails.productVariant', 'payment', 'orderVoucher'])
             ->where('code', $code)
