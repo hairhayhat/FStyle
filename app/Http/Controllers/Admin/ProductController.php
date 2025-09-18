@@ -42,18 +42,7 @@ class ProductController extends Controller
         $products = $query->orderBy('created_at', $sort)
             ->paginate($perPage)
             ->appends($request->all());
-
-        $statusCounts = [
-            'active' => Product::whereDoesntHave('variants', function ($q) {
-                $q->whereHas('cartDetails')
-                    ->orWhereHas('orderDetails');
-            })->count(),
-            'locked' => Product::whereHas('variants', function ($q) {
-                $q->whereHas('cartDetails')
-                    ->orWhereHas('orderDetails');
-            })->count(),
-        ];
-
+       
         $categories = Category::all();
 
         if ($request->ajax()) {
@@ -61,7 +50,7 @@ class ProductController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        return view('admin.product.index', compact('products', 'categories', 'statusCounts'));
+        return view('admin.product.index', compact('products', 'categories'));
     }
 
     public function create()
@@ -171,11 +160,6 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if ($product->inUse()) {
-            return redirect()
-                ->route('admin.product.index')
-                ->with('error', 'Sản phẩm này đang được sử dụng nên không thể sửa.');
-        }
 
         $categories = Category::all();
         $colors = Color::all();
@@ -201,7 +185,7 @@ class ProductController extends Controller
             'keep_gallery' => 'nullable|array',
             'keep_gallery.*' => 'integer|exists:product_galleries,id',
 
-            // Validate variants
+            // Variants
             'variants' => 'required|array',
             'variants.*.color_id' => 'required|exists:colors,id',
             'variants.*.size_id' => 'required|exists:sizes,id',
@@ -214,7 +198,7 @@ class ProductController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // Tạo slug từ name
+        // Slug
         $slug = Str::slug($request->name);
 
         // Cập nhật thông tin cơ bản
@@ -225,25 +209,24 @@ class ProductController extends Controller
             'description' => $request->description,
         ]);
 
-        // Cập nhật ảnh chính
+        // Ảnh chính
         if ($request->hasFile('image')) {
-            if (!empty($product->image)) {
+            if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            $product->image = $request->file('image')->store('products', 'public');
-            $product->save();
+            $path = $request->file('image')->store('products', 'public');
+            $product->update(['image' => $path]);
         }
 
-        // Xử lý thư viện ảnh
+        // Gallery
         $keepIds = $request->input('keep_gallery', []);
         $product->galleries()->whereNotIn('id', $keepIds)->get()->each(function ($img) {
-            if (!empty($img->image)) {
+            if ($img->image) {
                 Storage::disk('public')->delete($img->image);
             }
             $img->delete();
         });
 
-        // Thêm ảnh mới
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $img) {
                 $path = $img->store('products/gallery', 'public');
@@ -251,22 +234,42 @@ class ProductController extends Controller
             }
         }
 
-        // Cập nhật biến thể
-        $product->variants()->delete(); // Xoá hết biến thể cũ, rồi tạo mới
+        // Variants
+        $keepVariantIds = [];
         foreach ($request->variants as $variant) {
-            ProductVariant::create([
-                'product_id' => $product->id,
-                'color_id' => $variant['color_id'],
-                'size_id' => $variant['size_id'],
-                'import_price' => $variant['import_price'],
-                'sale_price' => $variant['sale_price'],
-                'quantity' => $variant['quantity'],
-            ]);
+            if (!empty($variant['id'])) {
+                // Update variant cũ
+                $pv = ProductVariant::find($variant['id']);
+                if ($pv) {
+                    $pv->update([
+                        'color_id' => $variant['color_id'],
+                        'size_id' => $variant['size_id'],
+                        'import_price' => $variant['import_price'],
+                        'sale_price' => $variant['sale_price'],
+                        'quantity' => $variant['quantity'],
+                    ]);
+                    $keepVariantIds[] = $pv->id;
+                }
+            } else {
+                // Tạo variant mới
+                $pv = $product->variants()->create([
+                    'color_id' => $variant['color_id'],
+                    'size_id' => $variant['size_id'],
+                    'import_price' => $variant['import_price'],
+                    'sale_price' => $variant['sale_price'],
+                    'quantity' => $variant['quantity'],
+                ]);
+                $keepVariantIds[] = $pv->id;
+            }
         }
+
+        // Xoá variant không còn
+        $product->variants()->whereNotIn('id', $keepVariantIds)->delete();
 
         return redirect()->route('admin.product.edit', $product->id)
             ->with('success', 'Cập nhật sản phẩm thành công!');
     }
+
 
     public function destroy(Product $product)
     {
