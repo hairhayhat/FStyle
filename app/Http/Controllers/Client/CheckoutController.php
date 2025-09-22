@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Events\UpdateOrderStatus;
 use App\Models\Order;
 use App\Models\Address;
 use App\Models\Payment;
@@ -257,12 +258,12 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         // Kiểm tra tài khoản bị khóa
         if (!$user->canPurchase()) {
             return redirect()->back()->withErrors('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
         }
-        
+
         $items = $this->getOrderItems($request, $user);
 
         if ($items->isEmpty()) {
@@ -290,7 +291,7 @@ class CheckoutController extends Controller
                     'price' => $item->price,
                 ]);
                 $totalPrice += $item->price * $item->quantity;
-                
+
             }
 
             [$total, $discount] = $this->calculateTotal($items, $request->voucher_code);
@@ -342,6 +343,7 @@ class CheckoutController extends Controller
                     '/admin/orders/' . $order->code,
                     $order->id
                 );
+                broadcast(new UpdateOrderStatus($order));
             }
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
                 ->with('success', 'Đặt hàng thành công!');
@@ -370,7 +372,7 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         // Kiểm tra tài khoản bị khóa
         if (!$user->canPurchase()) {
             return redirect()->back()->withErrors('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
@@ -456,6 +458,7 @@ class CheckoutController extends Controller
                     '/admin/orders/' . $order->code,
                     $order->id
                 );
+                broadcast(new UpdateOrderStatus($order));
             }
 
             return redirect()->route('client.checkout.detail', ['code' => $order->code])
@@ -474,6 +477,8 @@ class CheckoutController extends Controller
         $order = Order::findOrFail($id);
         $order->status = $request->status;
         $order->save();
+
+        broadcast(new UpdateOrderStatus($order));
 
         return response()->json(['success' => true]);
     }
@@ -506,6 +511,8 @@ class CheckoutController extends Controller
             "/admin/orders/{$order->code}",
             $order->id
         );
+
+        broadcast(new UpdateOrderStatus($order));
 
         return response()->json([
             'success' => true,

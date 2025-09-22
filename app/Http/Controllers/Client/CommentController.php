@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Events\UpdateOrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\NotificationService;
@@ -92,13 +93,15 @@ class CommentController extends Controller
                 '/admin/comment/' . $comment->id,
                 $comment->id
             );
-
+            
             $orderDetail = OrderDetail::find($orderDetailId);
             if ($orderDetail && $orderDetail->order) {
                 $order = $orderDetail->order;
 
                 if ($order->status === 'delivered') {
                     $order->update(['status' => 'rated']);
+
+                    broadcast(new UpdateOrderStatus($order));
                 }
             }
         }
@@ -106,7 +109,7 @@ class CommentController extends Controller
         return redirect()->back()->with('success', 'Đánh giá đã được gửi thành công!');
     }
 
-     public function index(Request $request)
+    public function index(Request $request)
     {
         // Lấy option sắp xếp từ query string (default mới nhất)
         $sort = $request->get('sort', 'desc'); // asc = cũ nhất, desc = mới nhất

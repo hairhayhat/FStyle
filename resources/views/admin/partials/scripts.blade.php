@@ -30,8 +30,6 @@
 <script src="{{ asset('admin/assets/js/chart/apex-chart/moment.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/chart/apex-chart/apex-chart.js') }}"></script>
 <script src="{{ asset('admin/assets/js/chart/apex-chart/stock-prices.js') }}"></script>
-<script src="{{ asset('admin/assets/js/chart/apex-chart/chart-custom1.js') }}"></script>
-<script src="{{ asset('admin/assets/js/chart/apex-chart/chart-custom.js') }}"></script>
 <script src="{{ asset('admin/assets/js/filter-orders.js') }}"></script>
 <script src="{{ asset('admin/assets/js/filter-users.js') }}"></script>
 <script src="{{ asset('admin/assets/js/filter-categories.js') }}"></script>
@@ -52,3 +50,7 @@
 <script src="{{ asset('admin/assets/js/create-product.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('admin/assets/js/chat-realtime.js') }}"></script>
+<script src="{{ asset('admin/assets/js/chart-revenue.js') }}"></script>
+<script src="{{ asset('admin/assets/js/chart-profit.js') }}"></script>
+<script src="{{ asset('admin/assets/js/chart-order.js') }}"></script>
+

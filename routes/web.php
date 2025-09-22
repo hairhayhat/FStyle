@@ -130,6 +130,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
     Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
 
+    Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenue']);
+    Route::get('/dashboard/profit', [DashboardController::class, 'getProfit']);
+    Route::get('/dashboard/orders', [DashboardController::class, 'getOrders']);
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {

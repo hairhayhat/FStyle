@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UpdateOrderStatus;
 
 class OrderController extends Controller
 {
@@ -124,6 +125,8 @@ class OrderController extends Controller
                     "/client/checkout/{$order->code}"
                 );
             }
+
+            broadcast(new UpdateOrderStatus($order->fresh()))->toOthers();
 
             return response()->json([
                 'success' => true,
