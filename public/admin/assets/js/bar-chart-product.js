@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    let today = new Date().toISOString().split('T')[0];
-
     var profitOptions = {
         series: [{ name: 'Lợi nhuận', data: [] }],
         chart: { height: 320, type: 'bar' },
@@ -127,15 +125,24 @@ $(document).ready(function () {
     var performanceChart = new ApexCharts(document.querySelector("#sales-performance-chart"), performanceOptions);
     performanceChart.render();
 
-    $("#fromDate").val(today);
-    $("#toDate").val(today);
+    let todayDate = new Date();
+    let fromDateDefault = new Date();
+    fromDateDefault.setDate(todayDate.getDate() - 30);
+
+    let todayStr = todayDate.toISOString().split('T')[0];
+    let fromDateStr = fromDateDefault.toISOString().split('T')[0];
+
+    $("#fromDateForProduct").val(fromDateStr);
+    $("#toDateForProduct").val(todayStr);
+
 
     function loadProfit(fromDate, toDate) {
         $.ajax({
-            url: "/admin/bar-chart/prodduct",
+            url: "/admin/bar-chart/product",
             method: "GET",
             data: { from_date: fromDate, to_date: toDate },
             success: function (res) {
+                console.log(fromDate, toDate, res);
                 profitChart.updateOptions({ xaxis: { categories: res.labels } });
                 profitChart.updateSeries([{ name: "Lợi nhuận", data: res.data }]);
             }
@@ -148,6 +155,7 @@ $(document).ready(function () {
             method: "GET",
             data: { from_date: fromDate, to_date: toDate },
             success: function (res) {
+                console.log(fromDate, toDate, res);
                 performanceChart.updateOptions({
                     labels: res.labels
                 });
@@ -156,13 +164,13 @@ $(document).ready(function () {
         });
     }
 
-    loadProfit(today, today);
-    loadPerformance(today, today);
+    loadProfit(fromDateStr, todayStr);
+    loadPerformance(fromDateStr, todayStr);
 
-    $("#filterForm").on("submit", function (e) {
+    $("#filterFormForProduct").on("submit", function (e) {
         e.preventDefault();
-        let fromDate = $("#fromDate").val();
-        let toDate = $("#toDate").val();
+        let fromDate = $("#fromDateForProduct").val();
+        let toDate = $("#toDateForProduct").val();
 
         if (fromDate && toDate && fromDate > toDate) {
             Swal.fire({

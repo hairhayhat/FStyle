@@ -20,78 +20,54 @@ $(document).ready(function () {
                 vertical: 2
             },
         },
-        colors: ['#4aa4d9', '#ef3f3e', '#9e65c2', '#6670bd', '#FF9800', '#33b2df', '#546E7A'],
+        colors: ['#4aa4d9', '#e22454', '#9e65c2', '#6670bd', '#FF9800'],
         plotOptions: {
             pie: {
                 startAngle: -90,
-                endAngle: 270
+                endAngle: 270,
+                donut: {
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Tổng đơn',
+                            formatter: function (w) {
+                                let total = w.globals.series.reduce((a, b) => a + b, 0);
+                                return total.toLocaleString('vi-VN');
+                            }
+                        },
+                        value: {
+                            formatter: function (val) {
+                                return val.toLocaleString('vi-VN') + " đơn";
+                            }
+                        }
+                    }
+                }
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            formatter: function (val, opts) {
+                let seriesIndex = opts.seriesIndex;
+                let value = opts.w.globals.series[seriesIndex];
+                return value.toLocaleString('vi-VN') + " đơn";
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val.toLocaleString('vi-VN') + " đơn";
+                }
+            }
         },
         responsive: [
             {
-                breakpoint: 1835,
-                options: {
-                    chart: { height: 245 },
-                    legend: {
-                        position: 'bottom',
-                        itemMargin: { horizontal: 5, vertical: 1 },
-                    },
-                },
-            },
-            {
-                breakpoint: 1388,
-                options: {
-                    chart: { height: 330 },
-                    legend: { position: 'bottom' },
-                },
-            },
-            {
-                breakpoint: 1275,
-                options: {
-                    chart: { height: 300 },
-                    legend: { position: 'bottom' },
-                },
-            },
-            {
-                breakpoint: 1158,
+                breakpoint: 768,
                 options: {
                     chart: { height: 280 },
-                    legend: {
-                        fontSize: '10px',
-                        position: 'bottom',
-                        offsetY: 10,
-                    },
+                    legend: { position: 'bottom' },
                 },
-            },
-            {
-                theme: {
-                    mode: 'dark',
-                    palette: 'palette1',
-                    monochrome: {
-                        enabled: true,
-                        color: '#255aee',
-                        shadeTo: 'dark',
-                        shadeIntensity: 0.65
-                    },
-                },
-            },
-            {
-                breakpoint: 598,
-                options: {
-                    chart: { height: 280 },
-                    legend: {
-                        fontSize: '12px',
-                        position: 'bottom',
-                        offsetX: 5,
-                        offsetY: -5,
-                        markers: { width: 10, height: 10 },
-                        itemMargin: { vertical: 1 },
-                    },
-                },
-            },
+            }
         ],
     };
 

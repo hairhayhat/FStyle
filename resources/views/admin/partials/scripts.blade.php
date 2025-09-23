@@ -54,4 +54,7 @@
 <script src="{{ asset('admin/assets/js/chart-profit.js') }}"></script>
 <script src="{{ asset('admin/assets/js/chart-order.js') }}"></script>
 <script src="{{ asset('admin/assets/js/bar-chart-product.js') }}"></script>
+<script src="{{ asset('admin/assets/js/bar-chart-comment.js') }}"></script>
+<script src="{{ asset('admin/assets/js/bar-chart-user.js') }}"></script>
+<script src="{{ asset('admin/assets/js/bar-chart-order.js') }}"></script>
 

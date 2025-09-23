@@ -31,11 +31,11 @@ class DashboardController extends Controller
     {
         $productCount = Product::count();
         $userCount = User::where('role_id', '!=', 1)->count();
-        $commeontCount = Comment::count();
-        $voucherCount = Voucher::count();
+        $commentCount = Comment::count();
+        $orderCount = Order::count();
 
 
-        return view('admin.dashboard.index', compact('productCount', 'userCount', 'commeontCount', 'voucherCount'));
+        return view('admin.dashboard.index', compact('productCount', 'userCount', 'commentCount', 'orderCount'));
     }
 
     public function getRevenue(Request $request)
