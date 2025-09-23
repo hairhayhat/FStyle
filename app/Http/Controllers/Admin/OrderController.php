@@ -31,6 +31,7 @@ class OrderController extends Controller
             'packaging' => Order::where('status', 'packaging')->count(),
             'shipped' => Order::where('status', 'shipped')->count(),
             'delivered' => Order::where('status', 'delivered')->count(),
+            'rated' => Order::where('status', 'rated')->count(),
             'cancelled' => Order::where('status', 'cancelled')->count(),
             'returned' => Order::where('status', 'returned')->count(),
         ];
@@ -172,6 +173,7 @@ class OrderController extends Controller
             'packaging' => 'Đang đóng gói',
             'shipped' => 'Đang giao hàng',
             'delivered' => 'Đã giao hàng',
+            'rated' => 'Đã đánh giá',
             'cancelled' => 'Đã hủy',
             'returned' => 'Đã trả hàng'
         ];

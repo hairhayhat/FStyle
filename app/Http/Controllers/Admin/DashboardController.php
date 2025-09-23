@@ -30,7 +30,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $productCount = Product::count();
-        $userCount = User::where('role_id' , '!=', 1)->count();
+        $userCount = User::where('role_id', '!=', 1)->count();
         $commeontCount = Comment::count();
         $voucherCount = Voucher::count();
 

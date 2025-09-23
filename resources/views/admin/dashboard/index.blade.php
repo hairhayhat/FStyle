@@ -5,21 +5,23 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6 col-xxl-3 col-lg-6">
-                    <div class="b-b-primary border-5 border-0 card o-hidden">
-                        <div class="custome-1-bg b-r-4 card-body">
-                            <div class="media align-items-center static-top-widget">
-                                <div class="media-body p-0">
-                                    <span class="m-0">Tổng số sản phẩm</span>
-                                    <h4 class="mb-0 counter">{{ $productCount }}
-                                    </h4>
-                                </div>
-                                <div class="align-self-center text-center">
-                                    <i data-feather="box"></i>
+                    <a href="{{ route('admin.chart.product') }}" class="text-decoration-none">
+                        <div class="b-b-primary border-5 border-0 card o-hidden">
+                            <div class="custome-1-bg b-r-4 card-body">
+                                <div class="media align-items-center static-top-widget">
+                                    <div class="media-body p-0">
+                                        <span class="m-0">Tổng số sản phẩm</span>
+                                        <h4 class="mb-0 counter">{{ $productCount }}</h4>
+                                    </div>
+                                    <div class="align-self-center text-center">
+                                        <i data-feather="box"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
+
 
                 <div class="col-sm-6 col-xxl-3 col-lg-6">
                     <div class="b-b-danger border-5 border-0 card o-hidden">

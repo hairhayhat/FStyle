@@ -358,7 +358,7 @@ class CheckoutController extends Controller
         $order = Order::with('orderDetails.productVariant.product', 'shippingAddress')
             ->where('code', $code)
             ->firstOrFail();
-        $addresses = Address::all();
+        $addresses = Auth::user()->addresses;
         $vouchers = Voucher::all();
         return view('client.edit-checkout', compact('order', 'addresses', 'vouchers'));
     }

@@ -371,6 +371,17 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on("click", ".js-chat-btn", function () {
+        let userId = $(this).data("id");
+        let userName = $(this).data("name");
+
+        if ($("#chatbox-" + userId).length === 0) {
+            openChatBox(userId, userName);
+            loadMessages(userId);
+        }
+    });
+
+
     window.Echo = new window.Echo({
         broadcaster: 'pusher',
         key: '777b3c737a36e1ea77c8',

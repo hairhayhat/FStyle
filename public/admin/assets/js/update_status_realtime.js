@@ -10,6 +10,7 @@ function getStatusClass(status) {
         'packaging': 'btn-primary',
         'shipped': 'btn-info',
         'delivered': 'btn-success',
+        'rated': 'btn-success',
         'cancelled': 'btn-danger',
         'returned': 'btn-dark'
     };
@@ -23,6 +24,7 @@ function getStatusVietnameseName(status) {
         'packaging': 'Đang đóng gói',
         'shipped': 'Đang vận chuyển',
         'delivered': 'Đã giao hàng',
+        'rated': 'Đã đánh giá',
         'cancelled': 'Đã hủy',
         'returned': 'Trả hàng'
     };

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\ProductChartController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Client\ChatController;
@@ -133,6 +134,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenue']);
     Route::get('/dashboard/profit', [DashboardController::class, 'getProfit']);
     Route::get('/dashboard/orders', [DashboardController::class, 'getOrders']);
+
+    Route::get('/chart/product', [ProductChartController::class, 'index'])->name('admin.chart.product');
+    route::get('/bar-chart/prodduct', [ProductChartController::class, 'getProductChartData']);
+    route::get('/bar-chart/sales-performance', [ProductChartController::class, 'getSalesPerformanceData']);
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {
