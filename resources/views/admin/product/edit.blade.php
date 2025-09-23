@@ -2,8 +2,16 @@
 
 @section('content')
     <div class="page-body">
-        <div class="title-header">
+        <div class="title-header d-flex align-items-center justify-content-between">
             <h5>Chỉnh sửa sản phẩm</h5>
+
+            <form id="toggle-status-form" action="{{ route('admin.product.toggleStatus', $product->id) }}" method="POST">
+                @csrf
+                <button type="button" id="toggle-status-btn"
+                    class="btn {{ $product->status === 'available' ? 'btn-danger' : 'btn-success' }}">
+                    {{ $product->status === 'available' ? 'Ngừng bán' : 'Mở bán' }}
+                </button>
+            </form>
         </div>
 
         <div class="container-fluid">
@@ -380,5 +388,25 @@
                 });
             }
         })
+
+        document.getElementById('toggle-status-btn').addEventListener('click', function() {
+            const form = document.getElementById('toggle-status-form');
+            const actionText = this.textContent.trim();
+
+            Swal.fire({
+                title: 'Xác nhận?',
+                text: `Bạn có chắc muốn ${actionText.toLowerCase()} sản phẩm này không?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     </script>
 @endsection

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let today = new Date().toISOString().split('T')[0];
+
     var profitOptions = {
         series: [{ name: 'Lợi nhuận', data: [] }],
         chart: { height: 320, type: 'bar' },
@@ -125,15 +127,8 @@ $(document).ready(function () {
     var performanceChart = new ApexCharts(document.querySelector("#sales-performance-chart"), performanceOptions);
     performanceChart.render();
 
-    let todayDate = new Date();
-    let fromDateDefault = new Date();
-    fromDateDefault.setDate(todayDate.getDate() - 30);
-
-    let todayStr = todayDate.toISOString().split('T')[0];
-    let fromDateStr = fromDateDefault.toISOString().split('T')[0];
-
-    $("#fromDateForProduct").val(fromDateStr);
-    $("#toDateForProduct").val(todayStr);
+    $("#fromDateForProduct").val(today);
+    $("#toDateForProduct").val(today);
 
 
     function loadProfit(fromDate, toDate) {
@@ -164,8 +159,8 @@ $(document).ready(function () {
         });
     }
 
-    loadProfit(fromDateStr, todayStr);
-    loadPerformance(fromDateStr, todayStr);
+    loadProfit(today, today);
+    loadPerformance(today, today);
 
     $("#filterFormForProduct").on("submit", function (e) {
         e.preventDefault();

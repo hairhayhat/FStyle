@@ -30,6 +30,7 @@ use App\Http\Controllers\Client\ChatController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::routes(['middleware' => []]);
@@ -58,7 +59,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::put('/category/{category}', [CategoryController::class, 'update'])->name('admin.category.update');
     Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
     // Product Routes
-    Route::resource('product', \App\Http\Controllers\Admin\ProductController::class)->names([
+    Route::resource('product', ProductController::class)->names([
         'index' => 'admin.product.index',
         'create' => 'admin.product.create',
         'store' => 'admin.product.store',
@@ -155,6 +156,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/bar-chart/average-order-value', [OrderChartController::class, 'getAverageOrderValue']);
     Route::get('/bar-chart/done-and-cancelled-orders', [OrderChartController::class, 'getDoneAndCancelledOrders']);
     Route::get('/bar-chart/payment-method-distribution', [OrderChartController::class, 'getPaymentMethodDistribution']);
+
+    Route::post('/admin/product/{id}/toggle-status', [ProductController::class, 'toggleStatus'])
+        ->name('admin.product.toggleStatus');
+
 });
 
 Route::middleware(['auth', 'verified', 'client'])->prefix('client')->group(function () {

@@ -6,6 +6,7 @@
                 <th>Tên sản phẩm</th>
                 <th>Danh mục</th>
                 <th>Lượt xem</th>
+                <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -15,9 +16,11 @@
                     <td>
                         <span>
                             @if ($product->image && file_exists(storage_path('app/public/' . $product->image)))
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="product" width="60" height="60">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="product" width="60"
+                                    height="60">
                             @else
-                                <img src="{{ asset('images/default-product.png') }}" alt="no image" width="60" height="60">
+                                <img src="{{ asset('images/default-product.png') }}" alt="no image" width="60"
+                                    height="60">
                             @endif
                         </span>
                     </td>
@@ -33,6 +36,16 @@
                     <td>{{ number_format($product->views ?? 0) }}</td>
 
                     <td>
+                        @if ($product->status === 'available')
+                            <span class="badge bg-success">Còn hoạt động</span>
+                        @elseif($product->status === 'discontinued')
+                            <span class="badge bg-danger">Ngừng bán</span>
+                        @else
+                            <span class="badge bg-secondary">--- </span>
+                        @endif
+                    </td>
+
+                    <td>
                         <ul>
                             <li>
                                 <a href="{{ route('admin.product.show', $product->id) }}">
@@ -46,7 +59,7 @@
                             </li>
                             <li>
                                 <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST"
-                                      class="delete-form" data-name="{{ $product->name }}">
+                                    class="delete-form" data-name="{{ $product->name }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" style="background:none;border:none;padding:0;color:#dc3545;">

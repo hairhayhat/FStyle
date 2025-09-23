@@ -42,6 +42,10 @@ class CheckoutController extends Controller
                 return redirect()->back()
                     ->with('error', 'Sản phẩm không đủ số lượng để mua ngay.');
             }
+            if ($variant->product->status === 'discontinued') {
+                return redirect()->back()
+                    ->with('error', 'Sản phẩm "' . $variant->product->name . '" đã tạm thời ngừng bán.');
+            }
             $cartItems = collect([
                 (object) [
                     'productVariant' => $variant,
@@ -76,6 +80,10 @@ class CheckoutController extends Controller
                 if ($item->productVariant->quantity < $item->quantity) {
                     return redirect()->back()
                         ->with('error', 'Sản phẩm ' . $item->productVariant->product->name . ' không đủ số lượng để mua.');
+                }
+                if ($item->productVariant->product->status === 'discontinued') {
+                    return redirect()->back()
+                        ->with('error', 'Sản phẩm "' . $item->productVariant->product->name . '" đã tạm thời ngừng bán.');
                 }
             }
         } else {

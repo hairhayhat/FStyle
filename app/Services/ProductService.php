@@ -4,11 +4,21 @@ namespace App\Services;
 
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ProductService
-{
+{   
+    protected function parseDates($startDate, $endDate)
+    {
+        $from = Carbon::parse($startDate)->startOfDay();
+        $to = Carbon::parse($endDate)->endOfDay();
+        return [$from, $to];
+    }
+
     public function getTopSellingProductsByTime($startDate, $endDate, $limit = 5)
     {
+        [$from, $to] = $this->parseDates($startDate, $endDate);
+
         return OrderDetail::join('product_variants', 'order_details.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->select(
@@ -16,7 +26,7 @@ class ProductService
                 'products.name as product_name',
                 DB::raw('SUM(order_details.quantity) as total_quantity')
             )
-            ->whereBetween('order_details.created_at', [$startDate, $endDate])
+            ->whereBetween('order_details.created_at', [$from, $to])
             ->whereHas('order', function ($query) {
                 $query->whereIn('status', ['delivered', 'rated']);
             })
@@ -28,10 +38,12 @@ class ProductService
 
     public function getProfitByProduct($productId, $startDate, $endDate)
     {
+        [$from, $to] = $this->parseDates($startDate, $endDate);
+
         $profit = OrderDetail::join('product_variants', 'order_details.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->where('products.id', $productId)
-            ->whereBetween('order_details.created_at', [$startDate, $endDate])
+            ->whereBetween('order_details.created_at', [$from, $to])
             ->whereHas('order', function ($query) {
                 $query->whereIn('status', ['delivered', 'rated']);
             })
@@ -43,7 +55,9 @@ class ProductService
 
     public function getSalesPerformance($startDate, $endDate, $limit = 5)
     {
-        $totalQuantity = OrderDetail::whereBetween('order_details.created_at', [$startDate, $endDate])
+        [$from, $to] = $this->parseDates($startDate, $endDate);
+
+        $totalQuantity = OrderDetail::whereBetween('order_details.created_at', [$from, $to])
             ->whereHas('order', function ($query) {
                 $query->whereIn('status', ['delivered', 'rated']);
             })
@@ -60,7 +74,7 @@ class ProductService
                 'products.name as product_name',
                 DB::raw('SUM(order_details.quantity) as total_quantity')
             )
-            ->whereBetween('order_details.created_at', [$startDate, $endDate])
+            ->whereBetween('order_details.created_at', [$from, $to])
             ->whereHas('order', function ($query) {
                 $query->whereIn('status', ['delivered', 'rated']);
             })
@@ -69,12 +83,12 @@ class ProductService
             ->limit($limit)
             ->get();
 
-        return $products->map(function ($item) use ($totalQuantity, $startDate, $endDate) {
+        return $products->map(function ($item) use ($totalQuantity, $from, $to) {
             return [
                 'product_name' => $item->product_name,
                 'quantity' => $item->total_quantity,
                 'performance' => round(($item->total_quantity / $totalQuantity) * 100, 2),
-                'profit' => $this->getProfitByProduct($item->product_id, $startDate, $endDate)
+                'profit' => $this->getProfitByProduct($item->product_id, $from, $to)
             ];
         });
     }

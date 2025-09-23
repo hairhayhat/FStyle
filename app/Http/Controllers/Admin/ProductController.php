@@ -42,7 +42,7 @@ class ProductController extends Controller
         $products = $query->orderBy('created_at', $sort)
             ->paginate($perPage)
             ->appends($request->all());
-       
+
         $categories = Category::all();
 
         if ($request->ajax()) {
@@ -234,24 +234,39 @@ class ProductController extends Controller
             }
         }
 
-        // Variants
         $keepVariantIds = [];
         foreach ($request->variants as $variant) {
             if (!empty($variant['id'])) {
-                // Update variant cũ
                 $pv = ProductVariant::find($variant['id']);
                 if ($pv) {
-                    $pv->update([
-                        'color_id' => $variant['color_id'],
-                        'size_id' => $variant['size_id'],
-                        'import_price' => $variant['import_price'],
-                        'sale_price' => $variant['sale_price'],
-                        'quantity' => $variant['quantity'],
-                    ]);
+                    $hasOrder = $pv->orderDetails()->exists();
+                    if ($hasOrder) {
+                        if (
+                            $pv->color_id != $variant['color_id'] ||
+                            $pv->size_id != $variant['size_id'] ||
+                            $pv->import_price != $variant['import_price'] ||
+                            $pv->sale_price != $variant['sale_price']
+                        ) {
+                            return back()->with('error', "Không thể sửa size, màu, giá nhập, giá bán của variant đã có đơn hàng.")
+                                ->withInput();
+                        }
+
+                        $pv->update([
+                            'quantity' => $variant['quantity'],
+                        ]);
+                    } else {
+                        $pv->update([
+                            'color_id' => $variant['color_id'],
+                            'size_id' => $variant['size_id'],
+                            'import_price' => $variant['import_price'],
+                            'sale_price' => $variant['sale_price'],
+                            'quantity' => $variant['quantity'],
+                        ]);
+                    }
+
                     $keepVariantIds[] = $pv->id;
                 }
             } else {
-                // Tạo variant mới
                 $pv = $product->variants()->create([
                     'color_id' => $variant['color_id'],
                     'size_id' => $variant['size_id'],
@@ -263,13 +278,11 @@ class ProductController extends Controller
             }
         }
 
-        // Xoá variant không còn
         $product->variants()->whereNotIn('id', $keepVariantIds)->delete();
 
         return redirect()->route('admin.product.edit', $product->id)
             ->with('success', 'Cập nhật sản phẩm thành công!');
     }
-
 
     public function destroy(Product $product)
     {
@@ -281,4 +294,15 @@ class ProductController extends Controller
         $product->delete();
         return back()->with('success', 'Xoá sản phẩm thành công!');
     }
+
+    public function toggleStatus($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $product->status = $product->status === 'available' ? 'discontinued' : 'available';
+        $product->save();
+
+        return back()->with('success', 'Trạng thái sản phẩm đã được cập nhật!');
+    }
+
 }
