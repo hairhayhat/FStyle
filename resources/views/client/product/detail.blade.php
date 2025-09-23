@@ -5,12 +5,10 @@
         <div class="container">
             <div class="row gx-4 gy-5">
                 <div class="col-lg-9 col-12">
-                    <!-- filter button -->
                     <div class="filter-button mb-3">
                         <button class="danger-button danger-center btn btn-sm filter-btn"><i data-feather="align-left"></i>
                             Filter</button>
                     </div>
-                    <!-- filter button -->
                     <div class="details-items">
                         <div class="row g-4">
                             <div class="col-lg-5 col-md-6">
@@ -66,89 +64,95 @@
                                         <h2>{{ $product->name }}</h2>
                                     </div>
 
-                                    <div class="label-section">
-                                        <span class="label-text">{{ $product->category->name }}</span>
-                                        <span class="label-text variant-quantity"></span>
-                                    </div>
-
-                                    <h3 class="price-detail"></h3>
-
-                                    <form id="addToCartForm">
-                                        @csrf
-
-                                        <input type="hidden" name="product_variant_id" id="productVariantId">
-
-                                        <div class="color-image">
-                                            <div class="image-select">
-                                                @php $colors = $product->variants->pluck('color')->unique('id'); @endphp
-                                                <ul class="list-inline">
-                                                    @foreach ($colors as $color)
-                                                        <li class="list-inline-item">
-                                                            <div class="color-square" data-color-id="{{ $color->id }}"
-                                                                data-color-code="{{ $color->code }}"
-                                                                style="background-color: {{ $color->code }};">
-                                                                <i class="check-icon" style="display: none;">✔</i>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
+                                    @if ($product->status == 'available')
+                                        <div class="label-section">
+                                            <span class="label-text">{{ $product->category->name }}</span>
+                                            <span class="label-text variant-quantity"></span>
                                         </div>
 
-                                        <div id="selectSize" class="addeffect-section product-description border-product">
-                                            <h6 class="product-title size-text">Chọn kích cỡ</h6>
-                                            <div class="size-box">
-                                                <ul id="sizeList">
-                                                    @foreach ($sizes as $item)
-                                                        <li>
-                                                            <a href="javascript:void(0)" data-size-id="{{ $item->id }}"
-                                                                class="size-option is-disabled">
-                                                                {{ $item->name }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
+                                        <h3 class="price-detail"></h3>
 
-                                            <h6 class="product-title product-title-2 d-block">Số lượng</h6>
-                                            <div class="qty-box">
-                                                <div class="input-group">
-                                                    <span class="input-group-prepend">
-                                                        <button type="button" class="btn quantity-left-minus"
-                                                            data-type="minus">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-                                                    </span>
-                                                    <input type="text" name="quantity" class="form-control input-number"
-                                                        id="quantity" value="1">
-                                                    <span class="input-group-prepend">
-                                                        <button type="button" class="btn quantity-right-plus"
-                                                            data-type="plus">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </span>
+                                        <form id="addToCartForm">
+                                            @csrf
+
+                                            <input type="hidden" name="product_variant_id" id="productVariantId">
+
+                                            <div class="color-image">
+                                                <div class="image-select">
+                                                    @php $colors = $product->variants->pluck('color')->unique('id'); @endphp
+                                                    <ul class="list-inline">
+                                                        @foreach ($colors as $color)
+                                                            <li class="list-inline-item">
+                                                                <div class="color-square"
+                                                                    data-color-id="{{ $color->id }}"
+                                                                    data-color-code="{{ $color->code }}"
+                                                                    style="background-color: {{ $color->code }};">
+                                                                    <i class="check-icon" style="display: none;">✔</i>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="product-buttons">
-                                            <button type="button"
-                                                class="btn btn-solid hover-solid btn-animation cart-action-btn"
-                                                data-action="add">
-                                                <i class="fa fa-shopping-cart"></i>
-                                                <span>Thêm vào giỏ hàng</span>
-                                            </button>
+                                            <div id="selectSize"
+                                                class="addeffect-section product-description border-product">
+                                                <h6 class="product-title size-text">Chọn kích cỡ</h6>
+                                                <div class="size-box">
+                                                    <ul id="sizeList">
+                                                        @foreach ($sizes as $item)
+                                                            <li>
+                                                                <a href="javascript:void(0)"
+                                                                    data-size-id="{{ $item->id }}"
+                                                                    class="size-option is-disabled">
+                                                                    {{ $item->name }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
 
-                                            <button type="button"
-                                                class="btn btn-solid hover-solid btn-animation cart-action-btn"
-                                                data-action="buy">
-                                                <i class="fa fa-bolt"></i>
-                                                <span>Mua ngay</span>
-                                            </button>
-                                        </div>
+                                                <h6 class="product-title product-title-2 d-block">Số lượng</h6>
+                                                <div class="qty-box">
+                                                    <div class="input-group">
+                                                        <span class="input-group-prepend">
+                                                            <button type="button" class="btn quantity-left-minus"
+                                                                data-type="minus">
+                                                                <i class="fas fa-minus"></i>
+                                                            </button>
+                                                        </span>
+                                                        <input type="text" name="quantity"
+                                                            class="form-control input-number" id="quantity" value="1">
+                                                        <span class="input-group-prepend">
+                                                            <button type="button" class="btn quantity-right-plus"
+                                                                data-type="plus">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                    </form>
+                                            <div class="product-buttons">
+                                                <button type="button"
+                                                    class="btn btn-solid hover-solid btn-animation cart-action-btn"
+                                                    data-action="add">
+                                                    <i class="fa fa-shopping-cart"></i>
+                                                    <span>Thêm vào giỏ hàng</span>
+                                                </button>
 
+                                                <button type="button"
+                                                    class="btn btn-solid hover-solid btn-animation cart-action-btn"
+                                                    data-action="buy">
+                                                    <i class="fa fa-bolt"></i>
+                                                    <span>Mua ngay</span>
+                                                </button>
+                                            </div>
+
+                                        </form>
+                                    @else
+                                        <div class="label-section">Sản phẩm tạm ngừng bán</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -156,7 +160,6 @@
                 </div>
 
                 <div class="cart-list-section col-lg-3 col-md-4 mt-lg-5 mt-0" id="cartDropdownContainer">
-                    {{-- Dữ liệu giỏ hàng sẽ được load vào đây bằng Ajax --}}
                 </div>
 
 
@@ -190,7 +193,6 @@
                                         <div class="customer-rating">
                                             <h2>Đánh giá của khách hàng</h2>
 
-                                            <!-- Sao trung bình -->
                                             <ul class="rating my-2 d-inline-block">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <li><i

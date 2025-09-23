@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CommentChartController;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VNPayController;
@@ -20,12 +21,16 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\OrderChartController;
+use App\Http\Controllers\Admin\ProductChartController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\UserChartController;
 use App\Http\Controllers\Client\ChatController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\VoucherController as ClientVoucherController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::routes(['middleware' => []]);
@@ -54,7 +59,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::put('/category/{category}', [CategoryController::class, 'update'])->name('admin.category.update');
     Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
     // Product Routes
-    Route::resource('product', \App\Http\Controllers\Admin\ProductController::class)->names([
+    Route::resource('product', ProductController::class)->names([
         'index' => 'admin.product.index',
         'create' => 'admin.product.create',
         'store' => 'admin.product.store',
@@ -129,6 +134,31 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::post('/chat/edit/{chatMessage}', [ChatController::class, 'edit']);
     Route::post('/chat/delete/{chatMessage}', [ChatController::class, 'destroy']);
     Route::post('/chat/mark-as-read/{chatMessage}', [ChatController::class, 'markAsRead']);
+
+    Route::get('/dashboard/revenue', [DashboardController::class, 'getRevenue']);
+    Route::get('/dashboard/profit', [DashboardController::class, 'getProfit']);
+    Route::get('/dashboard/orders', [DashboardController::class, 'getOrders']);
+
+    Route::get('/chart/product', [ProductChartController::class, 'index'])->name('admin.chart.product');
+    route::get('/bar-chart/product', [ProductChartController::class, 'getProductChartData']);
+    route::get('/bar-chart/sales-performance', [ProductChartController::class, 'getSalesPerformanceData']);
+
+    Route::get('/chart/comment', [CommentChartController::class, 'index'])->name('admin.chart.comment');
+    Route::get('/bar-chart/comment', [CommentChartController::class, 'getCommentChartData']);
+    Route::get('/bar-chart/rating-rate', [CommentChartController::class, 'getRatingRateData']);
+    Route::get('/bar-chart/top-rating-products', [CommentChartController::class, 'getTopRatingProductsData']);
+
+    Route::get('/chart/user', [UserChartController::class, 'index'])->name('admin.chart.user');
+    Route::get('/bar-chart/top-users-by-orders-count', [UserChartController::class, 'getTopUsersByOrdersCountData']);
+    Route::get('/bar-chart/top-users-by-spending', [UserChartController::class, 'getTopUsersBySpendingData']);
+
+    Route::get('/chart/order', [OrderChartController::class, 'index'])->name('admin.chart.order');
+    Route::get('/bar-chart/average-order-value', [OrderChartController::class, 'getAverageOrderValue']);
+    Route::get('/bar-chart/done-and-cancelled-orders', [OrderChartController::class, 'getDoneAndCancelledOrders']);
+    Route::get('/bar-chart/payment-method-distribution', [OrderChartController::class, 'getPaymentMethodDistribution']);
+
+    Route::post('/admin/product/{id}/toggle-status', [ProductController::class, 'toggleStatus'])
+        ->name('admin.product.toggleStatus');
 
 });
 

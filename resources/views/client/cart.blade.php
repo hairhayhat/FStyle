@@ -42,6 +42,7 @@
                                         </td>
                                         <td>
                                             <p class="m-0">{{ $product->name }}</p>
+                                            <span class="text-muted fs-7">Còn lại: {{ $variant->quantity }}</span>
                                         </td>
                                         <td>
                                             <p class="theme-color fs-6">{{ $item->color }}, {{ $item->size }}</p>

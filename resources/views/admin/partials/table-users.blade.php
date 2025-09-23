@@ -16,18 +16,22 @@
                 <tr>
                     <td>
                         <span>
-                            <img src="{{asset('storage/' . $item->avatar)}}" alt="users">
+                            @if ($item->provider_id && $item->avatar)
+                                <img src="{{ $item->avatar }}" alt="users">
+                            @else
+                                <img src="{{ asset('storage/avatar/' . $item->avatar) }}" alt="users">
+                            @endif
                         </span>
                     </td>
                     <td>
                         <a href="javascript:void(0)">
-                            <span class="d-block ">{{$item->name}}</span>
+                            <span class="d-block ">{{ $item->name }}</span>
                         </a>
                     </td>
 
-                    <td> {{$item->email}}</td>
+                    <td> {{ $item->email }}</td>
 
-                    <td>{{$item->phone}}</td>
+                    <td>{{ $item->phone }}</td>
 
                     <td>
                         @if ($item->is_locked)
@@ -61,18 +65,21 @@
                                     <span class="lnr lnr-pencil"></span>
                                 </a>
                             </li>
-                            
-                            @if ($item->role_id != 1) {{-- Không cho phép khóa admin --}}
+
+                            @if ($item->role_id != 1)
                                 <li>
                                     @if ($item->is_locked)
-                                        <form action="{{ route('admin.users.unlock', $item->id) }}" method="POST" class="js-lock-form" data-action="unlock" style="display: inline;">
+                                        <form action="{{ route('admin.users.unlock', $item->id) }}" method="POST"
+                                            class="js-lock-form" data-action="unlock" style="display: inline;">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-success" title="Mở khóa tài khoản">
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                title="Mở khóa tài khoản">
                                                 <span class="lnr lnr-unlock"></span>
                                             </button>
                                         </form>
                                     @else
-                                        <form action="{{ route('admin.users.lock', $item->id) }}" method="POST" class="js-lock-form" data-action="lock" style="display: inline;">
+                                        <form action="{{ route('admin.users.lock', $item->id) }}" method="POST"
+                                            class="js-lock-form" data-action="lock" style="display: inline;">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-danger" title="Khóa tài khoản">
                                                 <span class="lnr lnr-lock"></span>
@@ -81,6 +88,7 @@
                                     @endif
                                 </li>
                             @endif
+
                         </ul>
                     </td>
                 </tr>
@@ -93,31 +101,33 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.js-lock-form').forEach(function(form){
-        form.addEventListener('submit', function(e){
-            e.preventDefault();
-            var action = form.getAttribute('data-action');
-            var isLock = action === 'lock';
-            if (typeof Swal === 'undefined') {
-                if (confirm(isLock ? 'Bạn có chắc chắn muốn khóa tài khoản này?' : 'Bạn có chắc chắn muốn mở khóa tài khoản này?')) {
-                    form.submit();
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.js-lock-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var action = form.getAttribute('data-action');
+                var isLock = action === 'lock';
+                if (typeof Swal === 'undefined') {
+                    if (confirm(isLock ? 'Bạn có chắc chắn muốn khóa tài khoản này?' :
+                            'Bạn có chắc chắn muốn mở khóa tài khoản này?')) {
+                        form.submit();
+                    }
+                    return;
                 }
-                return;
-            }
-            Swal.fire({
-                title: isLock ? 'Khóa tài khoản?' : 'Mở khóa tài khoản?',
-                text: isLock ? 'Tài khoản sẽ không thể mua hàng hoặc thêm giỏ.' : 'Tài khoản sẽ có thể mua hàng bình thường.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: isLock ? 'Khóa' : 'Mở khóa',
-                cancelButtonText: 'Hủy',
-            }).then(function(result){
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+                Swal.fire({
+                    title: isLock ? 'Khóa tài khoản?' : 'Mở khóa tài khoản?',
+                    text: isLock ? 'Tài khoản sẽ không thể mua hàng hoặc thêm giỏ.' :
+                        'Tài khoản sẽ có thể mua hàng bình thường.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: isLock ? 'Khóa' : 'Mở khóa',
+                    cancelButtonText: 'Hủy',
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     });
-});
 </script>

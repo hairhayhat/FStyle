@@ -20,6 +20,7 @@
                 'packaging' => 'Đang đóng gói',
                 'shipped' => 'Đang giao',
                 'delivered' => 'Đã giao',
+                'rated' => 'Đã đánh giá',
                 'cancelled' => 'Đã hủy',
                 'returned' => 'Đã trả hàng',
             ];
@@ -41,7 +42,6 @@
 
                 <td>
                     <div class="status-container">
-                        <!-- Hiển thị ban đầu -->
                         <p class="status-display btn btn-sm
                                                                 @if ($order->status === 'pending') btn-warning
                                                                 @elseif($order->status === 'confirmed') btn-warning
@@ -50,6 +50,7 @@
                                                                 @elseif($order->status === 'delivered') btn-success
                                                                 @elseif($order->status === 'cancelled') btn-danger
                                                                 @elseif($order->status === 'returned') btn-dark
+                                                                @elseif($order->status === 'rated') btn-success
                                                                 @else btn-light @endif"
                            data-order-id="{{ $order->id }}">
                             {{ $statusMap[$order->status] ?? $order->status }}

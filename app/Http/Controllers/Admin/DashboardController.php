@@ -3,79 +3,68 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Comment;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
+use App\Services\GetProfitService;
+use Illuminate\Support\Facades\DB;
+use App\Services\GetRevenueService;
+use App\Http\Controllers\Controller;
+use App\Models\Voucher;
+use App\Services\GetAllOrdersService;
 
 class DashboardController extends Controller
 {
     public function __construct(
-        private DashboardService $dashboardService
+        private DashboardService $dashboardService,
+        private GetRevenueService $getRevenueService,
+        private GetProfitService $getProfitService,
+        private GetAllOrdersService $getAllOrdersService,
     ) {
     }
 
     public function index(Request $request)
     {
-        // Thống kê tổng quan
-        $overviewStats = $this->dashboardService->getOverviewStats($request->from_date, $request->to_date);
+        $productCount = Product::count();
+        $userCount = User::where('role_id', '!=', 1)->count();
+        $commentCount = Comment::count();
+        $orderCount = Order::count();
 
-        // Biểu đồ doanh thu theo tháng
-        $revenueChart = $this->dashboardService->getRevenueByMonth($request->from_date, $request->to_date);
 
-        // Biểu đồ đơn hàng theo tháng
-        $ordersChart = $this->dashboardService->getOrdersByMonth($request->from_date, $request->to_date);
+        return view('admin.dashboard.index', compact('productCount', 'userCount', 'commentCount', 'orderCount'));
+    }
 
-        // Biểu đồ doanh thu theo ngày
-        $dailyChart = $this->dashboardService->getRevenueByDay($request->from_date, $request->to_date);
+    public function getRevenue(Request $request)
+    {
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
 
-        // Top sản phẩm bán chạy
-        $topProducts = $this->dashboardService->getTopProducts($request->from_date, $request->to_date, 5);
+        $revenueData = $this->getRevenueService->getRevenue($from_date, $to_date);
 
-        // Thống kê trạng thái đơn hàng
-        $orderStatusStats = $this->dashboardService->getOrderStatusStats($request->from_date, $request->to_date);
+        return response()->json($revenueData);
+    }
 
-        // Thống kê phương thức thanh toán
-        $paymentStats = $this->dashboardService->getPaymentMethodStats($request->from_date, $request->to_date);
+    public function getProfit(Request $request)
+    {
+        $from_date = $request->query('from_date');
+        $to_date = $request->query('to_date');
 
-        // Thống kê khách hàng theo tháng
-        $customersChart = $this->dashboardService->getCustomersByMonth($request->from_date, $request->to_date);
+        $profitData = $this->getProfitService->getProfit($from_date, $to_date);
 
-        // Dữ liệu cho các bảng mới
-        $recentOrders = $this->dashboardService->getRecentOrders($request->from_date, $request->to_date, 10);
-        $recentCustomers = $this->dashboardService->getRecentCustomers($request->from_date, $request->to_date, 10);
-        $recentProducts = $this->dashboardService->getRecentProducts($request->from_date, $request->to_date, 10);
-        $recentComments = $this->dashboardService->getRecentComments($request->from_date, $request->to_date, 10);
-        $categoryTable = $this->dashboardService->getCategoryTable($request->from_date, $request->to_date);
-        $colorStats = $this->dashboardService->getColorStats($request->from_date, $request->to_date);
-        $sizeStats = $this->dashboardService->getSizeStats($request->from_date, $request->to_date);
-        $inventoryTable = $this->dashboardService->getInventoryTable();
-        $productRatings = $this->dashboardService->getProductRatings($request->from_date, $request->to_date, 10);
-        $hourlyTable = $this->dashboardService->getHourlyTable($request->from_date, $request->to_date);
+        return response()->json($profitData);
+    }
 
-        return view('admin.dashboard.index', compact(
-            'overviewStats',
-            'revenueChart',
-            'ordersChart',
-            'dailyChart',
-            'topProducts',
-            'orderStatusStats',
-            'paymentStats',
-            'customersChart',
-            'recentOrders',
-            'recentCustomers',
-            'recentProducts',
-            'recentComments',
-            'categoryTable',
-            'colorStats',
-            'sizeStats',
-            'inventoryTable',
-            'productRatings',
-            'hourlyTable'
-        ));
+    public function getOrders(Request $request)
+    {
+        $ordersDate = $this->getAllOrdersService->getOrdersByStatus();
+
+        return response()->json([
+            'labels' => array_keys($ordersDate),
+            'data' => array_values($ordersDate)
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
+use App\Events\UpdateOrderStatus;
 
 class OrderController extends Controller
 {
@@ -30,6 +31,7 @@ class OrderController extends Controller
             'packaging' => Order::where('status', 'packaging')->count(),
             'shipped' => Order::where('status', 'shipped')->count(),
             'delivered' => Order::where('status', 'delivered')->count(),
+            'rated' => Order::where('status', 'rated')->count(),
             'cancelled' => Order::where('status', 'cancelled')->count(),
             'returned' => Order::where('status', 'returned')->count(),
         ];
@@ -90,6 +92,12 @@ class OrderController extends Controller
         try {
             if ($newStatus === 'confirmed') {
                 foreach ($order->orderDetails as $item) {
+                    if ($item->productVariant->quantity < $item->quantity) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Sản phẩm {$item->productVariant->product->name} ({$item->productVariant->color->name}, {$item->productVariant->size->name}) chỉ còn {$item->productVariant->quantity} trong kho, không đủ để xác nhận đơn hàng."
+                        ], 400);
+                    }
                     $productVariant = $item->productVariant;
                     $productVariant->quantity -= $item->quantity;
                     $productVariant->save();
@@ -124,6 +132,8 @@ class OrderController extends Controller
                     "/client/checkout/{$order->code}"
                 );
             }
+
+            broadcast(new UpdateOrderStatus($order->fresh()))->toOthers();
 
             return response()->json([
                 'success' => true,
@@ -169,6 +179,7 @@ class OrderController extends Controller
             'packaging' => 'Đang đóng gói',
             'shipped' => 'Đang giao hàng',
             'delivered' => 'Đã giao hàng',
+            'rated' => 'Đã đánh giá',
             'cancelled' => 'Đã hủy',
             'returned' => 'Đã trả hàng'
         ];
