@@ -1,15 +1,15 @@
-<?php
+<?php // Tệp PHP
 
-namespace App\Models;
+namespace App\Models; // Namespace cho model
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model; // Lớp Model Eloquent
+use Illuminate\Database\Eloquent\Factories\HasFactory; // Trait factory
 
-class Order extends Model
+class Order extends Model // Model Đơn hàng
 {
-    use HasFactory;
+    use HasFactory; // Kích hoạt factory
 
-    protected $fillable = [
+    protected $fillable = [ // Các trường có thể gán hàng loạt
         'user_id',
         'code',
         'address_id',
@@ -18,25 +18,25 @@ class Order extends Model
         'note'
     ];
 
-    public function user()
+    public function user() // Quan hệ: đơn hàng thuộc về 1 người dùng
     {
         return $this->belongsTo(User::class);
     }
 
-    public function shippingAddress()
+    public function shippingAddress() // Quan hệ: địa chỉ giao hàng (khóa ngoại address_id)
     {
         return $this->belongsTo(Address::class, 'address_id');
     }
 
-    public function payment()
+    public function payment() // Quan hệ 1-1: thông tin thanh toán
     {
         return $this->hasOne(Payment::class);
     }
-    public function orderDetails()
+    public function orderDetails() // Quan hệ 1-n: các dòng chi tiết đơn hàng
     {
         return $this->hasMany(OrderDetail::class);
     }
-    public function orderVoucher()
+    public function orderVoucher() // Quan hệ 1-1: phiếu giảm giá áp dụng cho đơn
     {
         return $this->hasOne(OrderVoucher::class);
     }

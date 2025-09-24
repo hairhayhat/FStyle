@@ -1,18 +1,18 @@
-<?php
+<?php // Tệp PHP
 
-namespace App\Models;
+namespace App\Models; // Namespace cho model
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // Trait factory
+use Illuminate\Database\Eloquent\Model; // Lớp Model Eloquent
+use App\Models\Product; // Import model Product để khai báo quan hệ
 
-class ProductVariant extends Model
+class ProductVariant extends Model // Model Biến thể sản phẩm
 {
-    use HasFactory;
+    use HasFactory; // Kích hoạt factory
 
-    protected $table = 'product_variants';
+    protected $table = 'product_variants'; // Tên bảng tương ứng (nếu khác chuẩn)
 
-    protected $fillable = [
+    protected $fillable = [ // Các trường được gán hàng loạt
         'product_id',
         'color_id',
         'size_id',
@@ -22,7 +22,7 @@ class ProductVariant extends Model
     ];
 
     /**
-     * Sản phẩm thuộc về biến thể
+     * Sản phẩm mà biến thể thuộc về
      */
     public function product()
     {
@@ -45,12 +45,12 @@ class ProductVariant extends Model
         return $this->belongsTo(Size::class);
     }
 
-    public function cartDetails()
+    public function cartDetails() // Quan hệ 1-n: các dòng chi tiết giỏ liên quan tới biến thể
     {
         return $this->hasMany(CartDetail::class);
     }
 
-    public function orderDetails()
+    public function orderDetails() // Quan hệ 1-n: các dòng chi tiết đơn hàng liên quan tới biến thể
     {
         return $this->hasMany(OrderDetail::class);
     }

@@ -1,18 +1,18 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts.app') {{-- Kế thừa layout admin --}}
 
 @section('content')
-    <div class="page-body">
+    <div class="page-body"> {{-- Nội dung trang chỉnh sửa sản phẩm --}}
         <div class="title-header">
             <h5>Chỉnh sửa sản phẩm</h5>
         </div>
 
         <div class="container-fluid">
-            <form class="theme-form theme-form-2 mega-form" method="POST"
+            <form class="theme-form theme-form-2 mega-form" method="POST" {{-- Form cập nhật sản phẩm --}}
                 action="{{ route('admin.product.update', $product->id) }}" enctype="multipart/form-data" novalidate>
                 @csrf
                 @method('PUT')
 
-                {{-- config cho JS --}}
+                {{-- Cấu hình cho JS (AJAX lưu biến thể...) --}}
                 <div id="js-config" data-variant-store-route="{{ route('admin.product.variant.store') }}"
                     data-product-id="{{ $product->id }}">
                 </div>
@@ -26,7 +26,7 @@
                                     <h5>Thông tin sản phẩm</h5>
                                 </div>
 
-                                {{-- Tên --}}
+                                {{-- Tên sản phẩm --}}
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Tên sản phẩm</label>
                                     <div class="col-sm-10">
@@ -39,7 +39,7 @@
                                     </div>
                                 </div>
 
-                                {{-- ẢNH CHÍNH --}}
+                                {{-- ẢNH CHÍNH: upload + preview --}}
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Ảnh chính</label>
                                     <div class="col-sm-10">
@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Danh mục --}}
+                                {{-- Danh mục: select danh mục sản phẩm --}}
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Danh mục</label>
                                     <div class="col-sm-10">
@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Mô tả --}}
+                                {{-- Mô tả: nội dung mô tả sản phẩm --}}
                                 <div class="mb-4 row align-items-center">
                                     <label class="form-label-title col-sm-2 mb-0">Mô tả sản phẩm</label>
                                     <div class="col-sm-10">
@@ -96,7 +96,7 @@
                         </div>
                     </div>
 
-                    {{-- BIẾN THỂ SẢN PHẨM --}}
+                    {{-- BIẾN THỂ SẢN PHẨM: danh sách biến thể hiện có + thêm mới --}}
                     <div class="col-12">
                         <div class="card mb-4">
                             <div class="card-body">
@@ -135,7 +135,7 @@
                                             <input type="hidden" name="variants[{{ $i }}][id]"
                                                 class="variant-id" value="{{ $variantOld['id'] ?? '' }}">
 
-                                            {{-- Màu sắc --}}
+                                            {{-- Màu sắc: chọn color, hiện preview --}}
                                             <div class="col-md-3 d-flex flex-column">
                                                 <label class="form-label">Màu sắc</label>
                                                 <div class="d-flex align-items-center gap-2">
@@ -164,7 +164,7 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Size --}}
+                                            {{-- Size: chọn kích thước --}}
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Size</label>
                                                 <select name="variants[{{ $i }}][size_id]"
@@ -182,7 +182,7 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Giá nhập --}}
+                                            {{-- Giá nhập: import_price --}}
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Giá nhập</label>
                                                 <input type="text" name="variants[{{ $i }}][import_price]"
@@ -193,7 +193,7 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Giá bán --}}
+                                            {{-- Giá bán: sale_price --}}
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Giá bán</label>
                                                 <input type="text" name="variants[{{ $i }}][sale_price]"
@@ -204,7 +204,7 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Số lượng --}}
+                                            {{-- Số lượng: quantity tồn kho --}}
                                             <div class="col-md-2 d-flex flex-column">
                                                 <label class="form-label">Số lượng</label>
                                                 <input type="number" name="variants[{{ $i }}][quantity]"
@@ -215,13 +215,13 @@
                                                 @enderror
                                             </div>
 
-                                            {{-- Xoá --}}
+                                            {{-- Xoá: loại bỏ biến thể khỏi form (UI) --}}
                                             <div class="col-md-1 d-flex align-items-end">
                                                 <button type="button"
                                                     class="btn btn-danger remove-variant w-100">X</button>
                                             </div>
 
-                                            {{-- Lỗi trùng chung --}}
+                                            {{-- Lỗi trùng chung: thông báo khi trùng màu+size --}}
                                             <div class="col-12 mt-1">
                                                 @if ($errors->has("variants.{$i}.color_id") && str_contains($errors->first("variants.{$i}.color_id"), 'trùng'))
                                                     <div class="text-danger small">Biến thể trùng màu + size.</div>
@@ -242,7 +242,7 @@
                     </div>
 
 
-                    {{-- THƯ VIỆN ẢNH --}}
+                    {{-- THƯ VIỆN ẢNH: upload thêm ảnh gallery --}}
 
                     <div class="col-12">
                         <div class="card mb-4">
@@ -270,7 +270,7 @@
                         </div>
                     </div>
 
-                    {{-- Nút submit --}}
+                    {{-- Nút submit: lưu cập nhật --}}
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body text-end">
@@ -286,7 +286,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('scripts') {{-- JS xử lý CKEditor, biến thể, preview ảnh --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.querySelector('#editor')) {

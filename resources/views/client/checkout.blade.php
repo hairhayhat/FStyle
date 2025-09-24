@@ -1,12 +1,12 @@
-@extends('client.layouts.app')
+@extends('client.layouts.app') {{-- Kế thừa layout client --}}
 
 @section('content')
-    <section class="section-b-space">
+    <section class="section-b-space"> {{-- Khối nội dung chính trang checkout --}}
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-8">
                     <h3 class="mb-3">Địa chỉ nhận hàng</h3>
-                    <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate>
+                    <form class="needs-validation" action="{{ route('client.checkout.store') }}" method="POST" novalidate> {{-- Form đặt hàng --}}
                         @csrf
                         <input type="hidden" name="voucher_code" id="voucher_code_input">
                         <input type="hidden" name="type" value="{{ request('type') }}">
@@ -14,7 +14,7 @@
                             <input type="hidden" name="cart_items[]" value="{{ $id }}">
                         @endforeach
 
-                        <div class="save-details-box" id="addressList">
+                        <div class="save-details-box" id="addressList"> {{-- Danh sách địa chỉ giao hàng --}}
                             <div class="row g-3">
                                 @foreach ($addresses as $item)
                                     <div class="col-xl-4 col-md-6">
@@ -53,7 +53,7 @@
                             </small>
                         </h3>
 
-                        <div class="row g-3 my-3">
+                        <div class="row g-3 my-3"> {{-- Các lựa chọn phương thức thanh toán --}}
                             <div class="col-6">
                                 <div class="form-check text-center p-3 border rounded-3 shadow-sm h-100 payment-option"
                                     data-target="cod" style="cursor: pointer; transition: all 0.3s;">
@@ -80,12 +80,12 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-solid-default mt-4" type="submit">Đặt hàng</button>
+                        <button class="btn btn-solid-default mt-4" type="submit">Đặt hàng</button> {{-- Nút submit --}}
                     </form>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="your-cart-box">
+                    <div class="your-cart-box"> {{-- Tóm tắt giỏ hàng --}}
                         <h3 class="mb-3 d-flex text-capitalize">Giỏ hàng<span
                                 class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">{{ count($cartItems) }}</span>
                         </h3>
@@ -140,7 +140,7 @@
                                 Chọn voucher
                             </button>
 
-                            <!-- Dropdown list -->
+                            <!-- Dropdown list: danh sách voucher khả dụng -->
                             <ul class="dropdown-menu w-100" aria-labelledby="voucherDropdown">
                                 @foreach ($vouchers as $v)
                                     @php
@@ -193,7 +193,7 @@
                                 @endforeach
                             </ul>
 
-                            <!-- input ẩn để submit -->
+                            <!-- input ẩn để submit mã voucher -->
                             <input type="hidden" name="voucher_pick" id="voucherInput">
                         </div>
                     </div>
@@ -202,10 +202,10 @@
         </div>
     </section>
 
-    <div class="modal fade add-address-modal" id="addAddress" role="dialog" aria-modal="true">
+    <div class="modal fade add-address-modal" id="addAddress" role="dialog" aria-modal="true"> {{-- Modal thêm địa chỉ mới --}}
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form method="POST" id="addAddressForm" action="{{ route('client.address.create') }}"
+                <form method="POST" id="addAddressForm" action="{{ route('client.address.create') }}" {{-- Form trong modal --}}
                     enctype="multipart/form-data" novalidate>
                     @csrf
                     <div class="modal-header">
@@ -268,7 +268,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('scripts') {{-- JS xử lý chọn phương thức thanh toán --}}
     <script>
         document.querySelectorAll('.payment-option').forEach(option => {
             option.addEventListener('click', function() {
