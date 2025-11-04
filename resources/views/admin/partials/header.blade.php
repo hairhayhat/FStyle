@@ -2,11 +2,8 @@
     <div class="header-wrapper row m-0">
         <div class="header-logo-wrapper col-auto p-0">
             <div class="logo-wrapper">
-                <a href="index.html">
-                    <img class="img-fluid main-logo" src="{{ asset('admin/assets/images/logo/logo.png') }}" alt="logo">
-                    <img class="img-fluid white-logo" src="{{ asset('admin/assets/images/logo/logo-white.png') }}"
-                        alt="logo">
-                </a>
+                <img src="{{ asset('client/assets/images/logo/Logo.jpg') }}" class="img-fluid blur-up lazyload style-2"
+                    alt="logo" style="width: 80px; height: auto;">
             </div>
             <div class="toggle-sidebar">
                 <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
@@ -88,8 +85,7 @@
                 </li>
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
-                        <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}"
-                            alt="Avatar">
+                        <img class="user-profile rounded-circle" src="{{ asset(Auth::user()->avatar) }}" alt="Avatar">
                         <div class="user-name-hide media-body">
                             <span>{{ Auth::user()->name }}</span>
                             <p class="mb-0 font-roboto">Admin</p>
