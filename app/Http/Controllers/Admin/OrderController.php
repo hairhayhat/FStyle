@@ -90,19 +90,6 @@ class OrderController extends Controller
         }
 
         try {
-            if ($newStatus === 'confirmed') {
-                foreach ($order->orderDetails as $item) {
-                    if ($item->productVariant->quantity < $item->quantity) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => "Sản phẩm {$item->productVariant->product->name} ({$item->productVariant->color->name}, {$item->productVariant->size->name}) chỉ còn {$item->productVariant->quantity} trong kho, không đủ để xác nhận đơn hàng."
-                        ], 400);
-                    }
-                    $productVariant = $item->productVariant;
-                    $productVariant->quantity -= $item->quantity;
-                    $productVariant->save();
-                }
-            }
             if ($newStatus === 'cancelled') {
                 foreach ($order->orderDetails as $item) {
                     $productVariant = $item->productVariant;

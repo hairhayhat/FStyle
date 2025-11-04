@@ -267,15 +267,14 @@ class CheckoutController extends Controller
 
         $user = Auth::user();
 
-        // Kiểm tra tài khoản bị khóa
         if (!$user->canPurchase()) {
-            return redirect()->back()->withErrors('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
+            return redirect()->back()->with('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
         }
 
         $items = $this->getOrderItems($request, $user);
 
         if ($items->isEmpty()) {
-            return redirect()->back()->withErrors('Không có sản phẩm để đặt hàng.');
+            return redirect()->back()->with('error', 'Không có sản phẩm để đặt hàng.');
         }
 
         DB::beginTransaction();
@@ -290,6 +289,11 @@ class CheckoutController extends Controller
 
             $totalPrice = 0;
             foreach ($items as $item) {
+                $variant = ProductVariant::find($item->product_variant_id);
+                if ($variant->quantity < $item->quantity) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Sản phẩm ' . $variant->product->name . ' không đủ số lượng để mua.');
+                }
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'product_variant_id' => $item->product_variant_id,
@@ -339,8 +343,14 @@ class CheckoutController extends Controller
                 'status' => 'pending',
             ]);
 
-            DB::commit();
+            foreach ($items as $item) {
+                $variant = ProductVariant::find($item->product_variant_id);
+                if ($variant) {
+                    $variant->decrement('quantity', $item->quantity);
+                }
+            }
 
+            DB::commit();
 
             if ($method === 'vnpay') {
                 return $this->processVNPayPayment($order, $payment);
@@ -357,7 +367,7 @@ class CheckoutController extends Controller
                 ->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Lỗi khi đặt hàng: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Lỗi khi đặt hàng: ' . $e->getMessage());
         }
     }
 
